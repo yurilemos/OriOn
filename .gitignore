@@ -10,3 +10,9 @@ yarn-debug.log*
 yarn-error.log*
 
 .history/
+
+postgres-data
+
+.history
+
+.env

@@ -1,5 +1,6 @@
 version: '3.8'
 services:
+
   frontend:
     restart: always
     build: ./frontend
@@ -10,32 +11,57 @@ services:
       - ./frontend:/app
     environment:
       - CHOKIDAR_USEPOLLING=true
-  api:
+
+
+  db:
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    image: postgres:latest
+    networks:
+      - postgres-compose-network
+    ports:
+      - 5405:5432
     restart: always
+    volumes:
+      - ./postgres-data:/var/lib/postgresql/data
+
+  api:
     build: ./api
+    depends_on:
+      - db
+    environment:
+      SQLALCHEMY_DATABASE_URI: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db/db    
+    networks:
+      - postgres-compose-network
     ports:
       - '5050:5050'
     volumes:
       - ./api:/app
-  mongo:
-    image: mongo
+      - ./migrations:/usr/src/app/migrations
     restart: always
+
+  db-pgadmin:
+    image: dpage/pgadmin4
     environment:
-      MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: very-strong-db-password
-    volumes:
-      - mongodb_data:/data/db
-  mongo-express:
-    image: mongo-express
-    restart: always
+      PGADMIN_DEFAULT_EMAIL: "yurilemos98@hotmail.com"
+      PGADMIN_DEFAULT_PASSWORD: ${POSTGRES_PASSWORD}
     ports:
-      - 8081:8081
-    environment:
-      ME_CONFIG_MONGODB_SERVER: mongo
-      ME_CONFIG_MONGODB_ADMINUSERNAME: root
-      ME_CONFIG_MONGODB_ADMINPASSWORD: very-strong-db-password
+      - "16543:80"
     depends_on:
-      - mongo
+      - db
+    networks:
+      - postgres-compose-network
+
+  
+
+  
+
 
 volumes:
-  mongodb_data:
+  dbdata:
+
+networks: 
+  postgres-compose-network:
+    driver: bridge

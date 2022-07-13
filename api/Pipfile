@@ -9,6 +9,13 @@ requests = "*"
 python-dotenv = "*"
 flask-cors = "*"
 pymongo = "*"
+flask-sqlalchemy = "*"
+pylint-flask = "*"
+pylint-flask-sqlalchemy = "*"
+flask-mysql = "*"
+mysql-connector-python = "*"
+flask-migrate = "*"
+alembic = "*"
 
 [dev-packages]
 black = "*"
