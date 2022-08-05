@@ -1,6 +1,7 @@
-from app import app
+from app import app, db, Usuario
 import requests
-from flask import request
+from flask import request, abort
+from werkzeug.security import generate_password_hash, check_password_hash
 
 
 @app.route("/")
@@ -19,21 +20,45 @@ def new_image():
     return data
 
 
-@app.route("/images", methods=["GET", "POST"])
-def images():
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    print('ENTROOOOOOOOOOOOOU')
     if request.method == "GET":
-        # read image from the database
-        # images = images_collection.find({})
-        # return jsonify([img for img in images])
-        return
-    if request.method == "POST":
         # save image from the database
-        image = request.get_json()
-        image["_id"] = image.get("id")
+        login = request.args.get("login")
+        senha = request.args.get("senha")
+        usuario = Usuario.query.filter_by(login=login).first()        
+        hashsenha = generate_password_hash(senha)    
+        if(usuario.senha != hashsenha):
+            abort(400, description='Senha inválida')    
         # result = images_collection.insert_one(image)
         # inserted_id = result.inserted_id
-        inserted_id = ""
-        return {"inserted_id": inserted_id}
+        return usuario
+    if request.method == "POST":
+        # save image from the database
+        content = request.json
+        login = content.get("login", None)
+        senha = content.get("senha", None)
+        print(senha)
+        hashsenha = generate_password_hash(senha)
+        print(hashsenha)
+        
+        user_already_exists = Usuario.query.filter_by(login=login).all()        
+        if user_already_exists:
+            abort(400, description='Usuário com já existente')
+        
+        usuario = Usuario(
+            login=login,
+            senha=hashsenha,
+            perfil_usuario='Administrador',
+            email_usuario=login    
+        )
+        
+        # Add user to the database
+        db.session.add(usuario)
+        db.session.commit() 
+                    
+        return usuario
 
 
 @app.route("/images/<image_id>", methods=["DELETE"])

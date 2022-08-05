@@ -15,10 +15,11 @@ services:
 
   db:
     environment:
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_DB: ${POSTGRES_DB}
-    image: postgres:latest
+      POSTGRES_USER: dbadm
+      POSTGRES_PASSWORD: dbpwd
+      POSTGRES_DB: db
+      POSTGRES_HOST_AUTH_METHOD: trust
+    image: postgres:12.2
     networks:
       - postgres-compose-network
     ports:
@@ -32,7 +33,7 @@ services:
     depends_on:
       - db
     environment:
-      SQLALCHEMY_DATABASE_URI: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db/db    
+      SQLALCHEMY_DATABASE_URI: postgresql://dbadm:dbpwd@db:5405/db    
     networks:
       - postgres-compose-network
     ports:
@@ -46,7 +47,7 @@ services:
     image: dpage/pgadmin4
     environment:
       PGADMIN_DEFAULT_EMAIL: "yurilemos98@hotmail.com"
-      PGADMIN_DEFAULT_PASSWORD: ${POSTGRES_PASSWORD}
+      PGADMIN_DEFAULT_PASSWORD: dbpwd
     ports:
       - "16543:80"
     depends_on:
