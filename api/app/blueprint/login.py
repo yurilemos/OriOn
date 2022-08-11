@@ -1,0 +1,54 @@
+from http.client import OK
+from app import app, db, Usuario
+from datetime import datetime
+from flask import jsonify
+from werkzeug.security import generate_password_hash, check_password_hash
+from app.serializers.usuario_serializer import UsuarioSerializer
+
+
+def login_user(login, senha):
+    if(login is None):
+        return jsonify({"message": "Usuário vázio"}), 400
+    if(senha is None):
+        return jsonify({"message": "Senha vázia"}), 400
+        
+    usuario = Usuario.query.filter_by(login=login).first()   
+        
+    # login inválido
+    if (usuario is None):
+        return jsonify({"usuário": None})
+        
+    # senha inválida
+    if(check_password_hash(usuario.senha, senha) is False):
+        return jsonify({"usuário": None})
+    
+    usuario.data_pen_visita_usuario = usuario.data_ult_visita_usuario
+    usuario.data_ult_visita_usuario = datetime.utcnow()
+    
+    # Update user to the database
+    db.session.add(usuario)
+    db.session.commit()
+    
+    return jsonify({"usuário": UsuarioSerializer().dump(usuario)})
+
+
+def register_user(login, senha, nome):
+    hashsenha = generate_password_hash(senha)
+        
+    user_already_exists = Usuario.query.filter_by(login=login).all()        
+    if user_already_exists:
+        return jsonify({"message": "Usuário já existe"}), 400
+        
+    usuario = Usuario(
+      login=login,
+      senha=hashsenha,
+      perfil_usuario='Administrador',
+      email_usuario=login,
+      nome_usuario=nome   
+    )
+        
+    # Add user to the database
+    db.session.add(usuario)
+    db.session.commit() 
+                    
+    return jsonify({"usuário": UsuarioSerializer().dump(usuario)})
