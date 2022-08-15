@@ -1,6 +1,7 @@
 import React from 'react';
 import { ToastContainer } from 'react-toastify';
 import { QueryClient, QueryClientProvider } from 'react-query';
+import 'antd/dist/antd.min.css';
 import './styles/global.css';
 import { Router } from './router';
 

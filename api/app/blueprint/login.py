@@ -1,9 +1,10 @@
 from http.client import OK
-from app import app, db, Usuario
+from app import app, db, Usuario, jwt
 from datetime import datetime
 from flask import jsonify
 from werkzeug.security import generate_password_hash, check_password_hash
 from app.serializers.usuario_serializer import UsuarioSerializer
+from flask_jwt_extended import create_access_token, get_jwt,get_jwt_identity, unset_jwt_cookies, jwt_required, JWTManager
 
 
 def login_user(login, senha):
@@ -28,8 +29,15 @@ def login_user(login, senha):
     # Update user to the database
     db.session.add(usuario)
     db.session.commit()
+    access_token = create_access_token(identity=login)
     
-    return jsonify({"usuário": UsuarioSerializer().dump(usuario)})
+    return jsonify({"access_token": access_token})
+
+
+def logout_user():
+    response = jsonify({"msg": "logout successful"})
+    unset_jwt_cookies(response)
+    return response
 
 
 def register_user(login, senha, nome):
@@ -42,7 +50,7 @@ def register_user(login, senha, nome):
     usuario = Usuario(
       login=login,
       senha=hashsenha,
-      perfil_usuario='Administrador',
+      perfil_usuario=3,
       email_usuario=login,
       nome_usuario=nome   
     )

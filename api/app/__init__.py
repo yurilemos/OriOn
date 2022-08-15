@@ -9,6 +9,7 @@ from flask_cors import CORS
 from flask_migrate import Migrate
 from flask_marshmallow import Marshmallow
 from config import Config
+from flask_jwt_extended import create_access_token, get_jwt,get_jwt_identity, unset_jwt_cookies, jwt_required, JWTManager
 
 
 load_dotenv(dotenv_path="./.env.local")
@@ -22,6 +23,7 @@ CORS(app)
 
 app.config["DEBUG"] = DEBUG
 app.config.from_object(Config)
+jwt = JWTManager(app)
 
 db = SQLAlchemy(app)
 ma.init_app(app)

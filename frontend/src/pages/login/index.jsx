@@ -1,9 +1,12 @@
 import React from 'react';
-import { Input, Form, Button, Checkbox } from 'antd';
+import { Input, Form, Button } from 'antd';
+import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { toast } from 'react-toastify';
+import useToken from '../../utils/useToken';
 
-export const Index = () => {
+export const Login = () => {
+  const { setToken } = useToken();
   const onFinish = async (values) => {
     console.log(values);
     try {
@@ -11,10 +14,15 @@ export const Index = () => {
         login: values.login,
         senha: values.senha,
       });
+      setToken(res.data.access_token);
       console.log(res);
     } catch (error) {
-      console.log(error);
-      toast.error(error.message);
+      if (error.response) {
+        console.log(error.response);
+        console.log(error.response.status);
+        console.log(error.response.headers);
+        toast.error(error.response);
+      }
     }
   };
   const onFinishFailed = (error) => {
@@ -78,16 +86,9 @@ export const Index = () => {
               />
             </Form.Item>
 
-            <Form.Item
-              name="remember"
-              valuePropName="checked"
-              wrapperCol={{
-                offset: 8,
-                span: 16,
-              }}
-            >
-              <Checkbox>Remember me</Checkbox>
-            </Form.Item>
+            <span>
+              Não possui uma conta? <Link to="/registro">Registrar-se</Link>
+            </span>
 
             <Form.Item
               wrapperCol={{
