@@ -1,18 +1,29 @@
 import React from 'react';
-import { Container, Navbar } from 'react-bootstrap';
-import { ReactComponent as Logo } from '../images/logo.svg';
+import { PageHeader, Button } from 'antd';
+import useToken from '../utils/useToken';
+import { useNavigate } from 'react-router-dom';
 
-const navbarStyle = {
-  backgroundColor: '#eeeeee',
-};
-
-const Header = ({ title }) => {
+const Header = () => {
+  const { logout } = useToken();
+  let navigate = useNavigate();
   return (
-    <Navbar style={navbarStyle} variant="light">
-      <Container>
-        <Logo alt={title} style={{ maxWidth: '12rem', maxHeight: '2rem' }} />
-      </Container>
-    </Navbar>
+    <PageHeader
+      className="site-page-header"
+      style={{ background: '#0077B6', border: '#0077B6', color: 'white' }}
+      onBack={() => null}
+      title="Title"
+      subTitle="This is a subtitle"
+      extra={[
+        <Button
+          onClick={() => {
+            logout();
+            navigate('/login');
+          }}
+        >
+          sair
+        </Button>,
+      ]}
+    />
   );
 };
 

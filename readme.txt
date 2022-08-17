@@ -1,5 +1,74 @@
-Para base de dados:
-  docker-compose up -d
-  docker exec -it orionproject_api_1 bash
-  flask db migrade
-  flask db upgrade
+pacotes:
+  cd api
+  pip install --upgrade pip
+  pip install pipenv
+  pipenv install
+  cd ..
+  cd frontend
+  npm install
+  cd ..
+
+
+Dentro do repositório OriOn:
+
+frontend:
+  cd frontend
+  npm start
+
+
+backend:
+  cd api
+  pipenv shell
+  python3 run.py
+
+
+
+versions:
+  python==3.10.4
+  postgre==14.4
+  alembic==1.8.1
+  astroid==2.11.7
+  autopep8==1.6.0
+  certifi==2022.5.18.1
+  charset-normalizer==2.1.0
+  click==8.1.3
+  dill==0.3.5.1
+  distlib==0.3.4
+  filelock==3.6.0
+  Flask==2.2.1
+  Flask-Cors==3.0.10
+  Flask-JWT-Extended==4.4.3
+  flask-marshmallow==0.14.0
+  Flask-Migrate==3.1.0
+  Flask-SQLAlchemy==2.5.1
+  idna==3.3
+  isort==5.10.1
+  itsdangerous==2.1.2
+  Jinja2==3.1.2
+  lazy-object-proxy==1.7.1
+  Mako==1.2.1
+  MarkupSafe==2.1.1
+  marshmallow==3.17.0
+  marshmallow-sqlalchemy==0.28.1
+  mccabe==0.7.0
+  packaging==21.3
+  pipenv==2022.5.2
+  platformdirs==2.5.1
+  psycopg2==2.9.3
+  pycodestyle==2.8.0
+  PyJWT==2.4.0
+  pylint==2.14.4
+  pylint-flask-sqlalchemy==0.2.0
+  pyparsing==3.0.9
+  python-dotenv==0.20.0
+  requests==2.28.1
+  six==1.16.0
+  SQLAlchemy==1.4.40
+  toml==0.10.2
+  tomli==2.0.1
+  tomlkit==0.11.1
+  urllib3==1.26.11
+  virtualenv==20.14.0
+  virtualenv-clone==0.5.7
+  Werkzeug==2.2.0
+  wrapt==1.14.1

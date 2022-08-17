@@ -1,12 +1,14 @@
 import React from 'react';
 import { Input, Form, Button } from 'antd';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import useToken from '../../utils/useToken';
 
 export const Login = () => {
   const { setToken } = useToken();
+  let navigate = useNavigate();
+
   const onFinish = async (values) => {
     console.log(values);
     try {
@@ -16,6 +18,7 @@ export const Login = () => {
       });
       setToken(res.data.access_token);
       console.log(res);
+      navigate('/home');
     } catch (error) {
       if (error.response) {
         console.log(error.response);

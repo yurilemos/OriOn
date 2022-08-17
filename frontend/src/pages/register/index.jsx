@@ -2,10 +2,11 @@ import React from 'react';
 import { Input, Form, Button } from 'antd';
 import axios from 'axios';
 import { toast } from 'react-toastify';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 export const Registro = () => {
   const [form] = Form.useForm();
+  let navigate = useNavigate();
 
   const onFinish = async (values) => {
     console.log(values);
@@ -16,6 +17,7 @@ export const Registro = () => {
         nome: values.nome,
       });
       console.log(res);
+      navigate('/home');
     } catch (error) {
       console.log(error);
       toast.error(error.message);
