@@ -54,7 +54,10 @@ export const AuthProvider = ({ children }) => {
   const logout = async () => {
     try {
       await axios.post(`${API_URL}/sair`);
-      removeToken();
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+      setToken(null);
+      setCurrentUser({});
     } catch (error) {
       if (error.response) {
         console.log(error.response);
