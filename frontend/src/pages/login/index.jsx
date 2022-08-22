@@ -1,45 +1,21 @@
 import React from 'react';
 import { Input, Form, Button, message } from 'antd';
 import { Link, useNavigate } from 'react-router-dom';
-import axios from 'axios';
-import useToken from '../../utils/useToken';
+import AuthContext from '../../utils/auth';
+import { useContext } from 'react';
 
 export const Login = () => {
-  const { saveToken } = useToken();
   let navigate = useNavigate();
+  const context = useContext(AuthContext);
 
   const onFinish = async (values) => {
     message.loading('Analizando os dados');
-    try {
-      const res = await axios.post(`${API_URL}/login`, {
-        login: values.login,
-        senha: values.senha,
-      });
-
-      if (res.data.access_token) {
-        saveToken(res.data.access_token);
-        navigate('/home');
-        message.destroy();
-      } else {
-        message.destroy();
-        message.error('Usuário ou senha inválido');
-      }
-    } catch (error) {
-      message.destroy();
-      if (error.response) {
-        message.destroy();
-        console.log(error.response);
-        console.log(error.response.status);
-        console.log(error.response.headers);
-        message.error(error.response);
-      }
-    }
+    await context.login({ login: values.login, senha: values.senha });
+    navigate('/home');
   };
   const onFinishFailed = (error) => {
     console.log(error);
   };
-
-  const API_URL = process.env.REACT_APP_API_URL || 'http://127.0.0.1:5050';
 
   return (
     <div style={{ padding: '8rem 0' }}>

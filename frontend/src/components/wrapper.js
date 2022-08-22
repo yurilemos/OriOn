@@ -1,11 +1,11 @@
 import React, { useEffect } from 'react';
-import useToken from '../utils/useToken';
 import { useNavigate } from 'react-router-dom';
 import Layout from './layout';
+import { useContext } from 'react';
+import AuthContext from '../utils/auth';
 
 const Wrapper = ({ children }) => {
-  const { token } = useToken();
-  console.log(token);
+  const { token } = useContext(AuthContext);
   let navigate = useNavigate();
 
   useEffect(() => {

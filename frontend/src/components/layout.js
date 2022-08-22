@@ -1,7 +1,8 @@
 import React from 'react';
 import { Breadcrumb, Layout as LayoutAntd, Menu, Button } from 'antd';
-import useToken from '../utils/useToken';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { useContext } from 'react';
+import AuthContext from '../utils/auth';
 
 const { Header, Content, Sider } = LayoutAntd;
 
@@ -54,7 +55,7 @@ const items = [
 ];
 
 const Layout = ({ children }) => {
-  const { logout } = useToken();
+  const { logout } = useContext(AuthContext);
   let navigate = useNavigate();
   const location = useLocation();
 

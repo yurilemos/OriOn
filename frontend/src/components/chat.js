@@ -1,7 +1,8 @@
 import { Avatar, Button, Comment, Form, Input, List } from 'antd';
 import moment from 'moment';
 import React, { useState } from 'react';
-import useAuth from '../utils/useToken';
+import { useContext } from 'react';
+import AuthContext from '../utils/auth';
 const { TextArea } = Input;
 
 const CommentList = ({ comments }) => (
@@ -35,8 +36,7 @@ const Chat = () => {
   const [comments, setComments] = useState([]);
   const [submitting, setSubmitting] = useState(false);
   const [value, setValue] = useState('');
-  const { user } = useAuth();
-  console.log(user);
+  const { currentUser } = useContext(AuthContext);
 
   const handleSubmit = () => {
     if (!value) return;
@@ -47,7 +47,7 @@ const Chat = () => {
       setComments([
         ...comments,
         {
-          author: 'Han Solo',
+          author: currentUser.name,
           avatar: 'https://joeschmoe.io/api/v1/random',
           content: <p>{value}</p>,
           datetime: moment().fromNow(),

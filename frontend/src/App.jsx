@@ -4,6 +4,7 @@ import { QueryClient, QueryClientProvider } from 'react-query';
 import 'antd/dist/antd.min.css';
 import './styles/global.css';
 import { Router } from './router';
+import { AuthProvider } from './utils/auth';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -15,12 +16,12 @@ const queryClient = new QueryClient({
 
 const App = () => {
   return (
-    <>
+    <AuthProvider>
       <QueryClientProvider client={queryClient}>
         <ToastContainer />
         <Router />
       </QueryClientProvider>
-    </>
+    </AuthProvider>
   );
 };
 

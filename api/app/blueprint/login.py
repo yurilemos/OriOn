@@ -31,7 +31,15 @@ def login_user(login, senha):
     db.session.commit()
     access_token = create_access_token(identity=login)
     
-    return jsonify({"access_token": access_token})
+    return jsonify({
+        "access_token": access_token, 
+        "user": {
+            "userId": usuario.id, 
+            "name": usuario.nome_usuario, 
+            "email": usuario.email_usuario, 
+            "profile": usuario.perfil_usuario
+        }
+    })
 
 
 def logout_user():

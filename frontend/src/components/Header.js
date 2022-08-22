@@ -1,10 +1,11 @@
 import React from 'react';
 import { PageHeader, Button } from 'antd';
-import useToken from '../utils/useToken';
 import { useNavigate } from 'react-router-dom';
+import { useContext } from 'react';
+import AuthContext from '../utils/auth';
 
 const Header = () => {
-  const { logout } = useToken();
+  const { logout } = useContext(AuthContext);
   let navigate = useNavigate();
   return (
     <PageHeader
