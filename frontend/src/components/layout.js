@@ -61,6 +61,8 @@ const Layout = ({ children }) => {
 
   const handlePageName = {
     '/home': 'Grupo de Discussão',
+    '/discussao': 'Discussão',
+    '/assunto': 'Assunto',
   };
 
   return (

@@ -1,6 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import CardContent from '../../components/cardContent';
+import Search from '../../components/search';
 
 const mockAssunto = [
   {
@@ -56,20 +57,28 @@ export const Discussao = () => {
     navigate('/assunto');
   };
   return (
-    <div style={{ gap: '2rem', display: 'flex', flexWrap: 'wrap' }}>
-      {mockAssunto.map((assunto) => (
-        <div
-          style={{ minWidth: '300px', width: '100%', maxWidth: '550px' }}
-          key={assunto.id}
-        >
-          <CardContent
-            title={assunto.titulo}
-            description={assunto.descricao}
-            creation={assunto.data_criacao_descricao}
-            onClick={() => handleDiscussaoClick()}
-          />
-        </div>
-      ))}
-    </div>
+    <>
+      <Search
+        onSearch={(e) => {
+          console.log(e);
+        }}
+        style={{ marginBottom: '1rem' }}
+      />
+      <div style={{ gap: '2rem', display: 'flex', flexWrap: 'wrap' }}>
+        {mockAssunto.map((assunto) => (
+          <div
+            style={{ minWidth: '300px', width: '100%', maxWidth: '550px' }}
+            key={assunto.id}
+          >
+            <CardContent
+              title={assunto.titulo}
+              description={assunto.descricao}
+              creation={assunto.data_criacao_descricao}
+              onClick={() => handleDiscussaoClick()}
+            />
+          </div>
+        ))}
+      </div>
+    </>
   );
 };

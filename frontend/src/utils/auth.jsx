@@ -46,11 +46,6 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  function removeToken() {
-    localStorage.removeItem('token');
-    setToken(null);
-  }
-
   const logout = async () => {
     try {
       await axios.post(`${API_URL}/sair`);

@@ -1,6 +1,7 @@
 import React from 'react';
 import CardContent from '../../components/cardContent';
 import { useNavigate } from 'react-router-dom';
+import Search from '../../components/search';
 
 const mockGrupoDiscussão = [
   {
@@ -110,34 +111,46 @@ export const Home = () => {
     navigate('/discussao');
   };
   return (
-    <div style={{ gap: '2rem', display: 'flex', flexWrap: 'wrap' }}>
-      {mockGrupoDiscussão.map((grupo) => (
-        <div
-          style={{ minWidth: '300px', width: '100%', maxWidth: '550px' }}
-          key={grupo.id}
-        >
-          <CardContent
-            title={grupo.nome_grupo}
-            description={grupo.descricao_grupo}
-            visibility={grupo.visibilidade_grupo}
-            creation={grupo.data_criacao_grupo}
+    <>
+      <Search
+        onSearch={(e) => {
+          console.log(e);
+        }}
+        style={{ marginBottom: '1rem' }}
+      />
+      <div style={{ gap: '2rem', display: 'flex', flexWrap: 'wrap' }}>
+        {mockGrupoDiscussão.map((grupo) => (
+          <div
+            style={{ minWidth: '300px', width: '100%', maxWidth: '550px' }}
+            key={grupo.id}
           >
-            <div
-              style={{ gap: '2rem', display: 'flex', flexDirection: 'column' }}
+            <CardContent
+              title={grupo.nome_grupo}
+              description={grupo.descricao_grupo}
+              visibility={grupo.visibilidade_grupo}
+              creation={grupo.data_criacao_grupo}
             >
-              {grupo.discussoes.map((discussao) => (
-                <CardContent
-                  title={discussao.titulo}
-                  description={discussao.descricao}
-                  creation={discussao.data_criacao_descricao}
-                  key={discussao.id}
-                  onClick={() => handleDiscussaoClick()}
-                />
-              ))}
-            </div>
-          </CardContent>
-        </div>
-      ))}
-    </div>
+              <div
+                style={{
+                  gap: '2rem',
+                  display: 'flex',
+                  flexDirection: 'column',
+                }}
+              >
+                {grupo.discussoes.map((discussao) => (
+                  <CardContent
+                    title={discussao.titulo}
+                    description={discussao.descricao}
+                    creation={discussao.data_criacao_descricao}
+                    key={discussao.id}
+                    onClick={() => handleDiscussaoClick()}
+                  />
+                ))}
+              </div>
+            </CardContent>
+          </div>
+        ))}
+      </div>
+    </>
   );
 };
