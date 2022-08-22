@@ -5,8 +5,8 @@ import Layout from './layout';
 
 const Wrapper = ({ children }) => {
   const { token } = useToken();
-  let navigate = useNavigate();
   console.log(token);
+  let navigate = useNavigate();
 
   useEffect(() => {
     if (!token || token === '' || token === undefined) {

@@ -1,12 +1,7 @@
 import { useState } from 'react';
 import { API_URL } from '../utils/api';
 import axios from 'axios';
-import { toast } from 'react-toastify';
-import { useNavigate } from 'react-router-dom';
-
-const onFinishFailed = (error) => {
-  console.log(error);
-};
+import { message } from 'antd';
 
 function useToken() {
   function getToken() {
@@ -36,13 +31,13 @@ function useToken() {
         console.log(error.response);
         console.log(error.response.status);
         console.log(error.response.headers);
-        toast.error(error.response);
+        message.error(error.response);
       }
     }
   };
 
   return {
-    setToken: saveToken,
+    saveToken,
     token,
     logout,
   };

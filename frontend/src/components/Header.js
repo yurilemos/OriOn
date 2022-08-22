@@ -10,7 +10,6 @@ const Header = () => {
     <PageHeader
       className="site-page-header"
       style={{ background: '#0077B6', border: '#0077B6', color: 'white' }}
-      onBack={() => null}
       title="Title"
       subTitle="This is a subtitle"
       extra={[

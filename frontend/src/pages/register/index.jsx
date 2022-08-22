@@ -1,7 +1,6 @@
 import React from 'react';
-import { Input, Form, Button } from 'antd';
+import { Input, Form, Button, message } from 'antd';
 import axios from 'axios';
-import { toast } from 'react-toastify';
 import { Link, useNavigate } from 'react-router-dom';
 
 export const Registro = () => {
@@ -9,18 +8,20 @@ export const Registro = () => {
   let navigate = useNavigate();
 
   const onFinish = async (values) => {
-    console.log(values);
+    message.loading('Analizando os dados');
     try {
-      const res = await axios.post(`${API_URL}/register`, {
+      await axios.post(`${API_URL}/register`, {
         login: values.login,
         senha: values.senha,
         nome: values.nome,
       });
-      console.log(res);
+
+      message.destroy();
       navigate('/home');
     } catch (error) {
+      message.destroy();
       console.log(error);
-      toast.error(error.message);
+      message.error(error.message);
     }
   };
 

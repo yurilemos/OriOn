@@ -1,12 +1,7 @@
 import React from 'react';
-import {
-  LaptopOutlined,
-  NotificationOutlined,
-  UserOutlined,
-} from '@ant-design/icons';
 import { Breadcrumb, Layout as LayoutAntd, Menu, Button } from 'antd';
 import useToken from '../utils/useToken';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 const { Header, Content, Sider } = LayoutAntd;
 
@@ -61,20 +56,21 @@ const items = [
 const Layout = ({ children }) => {
   const { logout } = useToken();
   let navigate = useNavigate();
+  const location = useLocation();
+
+  const handlePageName = {
+    '/home': 'Grupo de Discussão',
+  };
 
   return (
-    <LayoutAntd style={{ height: '100%' }}>
+    <LayoutAntd style={{ height: '100%', width: '100%', overflow: 'scroll' }}>
       <Header
         className="site-page-header"
         style={{
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
-          background: '#0077B6',
-          border: '#0077B6',
-          color: 'white',
         }}
-        onBack={() => null}
       >
         <h1 style={{ color: 'white' }}>OriOn</h1>
         <Button
@@ -94,8 +90,6 @@ const Layout = ({ children }) => {
             defaultOpenKeys={['sub1']}
             style={{
               height: '100%',
-              background: '#0077B6',
-              color: 'white',
             }}
             items={items}
           />
@@ -110,7 +104,11 @@ const Layout = ({ children }) => {
               margin: '16px 0',
             }}
           >
-            <Breadcrumb.Item>Home</Breadcrumb.Item>
+            <Breadcrumb.Item>
+              <h1 style={{ fontSize: '20px' }}>
+                {handlePageName[location.pathname]}
+              </h1>
+            </Breadcrumb.Item>
           </Breadcrumb>
           <Content
             className="site-layout-background"
@@ -118,6 +116,7 @@ const Layout = ({ children }) => {
               padding: 24,
               margin: 0,
               minHeight: 280,
+              overflow: 'scroll',
             }}
           >
             {children}

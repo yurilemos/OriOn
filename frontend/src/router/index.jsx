@@ -5,6 +5,8 @@ import { Registro } from '../pages/register/index';
 import { Login } from '../pages/login/index';
 import { Home } from '../pages/home/index';
 import Wrapper from '../components/wrapper.js';
+import { Discussao } from '../pages/discussao';
+import { Assunto } from '../pages/assunto';
 
 export const Router = () => {
   return (
@@ -19,6 +21,24 @@ export const Router = () => {
           element={
             <Wrapper>
               <Home />
+            </Wrapper>
+          }
+        />
+        <Route
+          path="/discussao"
+          exact
+          element={
+            <Wrapper>
+              <Discussao />
+            </Wrapper>
+          }
+        />
+        <Route
+          path="/assunto"
+          exact
+          element={
+            <Wrapper>
+              <Assunto />
             </Wrapper>
           }
         />

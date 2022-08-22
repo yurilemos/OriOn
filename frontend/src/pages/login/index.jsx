@@ -1,30 +1,37 @@
 import React from 'react';
-import { Input, Form, Button } from 'antd';
+import { Input, Form, Button, message } from 'antd';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { toast } from 'react-toastify';
 import useToken from '../../utils/useToken';
 
 export const Login = () => {
-  const { setToken } = useToken();
+  const { saveToken } = useToken();
   let navigate = useNavigate();
 
   const onFinish = async (values) => {
-    console.log(values);
+    message.loading('Analizando os dados');
     try {
       const res = await axios.post(`${API_URL}/login`, {
         login: values.login,
         senha: values.senha,
       });
-      setToken(res.data.access_token);
-      console.log(res);
-      navigate('/home');
+
+      if (res.data.access_token) {
+        saveToken(res.data.access_token);
+        navigate('/home');
+        message.destroy();
+      } else {
+        message.destroy();
+        message.error('Usuário ou senha inválido');
+      }
     } catch (error) {
+      message.destroy();
       if (error.response) {
+        message.destroy();
         console.log(error.response);
         console.log(error.response.status);
         console.log(error.response.headers);
-        toast.error(error.response);
+        message.error(error.response);
       }
     }
   };
