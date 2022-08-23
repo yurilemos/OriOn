@@ -3,6 +3,7 @@ import { Breadcrumb, Layout as LayoutAntd, Menu, Button } from 'antd';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useContext } from 'react';
 import AuthContext from '../utils/auth';
+import { ArrowLeftOutlined } from '@ant-design/icons';
 
 const { Header, Content, Sider } = LayoutAntd;
 
@@ -68,7 +69,6 @@ const Layout = ({ children }) => {
   return (
     <LayoutAntd style={{ height: '100%', width: '100%', overflow: 'scroll' }}>
       <Header
-        className="site-page-header"
         style={{
           display: 'flex',
           alignItems: 'center',
@@ -108,9 +108,26 @@ const Layout = ({ children }) => {
             }}
           >
             <Breadcrumb.Item>
-              <h1 style={{ fontSize: '20px' }}>
-                {handlePageName[location.pathname]}
-              </h1>
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '2rem',
+                  cursor: 'pointer',
+                }}
+              >
+                {location.pathname !== '/home' && (
+                  <ArrowLeftOutlined
+                    style={{ fontSize: '30px' }}
+                    onClick={() => {
+                      navigate(-1);
+                    }}
+                  />
+                )}
+                <h1 style={{ fontSize: '20px', marginBottom: '0px' }}>
+                  {handlePageName[location.pathname]}
+                </h1>
+              </div>
             </Breadcrumb.Item>
           </Breadcrumb>
           <Content

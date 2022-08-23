@@ -1,8 +1,25 @@
 import React from 'react';
 import { Button as AntdButton } from 'antd';
 
-const Button = ({ onClick, style }) => {
-  return <AntdButton onClick={onClick} style={{ width: 400, ...style }} />;
+const Button = ({
+  children,
+  onClick,
+  style,
+  variant = 'outlined',
+  htmlType,
+  type,
+}) => {
+  return (
+    <AntdButton
+      onClick={onClick}
+      variant={variant}
+      style={{ width: 250, ...style }}
+      htmlType={htmlType}
+      type={type}
+    >
+      {children}
+    </AntdButton>
+  );
 };
 
 export default Button;
