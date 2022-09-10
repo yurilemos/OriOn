@@ -1,74 +1,88 @@
-import { Form, Input } from 'antd';
+import { message } from 'antd';
 import React from 'react';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Button from '../../components/button';
 import CardContent from '../../components/cardContent';
-import Modal from '../../components/modal';
+import AssuntoModal from './modals/assunto';
 import Search from '../../components/search';
-
-const mockAssunto = [
-  {
-    id: '1',
-    titulo: 'Assunto 1',
-    descricao: 'Esse é o assunto da discussão 1',
-    data_criacao_descricao: '12/08/2022',
-    data_ult_atualizacao: '21/08/2022',
-    discussao_id: '1',
-    usuario_id: '2',
-  },
-  {
-    id: '3',
-    titulo: 'Assunto 1',
-    descricao: 'Esse é o assunto da discussão 2',
-    data_criacao_descricao: '12/08/2022',
-    data_ult_atualizacao: '21/08/2022',
-    discussao_id: '1',
-    usuario_id: '2',
-  },
-  {
-    id: '4',
-    titulo: 'Assunto 3',
-    descricao: 'Esse é o assunto da discussão 3',
-    data_criacao_descricao: '12/08/2022',
-    data_ult_atualizacao: '21/08/2022',
-    discussao_id: '1',
-    usuario_id: '2',
-  },
-  {
-    id: '5',
-    titulo: 'Assunto 4',
-    descricao: 'Esse é o assunto da discussão 4',
-    data_criacao_descricao: '12/08/2022',
-    data_ult_atualizacao: '21/08/2022',
-    discussao_id: '1',
-    usuario_id: '2',
-  },
-  {
-    id: '6',
-    titulo: 'Assunto 5',
-    descricao: 'Esse é o assunto da discussão 5',
-    data_criacao_descricao: '12/08/2022',
-    data_ult_atualizacao: '21/08/2022',
-    discussao_id: '1',
-    usuario_id: '2',
-  },
-];
+import { useParams } from 'react-router-dom';
+import { useEffect } from 'react';
+import { API_URL } from '../../utils/api';
+import axios from 'axios';
+import { useContext } from 'react';
+import AuthContext from '../../utils/auth';
 
 export const Discussao = () => {
   const navigate = useNavigate();
-  const handleDiscussaoClick = () => {
-    navigate('/assunto');
+  const { discussionId } = useParams();
+  const [discussion, setDiscussion] = useState({});
+  const { currentUser } = useContext(AuthContext);
+
+  const handleDiscussaoClick = (id) => {
+    navigate(`/assunto/${id}`);
   };
+
+  const handleGetDiscussion = async () => {
+    message.loading('Analizando os dados');
+
+    try {
+      const res = await axios.get(`${API_URL}/discussao?id=${discussionId}`);
+
+      setDiscussion(res.data);
+      message.destroy();
+    } catch (e) {
+      console.log(e);
+      message.destroy();
+      message.error(e.response.data);
+    }
+  };
+
+  const handleCreateTopic = async (values) => {
+    message.loading('Analizando os dados');
+
+    try {
+      await axios.post(`${API_URL}/assunto`, {
+        ...values,
+        usuario_id: currentUser.userId,
+        discussao_id: discussionId,
+      });
+      message.destroy();
+      handleGetDiscussion();
+    } catch (e) {
+      message.destroy();
+      message.error(e.response.data);
+    }
+  };
+
+  useEffect(() => {
+    const handleGetDiscussionEffect = async () => {
+      message.loading('Analizando os dados');
+
+      try {
+        const res = await axios.get(`${API_URL}/discussao?id=${discussionId}`);
+
+        setDiscussion(res.data);
+        message.destroy();
+      } catch (e) {
+        console.log(e);
+        message.destroy();
+        message.error(e.response.data);
+      }
+    };
+    handleGetDiscussionEffect();
+  }, [discussionId]);
+
   const [addModal, setAddModal] = useState(false);
-  const [form] = Form.useForm();
+
   return (
     <>
+      <h1 style={{ fontSize: '20px' }}>{discussion.titulo}</h1>
       <div
         style={{
           display: 'flex',
           gap: '3rem',
-          marginBottom: '1rem',
+          margin: '1rem 0',
           alignItems: 'center',
         }}
       >
@@ -77,7 +91,7 @@ export const Discussao = () => {
             setAddModal(true);
           }}
         >
-          Adicionar uma nova discussão
+          Adicionar um novo assunto
         </Button>
         <Search
           onSearch={(e) => {
@@ -86,72 +100,30 @@ export const Discussao = () => {
         />
       </div>
       <div style={{ gap: '2rem', display: 'flex', flexWrap: 'wrap' }}>
-        {mockAssunto.map((assunto) => (
+        {discussion?.assuntos?.map((assunto) => (
           <div
             style={{ minWidth: '300px', width: '100%', maxWidth: '550px' }}
             key={assunto.id}
           >
             <CardContent
-              title={assunto.titulo}
+              title={assunto.nome}
               description={assunto.descricao}
-              creation={assunto.data_criacao_descricao}
-              onClick={() => handleDiscussaoClick()}
+              creation={assunto.data_criacao}
+              onClick={() => handleDiscussaoClick(assunto.id)}
             />
           </div>
         ))}
       </div>
-      <Modal
-        visible={addModal}
-        onCancel={() => {
+      <AssuntoModal
+        onClose={() => {
           setAddModal(false);
         }}
-        onOk={() => {
+        open={addModal}
+        onFinish={(e) => {
+          handleCreateTopic(e);
           setAddModal(false);
-          console.log(form.getFieldValue('titulo'));
-          console.log(form.getFieldValue('descricao'));
         }}
-        title="Criar uma nova discussão"
-      >
-        <Form
-          name="basic"
-          form={form}
-          initialValues={{
-            remember: true,
-          }}
-          onFinish={(e) => {
-            console.log(e);
-          }}
-          onFinishFailed={(e) => {
-            console.log(e);
-          }}
-          autoComplete="off"
-        >
-          <Form.Item
-            label="Titulo"
-            name="titulo"
-            rules={[
-              {
-                required: true,
-                message: 'O titulo é obrigatório!',
-              },
-            ]}
-          >
-            <Input style={{ width: '100%' }} />
-          </Form.Item>
-
-          <Form.Item
-            label="Descrição"
-            name="descricao"
-            style={{ margin: '2rem 0' }}
-          >
-            <Input.TextArea
-              rows={4}
-              autoSize={true}
-              style={{ width: '100%' }}
-            />
-          </Form.Item>
-        </Form>
-      </Modal>
+      />
     </>
   );
 };

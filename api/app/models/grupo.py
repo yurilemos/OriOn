@@ -18,4 +18,4 @@ class Grupo(db.Model):
     usuario_id = db.Column(db.Integer, db.ForeignKey("usuario.id"), nullable=True)
 
     def __repr__(self):
-        return "<Grupo %r>" % self.name
+        return "<Grupo %r>" % self.nome_grupo

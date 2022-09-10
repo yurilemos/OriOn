@@ -14,7 +14,7 @@ class Discussao(db.Model):
         default=datetime.datetime.utcnow
     )
     grupo_id = db.Column(db.Integer, db.ForeignKey("grupo.id"), nullable=True)
-    usuario_id = db.Column(db.Integer, db.ForeignKey("grupo.id"), nullable=True)
+    usuario_id = db.Column(db.Integer, db.ForeignKey("usuario.id"), nullable=True)
 
     def __repr__(self):
         return "<Discussão %r>" % self.name

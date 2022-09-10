@@ -21,7 +21,7 @@ export const Registro = () => {
     } catch (error) {
       message.destroy();
       console.log(error);
-      message.error(error.message);
+      message.error(error.message.data);
     }
   };
 

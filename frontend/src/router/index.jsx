@@ -25,7 +25,7 @@ export const Router = () => {
           }
         />
         <Route
-          path="/discussao"
+          path="/discussao/:discussionId"
           exact
           element={
             <Wrapper>
@@ -34,7 +34,7 @@ export const Router = () => {
           }
         />
         <Route
-          path="/assunto"
+          path="/assunto/:assuntoId"
           exact
           element={
             <Wrapper>

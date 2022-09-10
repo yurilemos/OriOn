@@ -1,4 +1,6 @@
 import React from 'react';
+import Button from './button';
+import { PlusOutlined } from '@ant-design/icons';
 
 const CardContent = ({
   title,
@@ -7,6 +9,7 @@ const CardContent = ({
   visibility,
   creation,
   onClick,
+  onCreate,
 }) => {
   return (
     <div
@@ -23,8 +26,23 @@ const CardContent = ({
       }}
       onClick={onClick ? onClick : () => {}}
     >
-      <div style={{ borderBottom: '1px solid #d4d4d4', padding: '1rem' }}>
+      <div
+        style={{
+          borderBottom: '1px solid #d4d4d4',
+          padding: '1rem',
+          display: 'flex',
+          justifyContent: 'space-between',
+        }}
+      >
         {title}
+        {onCreate && (
+          <Button
+            variant="primary"
+            icon={<PlusOutlined />}
+            style={{ width: '50px' }}
+            onClick={onCreate}
+          />
+        )}
       </div>
       {description && (
         <div

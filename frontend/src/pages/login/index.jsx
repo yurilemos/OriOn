@@ -12,9 +12,12 @@ export const Login = () => {
     message.loading('Analizando os dados');
     await context.login({ login: values.login, senha: values.senha });
     navigate('/home');
+    message.destroy();
   };
   const onFinishFailed = (error) => {
     console.log(error);
+    message.destroy();
+    message.error(error.response.data);
   };
 
   return (

@@ -1,15 +1,13 @@
-from crypt import methods
-from datetime import datetime
+
 import os
 from flask_sqlalchemy import SQLAlchemy
-import requests
-from flask import Flask, request, jsonify
+from flask import Flask
 from dotenv import load_dotenv
 from flask_cors import CORS
 from flask_migrate import Migrate
 from flask_marshmallow import Marshmallow
 from config import Config
-from flask_jwt_extended import create_access_token, get_jwt,get_jwt_identity, unset_jwt_cookies, jwt_required, JWTManager
+from flask_jwt_extended import JWTManager
 
 
 load_dotenv(dotenv_path="./.env.local")
@@ -27,7 +25,6 @@ jwt = JWTManager(app)
 
 db = SQLAlchemy(app)
 ma.init_app(app)
-
 
 
 # pylint:disable=wrong-import-position

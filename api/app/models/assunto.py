@@ -15,7 +15,7 @@ class Assunto(db.Model):
     )
     data_ult_atualizacao = db.Column(db.DateTime, nullable=True)
     discussao_id = db.Column(db.Integer, db.ForeignKey("discussao.id"), nullable=True)
-    usuario_id = db.Column(db.Integer, db.ForeignKey("grupo.id"), nullable=True)
+    usuario_id = db.Column(db.Integer, db.ForeignKey("usuario.id"), nullable=True)
 
     def __repr__(self):
         return "<Assunto %r>" % self.name

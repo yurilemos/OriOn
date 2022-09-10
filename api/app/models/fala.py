@@ -2,7 +2,6 @@ from app import db
 import datetime
 
 
-
 class Fala(db.Model):
     __tablename__ = "fala"
 

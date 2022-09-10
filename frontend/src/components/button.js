@@ -8,6 +8,7 @@ const Button = ({
   variant = 'outlined',
   htmlType,
   type,
+  icon,
 }) => {
   return (
     <AntdButton
@@ -16,6 +17,7 @@ const Button = ({
       style={{ width: 250, ...style }}
       htmlType={htmlType}
       type={type}
+      icon={icon}
     >
       {children}
     </AntdButton>

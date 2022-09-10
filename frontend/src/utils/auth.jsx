@@ -58,7 +58,7 @@ export const AuthProvider = ({ children }) => {
         console.log(error.response);
         console.log(error.response.status);
         console.log(error.response.headers);
-        message.error(error.response);
+        message.error(error.response.data);
       }
     }
   };
