@@ -11,7 +11,7 @@ class Grupo(db.Model):
     data_criacao_grupo = db.Column(
         db.DateTime,
         nullable=False,
-        default=datetime.datetime.utcnow
+        default=datetime.datetime.now
     )
     visibilidade_grupo = db.Column(db.SmallInteger, unique=False, nullable=True)
     status_grupo = db.Column(db.SmallInteger, unique=False, nullable=True)

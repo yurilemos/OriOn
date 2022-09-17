@@ -12,6 +12,8 @@ import AuthContext from '../../utils/auth';
 import { useEffect } from 'react';
 import GrupoDiscussaoModal from './modals/grupoDiscussao';
 import DiscussaoModal from './modals/discussao';
+import DeleteModal from '../../components/modals/deleteModal';
+import ShelveModal from '../../components/modals/shelveModal';
 
 export const Home = () => {
   const navigate = useNavigate();
@@ -95,7 +97,10 @@ export const Home = () => {
   }, [currentUser]);
 
   const [addGroupModal, setAddGroupModal] = useState(false);
+  const [deleteGroupModal, setDeleteGroupModal] = useState(false);
+  const [shelveGroupModal, setShelveGroupModal] = useState(false);
   const [addDiscussionModal, setAddDiscussionModal] = useState(false);
+
   return (
     <>
       <div
@@ -132,6 +137,14 @@ export const Home = () => {
               creation={grupo.data_criacao}
               onCreate={() => {
                 setAddDiscussionModal(true);
+                setGroupId(grupo.id);
+              }}
+              onDelete={() => {
+                setDeleteGroupModal(true);
+                setGroupId(grupo.id);
+              }}
+              onShelve={() => {
+                setShelveGroupModal(true);
                 setGroupId(grupo.id);
               }}
             >
@@ -175,6 +188,31 @@ export const Home = () => {
           handleCreateDiscussion(e);
           setAddDiscussionModal(false);
         }}
+      />
+      <DeleteModal
+        onClose={() => {
+          setDeleteGroupModal(false);
+        }}
+        open={deleteGroupModal}
+        onFinish={(e) => {
+          setDeleteGroupModal(false);
+        }}
+        title="Deletar o grupo de discussão"
+        subtitle="Tem certeza que deseja excluir esse grupo de discussão?"
+        description="Ao apaga-lo todos os temas relacionados a ele também serão excluidos"
+      />
+      <ShelveModal
+        onClose={() => {
+          setShelveGroupModal(false);
+        }}
+        open={shelveGroupModal}
+        onFinish={(e) => {
+          setShelveGroupModal(false);
+        }}
+        title="Arquivar o grupo de discussão"
+        subtitle="Tem certeza que deseja arquivar esse grupo de discussão?"
+        description="Ao arquivá-lo todos os temas relacionados a ele também serão
+          arquivados, você ainda poderá ter acesso e desarquivá-lo quando quiser"
       />
     </>
   );

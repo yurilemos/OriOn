@@ -10,7 +10,7 @@ class Fala(db.Model):
     data_criacao_fala = db.Column(
         db.DateTime,
         nullable=False,
-        default=datetime.datetime.utcnow
+        default=datetime.datetime.now
     )
     data_ult_atualizacao_fala = db.Column(db.DateTime, nullable=True)
     imagem_virtual = db.Column(db.String(256), nullable=True)
@@ -22,7 +22,9 @@ class Fala(db.Model):
     url = db.Column(db.String(256), nullable=True)
     assunto_id = db.Column(db.Integer, db.ForeignKey("assunto.id"), nullable=False)
     usuario_id = db.Column(db.Integer, db.ForeignKey("usuario.id"), nullable=False)
+    nome_usuario = db.Column(db.String(40), nullable=True) 
     relacao_id = db.Column(db.Integer, db.ForeignKey("relacao.id"), nullable=True)
+    fala_mae_id = db.Column(db.Integer, db.ForeignKey("fala.id"), nullable=True)
 
     def __repr__(self):
         return "<Fala %r>" % self.name

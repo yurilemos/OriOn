@@ -24,7 +24,7 @@ def login_user(login, senha):
         return jsonify({"usuário": None})
     
     usuario.data_pen_visita_usuario = usuario.data_ult_visita_usuario
-    usuario.data_ult_visita_usuario = datetime.utcnow()
+    usuario.data_ult_visita_usuario = datetime.now()
     
     # Update user to the database
     db.session.add(usuario)

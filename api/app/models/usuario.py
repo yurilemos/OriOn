@@ -14,7 +14,7 @@ class Usuario(db.Model):
     data_ult_visita_usuario = db.Column(
         db.DateTime,
         nullable=False,
-        default=datetime.datetime.utcnow
+        default=datetime.datetime.now
     )
     data_pen_visita_usuario = db.Column(db.DateTime, nullable=True)
     tags_usuario = db.Column(db.Text(), nullable=True)

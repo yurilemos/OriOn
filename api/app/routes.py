@@ -7,6 +7,7 @@ from app.blueprint.login import login_user, register_user, logout_user
 from app.blueprint.grupo import get_group, create_group
 from app.blueprint.discussao import get_discussao, create_discussion
 from app.blueprint.assunto import get_assunto, create_assunto
+from app.blueprint.fala import get_fala, create_fala
 from flask_jwt_extended import create_access_token, get_jwt,get_jwt_identity, jwt_required
 
 
@@ -147,7 +148,7 @@ def assunto():
             return result
         except ValueError as e:
             print(e)   
-            return jsonify({"message": "Erro no servidor ao buscar a discussão"}), 400
+            return jsonify({"message": "Erro no servidor ao buscar o assunto"}), 400
     if request.method == "POST":
         # save image in the database
         content = request.json        
@@ -161,7 +162,33 @@ def assunto():
             return result
         except ValueError as e:
             print(e)     
-            return jsonify({"message": "Erro no servidor ao criar a discussão"}), 400
+            return jsonify({"message": "Erro no servidor ao criar o assunto"}), 400
     
+    
+@app.route("/fala", methods=["POST", "GET"])
+def fala():
+    if request.method == "GET":
+        # read images from the database
+        id = request.args.get("id")
+        try:
+            result = get_fala(id)
+            return result
+        except ValueError as e:
+            print(e)   
+            return jsonify({"message": "Erro no servidor ao buscar a fala"}), 400
+    if request.method == "POST":
+        # save image in the database
+        content = request.json        
+        conteudo = content.get("conteudo", None)
+        assunto_id = content.get("assunto_id", None)
+        usuario_id = content.get("usuario_id", None)
+        fala_id = content.get("fala_id", None)        
+        
+        try:
+            result = create_fala(conteudo, assunto_id, usuario_id, fala_id)
+            return result
+        except ValueError as e:
+            print(e)     
+            return jsonify({"message": "Erro no servidor ao criar a discussão"}), 400
 
     

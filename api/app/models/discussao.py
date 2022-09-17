@@ -11,7 +11,7 @@ class Discussao(db.Model):
     data_criacao_descricao = db.Column(
         db.DateTime,
         nullable=False,
-        default=datetime.datetime.utcnow
+        default=datetime.datetime.now
     )
     grupo_id = db.Column(db.Integer, db.ForeignKey("grupo.id"), nullable=True)
     usuario_id = db.Column(db.Integer, db.ForeignKey("usuario.id"), nullable=True)

@@ -11,7 +11,7 @@ class Assunto(db.Model):
     data_criacao_descricao = db.Column(
         db.DateTime,
         nullable=False,
-        default=datetime.datetime.utcnow
+        default=datetime.datetime.now
     )
     data_ult_atualizacao = db.Column(db.DateTime, nullable=True)
     discussao_id = db.Column(db.Integer, db.ForeignKey("discussao.id"), nullable=True)

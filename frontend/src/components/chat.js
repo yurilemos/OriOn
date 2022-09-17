@@ -1,80 +1,169 @@
-import { Avatar, Button, Comment, Form, Input, List } from 'antd';
-import moment from 'moment';
-import React, { useState } from 'react';
+import { Avatar, Comment, List, message } from 'antd';
+import React, { useEffect, useState } from 'react';
 import { useContext } from 'react';
 import AuthContext from '../utils/auth';
-const { TextArea } = Input;
+import 'react-quill/dist/quill.snow.css';
+import { API_URL } from '../utils/api';
+import axios from 'axios';
+import Editor from './editor';
+import DeleteModal from './modals/deleteModal';
 
-const CommentList = ({ comments }) => (
-  <List
-    dataSource={comments}
-    header={`${comments.length} ${comments.length > 1 ? 'replies' : 'reply'}`}
-    itemLayout="horizontal"
-    renderItem={(props) => <Comment {...props} />}
-  />
-);
-
-const Editor = ({ onChange, onSubmit, submitting, value }) => (
-  <>
-    <Form.Item>
-      <TextArea rows={4} onChange={onChange} value={value} />
-    </Form.Item>
-    <Form.Item>
-      <Button
-        htmlType="submit"
-        loading={submitting}
-        onClick={onSubmit}
-        type="primary"
-      >
-        Add Comment
-      </Button>
-    </Form.Item>
-  </>
-);
-
-const Chat = () => {
+const Chat = ({ assuntoId }) => {
   const [comments, setComments] = useState([]);
   const [submitting, setSubmitting] = useState(false);
   const [value, setValue] = useState('');
+  const [falaId, setFalaId] = useState(null);
+  const [deleteModal, setDeleteModal] = useState(false);
   const { currentUser } = useContext(AuthContext);
 
-  const handleSubmit = () => {
-    if (!value) return;
-    setSubmitting(true);
-    setTimeout(() => {
-      setSubmitting(false);
-      setValue('');
-      setComments([
-        ...comments,
-        {
-          author: currentUser.name,
-          avatar: 'https://joeschmoe.io/api/v1/random',
-          content: <p>{value}</p>,
-          datetime: moment().fromNow(),
-        },
-      ]);
-    }, 1000);
+  const RecursiveComponent = ({ comment }) => {
+    const hasChildren =
+      comment.children !== undefined && comment.children.length > 0;
+
+    return (
+      <Comment
+        id={comment.id}
+        author={comment.author}
+        avatar="https://joeschmoe.io/api/v1/random"
+        content={
+          <div dangerouslySetInnerHTML={{ __html: comment.content }}></div>
+        }
+        actions={[
+          <span
+            key={comment.id}
+            onClick={() => {
+              setFalaId(comment.id);
+            }}
+          >
+            Responder
+          </span>,
+          <span
+            key={comment.id}
+            onClick={() => {
+              setFalaId(comment.id);
+              setValue(comment.content);
+            }}
+          >
+            Editar
+          </span>,
+          <span
+            key={comment.id}
+            onClick={() => {
+              setFalaId(comment.id);
+              setDeleteModal(comment.content);
+            }}
+          >
+            Excluir
+          </span>,
+        ]}
+      >
+        {falaId === comment.id && !deleteModal && (
+          <Editor
+            onSubmit={handleSubmit}
+            submitting={submitting}
+            defaultValue={value}
+            onCancel={() => {
+              setFalaId(null);
+              setValue('');
+            }}
+          />
+        )}
+        {hasChildren ? (
+          comment.children.map((children) => (
+            <RecursiveComponent key={children.id} comment={children} />
+          ))
+        ) : (
+          <></>
+        )}
+      </Comment>
+    );
   };
 
-  const handleChange = (e) => {
-    setValue(e.target.value);
+  const CommentList = ({ comments }) => {
+    return (
+      <>
+        {comments.map((comment) => {
+          return <RecursiveComponent key={comment.id} comment={comment} />;
+        })}
+      </>
+    );
   };
+
+  const getFalas = async () => {
+    message.loading('Analizando os dados');
+
+    try {
+      const response = await axios.get(`${API_URL}/fala?id=${assuntoId}`);
+
+      setComments(response.data);
+      message.destroy();
+    } catch (e) {
+      message.destroy();
+      message.error(e.response.data);
+    }
+  };
+
+  const handleSubmit = async (e) => {
+    if (!e) return;
+    setSubmitting(true);
+    await handleCreateTopic({ ...e, fala_id: falaId });
+    setValue('');
+    setSubmitting(false);
+  };
+
+  const handleCreateTopic = async (values) => {
+    message.loading('Analizando os dados');
+
+    try {
+      await axios.post(`${API_URL}/fala`, {
+        ...values,
+        usuario_id: currentUser.userId,
+        assunto_id: assuntoId,
+      });
+      message.destroy();
+      getFalas();
+    } catch (e) {
+      message.destroy();
+      message.error(e.response.data);
+    }
+  };
+
+  useEffect(() => {
+    getFalas();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <>
       {comments.length > 0 && <CommentList comments={comments} />}
-      <Comment
-        avatar={
-          <Avatar src="https://joeschmoe.io/api/v1/random" alt="Han Solo" />
-        }
-        content={
-          <Editor
-            onChange={handleChange}
-            onSubmit={handleSubmit}
-            submitting={submitting}
-            value={value}
-          />
-        }
+      <hr></hr>
+      {!falaId && (
+        <Comment
+          style={{ padding: '1rem' }}
+          avatar={
+            <Avatar src="https://joeschmoe.io/api/v1/random" alt="Han Solo" />
+          }
+          content={
+            <Editor
+              onSubmit={handleSubmit}
+              submitting={submitting}
+              disable={falaId}
+            />
+          }
+        />
+      )}
+      <DeleteModal
+        onClose={() => {
+          setDeleteModal(false);
+          setFalaId(null);
+        }}
+        open={deleteModal}
+        onFinish={(e) => {
+          setDeleteModal(false);
+        }}
+        title="Deletar a fala"
+        subtitle="Tem certeza que deseja excluir essa fala?"
+        description="Ao apaga-la não será possível mais visualizá-la"
       />
     </>
   );

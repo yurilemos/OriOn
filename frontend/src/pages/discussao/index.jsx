@@ -12,6 +12,13 @@ import { API_URL } from '../../utils/api';
 import axios from 'axios';
 import { useContext } from 'react';
 import AuthContext from '../../utils/auth';
+import DeleteModal from '../../components/modals/deleteModal';
+import ShelveModal from '../../components/modals/shelveModal';
+import {
+  PlusOutlined,
+  DeleteOutlined,
+  ContainerOutlined,
+} from '@ant-design/icons';
 
 export const Discussao = () => {
   const navigate = useNavigate();
@@ -74,6 +81,8 @@ export const Discussao = () => {
   }, [discussionId]);
 
   const [addModal, setAddModal] = useState(false);
+  const [deleteModal, setDeleteModal] = useState(false);
+  const [shelveModal, setShelveModal] = useState(false);
 
   return (
     <>
@@ -86,13 +95,40 @@ export const Discussao = () => {
           alignItems: 'center',
         }}
       >
-        <Button
-          onClick={() => {
-            setAddModal(true);
+        <div
+          style={{
+            display: 'flex',
+            gap: '1rem',
+            margin: '1rem 0',
+            alignItems: 'center',
           }}
         >
-          Adicionar um novo assunto
-        </Button>
+          <Button
+            variant="primary"
+            icon={<PlusOutlined />}
+            style={{ width: '50px' }}
+            onClick={(event) => {
+              setAddModal(true);
+            }}
+          />
+          <Button
+            variant="primary"
+            icon={<ContainerOutlined />}
+            style={{ width: '50px' }}
+            onClick={() => {
+              setShelveModal(true);
+            }}
+          />
+
+          <Button
+            variant="primary"
+            icon={<DeleteOutlined />}
+            style={{ width: '50px' }}
+            onClick={() => {
+              setDeleteModal(true);
+            }}
+          />
+        </div>
         <Search
           onSearch={(e) => {
             console.log(e);
@@ -123,6 +159,31 @@ export const Discussao = () => {
           handleCreateTopic(e);
           setAddModal(false);
         }}
+      />
+      <DeleteModal
+        onClose={() => {
+          setDeleteModal(false);
+        }}
+        open={deleteModal}
+        onFinish={(e) => {
+          setDeleteModal(false);
+        }}
+        title="Deletar a discussão"
+        subtitle="Tem certeza que deseja excluir essa discussão?"
+        description="Ao apaga-la todos os temas relacionados a ela (assuntos e falas) também serão excluidos"
+      />
+      <ShelveModal
+        onClose={() => {
+          setShelveModal(false);
+        }}
+        open={shelveModal}
+        onFinish={(e) => {
+          setShelveModal(false);
+        }}
+        title="Arquivar a discussão"
+        subtitle="Tem certeza que deseja arquivar essa discussão?"
+        description="Ao arquivá-la todos os temas relacionados a ela (assuntos e falas) também serão
+          arquivados, você ainda poderá ter acesso e desarquivá-la quando quiser"
       />
     </>
   );
