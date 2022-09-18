@@ -115,7 +115,7 @@ def delete_group(userId, groupId):
         
     participacao = Participacao.query.filter_by(usuario_id=userId, grupo_id=groupId).one()
     
-    if (participacao is None or participacao.nivel_participacao is not 1):
+    if (participacao is None or participacao.nivel_participacao != 1):
         return jsonify({"message": "Usuário não tem permissão de excluir esse grupo"}), 400
     
     grupo = Grupo.query.filter_by(id=groupId).one()

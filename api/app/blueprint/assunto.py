@@ -106,7 +106,7 @@ def delete_assunto(userId, assuntoId):
         
     participacao = Participacao.query.filter_by(usuario_id=userId, grupo_id=grupo.id).one()
     
-    if (participacao is None or participacao.nivel_participacao is not 1):
+    if (participacao is None or participacao.nivel_participacao != 1):
         return jsonify({"message": "Usuário não tem permissão de excluir esse assunto"}), 400
     
     
