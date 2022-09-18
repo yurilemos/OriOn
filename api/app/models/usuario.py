@@ -39,9 +39,15 @@ class Customizacao(db.Model):
     __tablename__ = "customização"
 
     id = db.Column(db.Integer, primary_key=True)
-    usuario_id = db.Column(db.Integer, db.ForeignKey("grupo.id"), nullable=True)
+    usuario_id = db.Column(
+        db.Integer,
+        db.ForeignKey("grupo.id", onupdate="CASCADE", ondelete="CASCADE"),
+        nullable=True,        
+    )
     customizacao_padrao_id = db.Column(
-        db.Integer, db.ForeignKey("customização_padrao.id"), nullable=True
+        db.Integer,
+        db.ForeignKey("customização_padrao.id", onupdate="CASCADE", ondelete="CASCADE"),
+        nullable=True,
     )
     valor = db.Column(db.String(20), nullable=False)
 

@@ -53,7 +53,6 @@ def create_group(titulo, descricao, visibilidade, usuario_id):
 
 def get_group(usuario_id):
   
-    
     if(usuario_id is None):
         print('ENTROUUUUUU')
         return jsonify({"message": "Usuário obrigatório"}), 400
@@ -101,4 +100,27 @@ def get_group(usuario_id):
           })
         
     return jsonify(result)
+ 
+def delete_group(userId, groupId):
   
+    if(userId is None):
+        return jsonify({"message": "Usuário obrigatório"}), 400
+    if(groupId is None):
+        return jsonify({"message": "Grupo obrigatório"}), 400
+      
+    user_already_exists = Usuario.query.filter_by(id=userId).all()
+    
+    if (user_already_exists is None):
+        return jsonify({"message": "Usuário inválido"}), 400
+        
+    participacao = Participacao.query.filter_by(usuario_id=userId, grupo_id=groupId).one()
+    
+    if (participacao is None or participacao.nivel_participacao is not 1):
+        return jsonify({"message": "Usuário não tem permissão de excluir esse grupo"}), 400
+    
+    grupo = Grupo.query.filter_by(id=groupId).one()
+    
+    db.session.delete(grupo)
+    db.session.commit()
+    
+    return jsonify({"grupo deletado": grupo.id})

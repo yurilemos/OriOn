@@ -1,4 +1,4 @@
-from app import db, Usuario, Assunto, Discussao, Fala
+from app import db, Usuario, Assunto, Discussao, Fala, Grupo, Participacao
 from flask import jsonify
 
 
@@ -82,3 +82,39 @@ def create_fala(conteudo, assunto_id, usuario_id, fala_id):
     db.session.commit()
     
     return jsonify({"fala": fala.id})
+
+
+def delete_fala(userId, falaId):
+
+    if(userId is None):
+        return jsonify({"message": "Usuário obrigatório"}), 400
+    if(falaId is None):
+        return jsonify({"message": "Fala obrigatória"}), 400
+    
+    user_already_exists = Usuario.query.filter_by(id=userId).all()
+    
+    if (user_already_exists is None):
+        return jsonify({"message": "Usuário inválido"}), 400
+    
+    
+    fala = Fala.query.filter_by(id=falaId).one()
+    
+    if (fala is None):
+        return jsonify({"message": "Fala inválida"}), 400
+    
+    assunto = Assunto.query.filter_by(id=fala.assunto_id).one()
+    
+    discussao = Discussao.query.filter_by(id=assunto.discussao_id).one()
+    
+    grupo = Grupo.query.filter_by(id=discussao.grupo_id).one()
+        
+    participacao = Participacao.query.filter_by(usuario_id=userId, grupo_id=grupo.id).one()
+    
+    if (participacao is None or participacao.nivel_participacao is not 1):
+        return jsonify({"message": "Usuário não tem permissão de excluir esse assunto"}), 400
+    
+    
+    db.session.delete(fala)
+    db.session.commit()
+    
+    return jsonify({"fala deletada": fala.id})

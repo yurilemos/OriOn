@@ -1,4 +1,4 @@
-from app import db, Usuario, Assunto, Discussao, Fala
+from app import db, Usuario, Assunto, Discussao, Fala, Grupo, Participacao
 from flask import jsonify
 
 
@@ -61,15 +61,15 @@ def create_assunto(titulo, descricao, discussao_id, usuario_id):
     if (user_already_exists is None):
         return jsonify({"message": "Usuário inválido"}), 400
     
-    discussion_already_exists = Discussao.query.filter_by(id=discussao_id).one()
+    discussao = Discussao.query.filter_by(id=discussao_id).one()
         
-    if (discussion_already_exists is None):
-        return jsonify({"message": "Grupo inválido"}), 400
+    if (discussao is None):
+        return jsonify({"message": "Discussão inválida"}), 400
         
     assunto = Assunto(
         titulo=titulo,
         descricao=descricao,
-        discussao_id=discussion_already_exists.id,
+        discussao_id=discussao.id,
         usuario_id=user_already_exists.id
     )
     
@@ -81,3 +81,36 @@ def create_assunto(titulo, descricao, discussao_id, usuario_id):
     db.session.commit()
     
     return jsonify({"discussao": assunto.id})
+
+def delete_assunto(userId, assuntoId):
+
+    if(userId is None):
+        return jsonify({"message": "Usuário obrigatório"}), 400
+    if(assuntoId is None):
+        return jsonify({"message": "Assunto obrigatório"}), 400
+    
+    user_already_exists = Usuario.query.filter_by(id=userId).all()
+    
+    if (user_already_exists is None):
+        return jsonify({"message": "Usuário inválido"}), 400
+    
+    
+    assunto = Assunto.query.filter_by(id=assuntoId).one()
+    
+    if (assunto is None):
+        return jsonify({"message": "Assunto inválida"}), 400
+    
+    discussao = Discussao.query.filter_by(id=assunto.discussao_id).one()
+    
+    grupo = Grupo.query.filter_by(id=discussao.grupo_id).one()
+        
+    participacao = Participacao.query.filter_by(usuario_id=userId, grupo_id=grupo.id).one()
+    
+    if (participacao is None or participacao.nivel_participacao is not 1):
+        return jsonify({"message": "Usuário não tem permissão de excluir esse assunto"}), 400
+    
+    
+    db.session.delete(assunto)
+    db.session.commit()
+    
+    return jsonify({"assunto deletado": assunto.id})

@@ -15,7 +15,11 @@ class Grupo(db.Model):
     )
     visibilidade_grupo = db.Column(db.SmallInteger, unique=False, nullable=True)
     status_grupo = db.Column(db.SmallInteger, unique=False, nullable=True)
-    usuario_id = db.Column(db.Integer, db.ForeignKey("usuario.id"), nullable=True)
+    usuario_id = db.Column(
+        db.Integer,
+        db.ForeignKey("usuario.id", onupdate="CASCADE", ondelete="SET NULL"),
+        nullable=True,
+    )
 
     def __repr__(self):
         return "<Grupo %r>" % self.nome_grupo

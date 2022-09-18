@@ -25,6 +25,11 @@ export const Discussao = () => {
   const { discussionId } = useParams();
   const [discussion, setDiscussion] = useState({});
   const { currentUser } = useContext(AuthContext);
+  const [addModal, setAddModal] = useState(false);
+  const [deleteModal, setDeleteModal] = useState(false);
+  const [deleteAssuntoModal, setDeleteAssuntoModal] = useState(false);
+  const [shelveModal, setShelveModal] = useState(false);
+  const [assuntoId, setAssuntoId] = useState(null);
 
   const handleDiscussaoClick = (id) => {
     navigate(`/assunto/${id}`);
@@ -41,7 +46,7 @@ export const Discussao = () => {
     } catch (e) {
       console.log(e);
       message.destroy();
-      message.error(e.response.data);
+      message.error(e.response.data.message);
     }
   };
 
@@ -58,7 +63,43 @@ export const Discussao = () => {
       handleGetDiscussion();
     } catch (e) {
       message.destroy();
-      message.error(e.response.data);
+      message.error(e.response.data.message);
+    }
+  };
+
+  const handleDeleteDiscussion = async (id) => {
+    message.loading('Analizando os dados');
+
+    try {
+      await axios.delete(
+        `${API_URL}/discussao?userId=${currentUser.userId}&discussionId=${id}`
+      );
+
+      handleGetDiscussion();
+      message.destroy();
+
+      navigate(-1);
+    } catch (e) {
+      console.log(e);
+      message.destroy();
+      message.error(e.response.data.message);
+    }
+  };
+
+  const handleDeleteAssunto = async (id) => {
+    message.loading('Analizando os dados');
+
+    try {
+      await axios.delete(
+        `${API_URL}/assunto?userId=${currentUser.userId}&assuntoId=${id}`
+      );
+
+      handleGetDiscussion();
+      message.destroy();
+    } catch (e) {
+      console.log(e);
+      message.destroy();
+      message.error(e.response.data.message);
     }
   };
 
@@ -74,15 +115,11 @@ export const Discussao = () => {
       } catch (e) {
         console.log(e);
         message.destroy();
-        message.error(e.response.data);
+        message.error(e.response.data.message);
       }
     };
     handleGetDiscussionEffect();
   }, [discussionId]);
-
-  const [addModal, setAddModal] = useState(false);
-  const [deleteModal, setDeleteModal] = useState(false);
-  const [shelveModal, setShelveModal] = useState(false);
 
   return (
     <>
@@ -146,6 +183,10 @@ export const Discussao = () => {
               description={assunto.descricao}
               creation={assunto.data_criacao}
               onClick={() => handleDiscussaoClick(assunto.id)}
+              onDelete={() => {
+                setDeleteAssuntoModal(true);
+                setAssuntoId(assunto.id);
+              }}
             />
           </div>
         ))}
@@ -167,6 +208,7 @@ export const Discussao = () => {
         open={deleteModal}
         onFinish={(e) => {
           setDeleteModal(false);
+          handleDeleteDiscussion(discussionId);
         }}
         title="Deletar a discussão"
         subtitle="Tem certeza que deseja excluir essa discussão?"
@@ -184,6 +226,20 @@ export const Discussao = () => {
         subtitle="Tem certeza que deseja arquivar essa discussão?"
         description="Ao arquivá-la todos os temas relacionados a ela (assuntos e falas) também serão
           arquivados, você ainda poderá ter acesso e desarquivá-la quando quiser"
+      />
+      <DeleteModal
+        onClose={() => {
+          setDeleteModal(false);
+          setAssuntoId(null);
+        }}
+        open={deleteAssuntoModal}
+        onFinish={(e) => {
+          setDeleteAssuntoModal(false);
+          handleDeleteAssunto(assuntoId);
+        }}
+        title="Deletar o assunto"
+        subtitle="Tem certeza que deseja excluir esse assunto?"
+        description="Ao apaga-lo todos os temas relacionados a ele (falas) também serão excluidos"
       />
     </>
   );

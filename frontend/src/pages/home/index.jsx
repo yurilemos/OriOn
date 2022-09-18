@@ -37,7 +37,7 @@ export const Home = () => {
       message.destroy();
     } catch (e) {
       message.destroy();
-      message.error(e.response.data);
+      message.error(e.response.data.message);
     }
   };
 
@@ -53,7 +53,23 @@ export const Home = () => {
       handleGetGroup();
     } catch (e) {
       message.destroy();
-      message.error(e.response.data);
+      message.error(e.response.data.message);
+    }
+  };
+
+  const handleDeleteGroup = async (id) => {
+    message.loading('Analizando os dados');
+
+    try {
+      await axios.delete(
+        `${API_URL}/grupo?userId=${currentUser.userId}&groupId=${id}`
+      );
+
+      handleGetGroup();
+      message.destroy();
+    } catch (e) {
+      message.destroy();
+      message.error(e.response.data.message);
     }
   };
 
@@ -70,7 +86,7 @@ export const Home = () => {
       handleGetGroup();
     } catch (e) {
       message.destroy();
-      message.error(e.response.data);
+      message.error(e.response.data.message);
     }
   };
 
@@ -88,7 +104,7 @@ export const Home = () => {
       } catch (e) {
         console.log(e);
         message.destroy();
-        message.error(e.response.data);
+        message.error(e.response.data.message);
       }
     };
     if (currentUser.userId) {
@@ -196,6 +212,7 @@ export const Home = () => {
         open={deleteGroupModal}
         onFinish={(e) => {
           setDeleteGroupModal(false);
+          handleDeleteGroup(groupId);
         }}
         title="Deletar o grupo de discussão"
         subtitle="Tem certeza que deseja excluir esse grupo de discussão?"

@@ -14,8 +14,16 @@ class Assunto(db.Model):
         default=datetime.datetime.now
     )
     data_ult_atualizacao = db.Column(db.DateTime, nullable=True)
-    discussao_id = db.Column(db.Integer, db.ForeignKey("discussao.id"), nullable=True)
-    usuario_id = db.Column(db.Integer, db.ForeignKey("usuario.id"), nullable=True)
+    discussao_id = db.Column(
+        db.Integer,
+        db.ForeignKey("discussao.id", onupdate="CASCADE", ondelete="CASCADE"),
+        nullable=True,        
+    )
+    usuario_id = db.Column(
+        db.Integer,
+        db.ForeignKey("usuario.id", onupdate="CASCADE", ondelete="SET NULL"),
+        nullable=True,
+    )
 
     def __repr__(self):
         return "<Assunto %r>" % self.name

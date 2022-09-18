@@ -1,4 +1,4 @@
-from app import db, Usuario, Grupo, Discussao, Assunto
+from app import db, Usuario, Grupo, Discussao, Assunto, Participacao
 from flask import jsonify
 
 
@@ -68,4 +68,33 @@ def create_discussion(titulo, descricao, grupo_id, usuario_id):
     
     return jsonify({"discussao": discussao.id})
 
+def delete_discussion(userId, discussionId):
   
+    if(userId is None):
+        return jsonify({"message": "Usuário obrigatório"}), 400
+    if(discussionId is None):
+        return jsonify({"message": "Discussao obrigatória"}), 400
+    
+    user_already_exists = Usuario.query.filter_by(id=userId).all()
+    
+    if (user_already_exists is None):
+        return jsonify({"message": "Usuário inválido"}), 400
+    
+    
+    discussao = Discussao.query.filter_by(id=discussionId).one()
+    
+    if (discussao is None):
+        return jsonify({"message": "Discusão inválida"}), 400
+    
+    grupo = Grupo.query.filter_by(id=discussao.grupo_id).one()
+        
+    participacao = Participacao.query.filter_by(usuario_id=userId, grupo_id=grupo.id).one()
+    
+    if (participacao is None or participacao.nivel_participacao is not 1):
+        return jsonify({"message": "Usuário não tem permissão de excluir essa discussão"}), 400
+    
+    
+    db.session.delete(discussao)
+    db.session.commit()
+    
+    return jsonify({"discussão deletada": discussao.id})

@@ -4,10 +4,10 @@ from app import app
 import requests
 from flask import request, jsonify
 from app.blueprint.login import login_user, register_user, logout_user
-from app.blueprint.grupo import get_group, create_group
-from app.blueprint.discussao import get_discussao, create_discussion
-from app.blueprint.assunto import get_assunto, create_assunto
-from app.blueprint.fala import get_fala, create_fala
+from app.blueprint.grupo import get_group, create_group, delete_group
+from app.blueprint.discussao import get_discussao, create_discussion, delete_discussion
+from app.blueprint.assunto import get_assunto, create_assunto, delete_assunto
+from app.blueprint.fala import get_fala, create_fala, delete_fala
 from flask_jwt_extended import create_access_token, get_jwt,get_jwt_identity, jwt_required
 
 
@@ -82,7 +82,7 @@ def my_profile():
     return response_body
 
 
-@app.route("/grupo", methods=["GET", "POST"])
+@app.route("/grupo", methods=["GET", "POST", "DELETE"])
 def grupo():
     if request.method == "GET":
         # read images from the database
@@ -108,10 +108,21 @@ def grupo():
             return result
         except ValueError as e:
             print(e)       
-            return jsonify({"message": "Erro no servidor ao buscar os grupos de discussão"}), 400
+            return jsonify({"message": "Erro no servidor ao criar o grupo de discussão"}), 400
+    
+    if request.method == "DELETE":
+        userId = request.args.get("userId")
+        groupId = request.args.get("groupId")
+        
+        try:
+            result = delete_group(userId, groupId)
+            return result
+        except ValueError as e:
+            print(e)       
+            return jsonify({"message": "Erro no servidor ao deletar o grupo de discussão"}), 400
  
         
-@app.route("/discussao", methods=["POST", "GET"])
+@app.route("/discussao", methods=["POST", "GET", "DELETE"])
 def discussao():
     if request.method == "GET":
         # read images from the database
@@ -136,9 +147,19 @@ def discussao():
         except ValueError as e:
             print(e)     
             return jsonify({"message": "Erro no servidor ao criar a discussão"}), 400
+    if request.method == "DELETE":
+        # read images from the database
+        userId = request.args.get("userId")
+        discussionId = request.args.get("discussionId")
+        try:
+            result = delete_discussion(userId, discussionId)
+            return result
+        except ValueError as e:
+            print(e)   
+            return jsonify({"message": "Erro no servidor ao buscar a discussão"}), 400
 
     
-@app.route("/assunto", methods=["POST", "GET"])
+@app.route("/assunto", methods=["POST", "GET", "DELETE"])
 def assunto():
     if request.method == "GET":
         # read images from the database
@@ -163,9 +184,19 @@ def assunto():
         except ValueError as e:
             print(e)     
             return jsonify({"message": "Erro no servidor ao criar o assunto"}), 400
+    if request.method == "DELETE":
+        # read images from the database
+        userId = request.args.get("userId")
+        assuntoId = request.args.get("assuntoId")
+        try:
+            result = delete_assunto(userId, assuntoId)
+            return result
+        except ValueError as e:
+            print(e)   
+            return jsonify({"message": "Erro no servidor ao buscar a discussão"}), 400
     
     
-@app.route("/fala", methods=["POST", "GET"])
+@app.route("/fala", methods=["POST", "GET", "DELETE"])
 def fala():
     if request.method == "GET":
         # read images from the database
@@ -177,7 +208,6 @@ def fala():
             print(e)   
             return jsonify({"message": "Erro no servidor ao buscar a fala"}), 400
     if request.method == "POST":
-        # save image in the database
         content = request.json        
         conteudo = content.get("conteudo", None)
         assunto_id = content.get("assunto_id", None)
@@ -190,5 +220,14 @@ def fala():
         except ValueError as e:
             print(e)     
             return jsonify({"message": "Erro no servidor ao criar a discussão"}), 400
+    if request.method == "DELETE":
+        userId = request.args.get("userId")
+        falaId = request.args.get("falaId")
+        try:
+            result = delete_fala(userId, falaId)
+            return result
+        except ValueError as e:
+            print(e)   
+            return jsonify({"message": "Erro no servidor ao buscar a discussão"}), 400
 
     

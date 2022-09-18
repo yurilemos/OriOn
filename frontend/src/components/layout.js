@@ -1,9 +1,9 @@
 import React from 'react';
-import { Breadcrumb, Layout as LayoutAntd, Menu, Button } from 'antd';
+import { Breadcrumb, Layout as LayoutAntd, Menu, Button, Dropdown } from 'antd';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useContext } from 'react';
 import AuthContext from '../utils/auth';
-import { ArrowLeftOutlined } from '@ant-design/icons';
+import { ArrowLeftOutlined, UserOutlined } from '@ant-design/icons';
 
 const { Header, Content, Sider } = LayoutAntd;
 
@@ -15,11 +15,11 @@ const items = [
     children: [
       {
         key: 2,
-        label: `grupo público 1`,
+        label: `Meus grupos`,
       },
       {
         key: 3,
-        label: `grupo público 2`,
+        label: `Grupos arquivados`,
       },
     ],
   },
@@ -30,33 +30,23 @@ const items = [
     children: [
       {
         key: 5,
-        label: `grupo privados 1`,
+        label: `Meus Grupos`,
       },
       {
         key: 6,
-        label: `grupo privados 2`,
+        label: `Grupos arquivados`,
       },
     ],
   },
   {
     key: 7,
     icon: null,
-    label: `Grupos privados`,
-    children: [
-      {
-        key: 8,
-        label: `grupo privados 1`,
-      },
-      {
-        key: 9,
-        label: `grupo privados 2`,
-      },
-    ],
+    label: `Grupos de usuários`,
   },
 ];
 
 const Layout = ({ children }) => {
-  const { logout } = useContext(AuthContext);
+  const { logout, currentUser } = useContext(AuthContext);
   let navigate = useNavigate();
   const location = useLocation();
 
@@ -66,6 +56,13 @@ const Layout = ({ children }) => {
     '/assunto': 'Assunto',
   };
 
+  const onMenuClick = (e) => {
+    if (e.key === '3') {
+      logout();
+      navigate('/login');
+    }
+  };
+
   return (
     <LayoutAntd style={{ height: '100%', width: '100%', overflow: 'scroll' }}>
       <Header
@@ -73,17 +70,54 @@ const Layout = ({ children }) => {
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
+          height: '90px',
         }}
       >
-        <h1 style={{ color: 'white' }}>OriOn</h1>
-        <Button
-          onClick={() => {
-            logout();
-            navigate('/login');
+        <h1 style={{ color: 'white', fontSize: '3rem' }}>OriOn</h1>
+
+        <div
+          style={{
+            color: 'white',
+            display: 'flex',
+            alignItems: 'center',
+            flexDirection: 'column',
+            gap: '0.2rem',
           }}
         >
-          sair
-        </Button>
+          <Dropdown
+            style={{ width: '40px', height: '40px' }}
+            overlay={
+              <Menu
+                onClick={onMenuClick}
+                items={[
+                  {
+                    key: 1,
+                    label: 'Perfil',
+                  },
+                  {
+                    key: 2,
+                    label: 'Configurações',
+                  },
+                  {
+                    key: 3,
+                    label: 'Sair',
+                  },
+                ]}
+              />
+            }
+          >
+            <Button
+              icon={<UserOutlined />}
+              shape="circle"
+              style={{ width: '40px', height: '40px' }}
+            />
+          </Dropdown>
+          <span
+            style={{ display: 'flex', alignItems: 'center', height: '20px' }}
+          >
+            {currentUser.name}
+          </span>
+        </div>
       </Header>
       <LayoutAntd>
         <Sider width={200} className="site-layout-background">

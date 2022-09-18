@@ -99,7 +99,24 @@ const Chat = ({ assuntoId }) => {
       message.destroy();
     } catch (e) {
       message.destroy();
-      message.error(e.response.data);
+      message.error(e.response.data.message);
+    }
+  };
+
+  const handleDeleteFala = async (id) => {
+    message.loading('Analizando os dados');
+
+    try {
+      await axios.delete(
+        `${API_URL}/fala?userId=${currentUser.userId}&falaId=${id}`
+      );
+
+      getFalas();
+      message.destroy();
+    } catch (e) {
+      console.log(e);
+      message.destroy();
+      message.error(e.response.data.message);
     }
   };
 
@@ -124,7 +141,7 @@ const Chat = ({ assuntoId }) => {
       getFalas();
     } catch (e) {
       message.destroy();
-      message.error(e.response.data);
+      message.error(e.response.data.message);
     }
   };
 
@@ -160,6 +177,7 @@ const Chat = ({ assuntoId }) => {
         open={deleteModal}
         onFinish={(e) => {
           setDeleteModal(false);
+          handleDeleteFala(falaId);
         }}
         title="Deletar a fala"
         subtitle="Tem certeza que deseja excluir essa fala?"

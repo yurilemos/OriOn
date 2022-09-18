@@ -13,8 +13,16 @@ class Discussao(db.Model):
         nullable=False,
         default=datetime.datetime.now
     )
-    grupo_id = db.Column(db.Integer, db.ForeignKey("grupo.id"), nullable=True)
-    usuario_id = db.Column(db.Integer, db.ForeignKey("usuario.id"), nullable=True)
+    grupo_id = db.Column(
+        db.Integer,
+        db.ForeignKey("grupo.id", onupdate="CASCADE", ondelete="CASCADE"),
+        nullable=True,
+    )
+    usuario_id = db.Column(
+        db.Integer,
+        db.ForeignKey("usuario.id", onupdate="CASCADE", ondelete="SET NULL"),
+        nullable=True,        
+    )
 
     def __repr__(self):
         return "<Discussão %r>" % self.name

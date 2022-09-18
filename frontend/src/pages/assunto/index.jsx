@@ -24,7 +24,7 @@ export const Assunto = () => {
       } catch (e) {
         console.log(e);
         message.destroy();
-        message.error(e.response.data);
+        message.error(e.response.data.message);
       }
     };
     handleGetDiscussionEffect();
