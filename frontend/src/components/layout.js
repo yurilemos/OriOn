@@ -86,6 +86,7 @@ const Layout = ({ children }) => {
         >
           <Dropdown
             style={{ width: '40px', height: '40px' }}
+            placement="bottom"
             overlay={
               <Menu
                 onClick={onMenuClick}

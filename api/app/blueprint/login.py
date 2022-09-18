@@ -58,7 +58,7 @@ def register_user(login, senha, nome):
     usuario = Usuario(
       login=login,
       senha=hashsenha,
-      perfil_usuario=3,
+      perfil_usuario=1,
       email_usuario=login,
       nome_usuario=nome   
     )
