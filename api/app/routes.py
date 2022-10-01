@@ -4,8 +4,8 @@ from app import app
 import requests
 from flask import request, jsonify
 from app.blueprint.login import login_user, register_user, logout_user
-from app.blueprint.grupo import get_group, create_group, delete_group
-from app.blueprint.discussao import get_discussao, create_discussion, delete_discussion
+from app.blueprint.grupo import get_group, create_group,edit_group, delete_group
+from app.blueprint.discussao import get_discussao, create_discussion, edit_discussion, delete_discussion
 from app.blueprint.assunto import get_assunto, create_assunto, delete_assunto
 from app.blueprint.fala import get_fala, create_fala, delete_fala
 from flask_jwt_extended import create_access_token, get_jwt,get_jwt_identity, jwt_required
@@ -82,7 +82,7 @@ def my_profile():
     return response_body
 
 
-@app.route("/grupo", methods=["GET", "POST", "DELETE"])
+@app.route("/grupo", methods=["GET", "POST", "PUT" ,"DELETE"])
 def grupo():
     if request.method == "GET":
         # read images from the database
@@ -109,6 +109,24 @@ def grupo():
         except ValueError as e:
             print(e)       
             return jsonify({"message": "Erro no servidor ao criar o grupo de discussão"}), 400
+        
+    if request.method == "PUT":
+        # save image in the database
+        content = request.json
+        print(content)
+        titulo = content.get("titulo", None)
+        descricao = content.get("descricao", None)
+        visibilidade = content.get("visibilidade", None)
+        arquivar = content.get("arquivar", None)
+        usuario_id = content.get("usuario_id", None)
+        groupId = content.get("grupo_id", None)
+        
+        try:
+            result = edit_group(titulo, descricao, visibilidade, arquivar, usuario_id, groupId)
+            return result
+        except ValueError as e:
+            print(e)       
+            return jsonify({"message": "Erro no servidor ao editar o grupo de discussão"}), 400
     
     if request.method == "DELETE":
         userId = request.args.get("userId")
@@ -122,7 +140,7 @@ def grupo():
             return jsonify({"message": "Erro no servidor ao deletar o grupo de discussão"}), 400
  
         
-@app.route("/discussao", methods=["POST", "GET", "DELETE"])
+@app.route("/discussao", methods=["POST", "GET", "DELETE", "PUT"])
 def discussao():
     if request.method == "GET":
         # read images from the database
@@ -147,6 +165,21 @@ def discussao():
         except ValueError as e:
             print(e)     
             return jsonify({"message": "Erro no servidor ao criar a discussão"}), 400
+    if request.method == "PUT":
+        # save image in the database
+        content = request.json
+        print(content)
+        titulo = content.get("titulo", None)
+        descricao = content.get("descricao", None)
+        usuario_id = content.get("usuario_id", None)
+        discussionId = content.get("discussao_id", None)
+        
+        try:
+            result = edit_discussion(titulo, descricao, usuario_id, discussionId)
+            return result
+        except ValueError as e:
+            print(e)       
+            return jsonify({"message": "Erro no servidor ao editar a discussão"}), 400
     if request.method == "DELETE":
         # read images from the database
         userId = request.args.get("userId")

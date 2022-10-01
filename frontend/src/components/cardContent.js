@@ -1,10 +1,6 @@
 import React from 'react';
 import Button from './button';
-import {
-  PlusOutlined,
-  DeleteOutlined,
-  ContainerOutlined,
-} from '@ant-design/icons';
+import { PlusOutlined, DeleteOutlined, EditOutlined } from '@ant-design/icons';
 
 const CardContent = ({
   title,
@@ -15,7 +11,7 @@ const CardContent = ({
   onClick,
   onCreate,
   onDelete,
-  onShelve,
+  onEdit,
 }) => {
   return (
     <div
@@ -54,14 +50,14 @@ const CardContent = ({
               }}
             />
           )}
-          {onShelve && (
+          {onEdit && (
             <Button
               variant="primary"
-              icon={<ContainerOutlined />}
+              icon={<EditOutlined />}
               style={{ width: '50px' }}
               onClick={(event) => {
                 event.stopPropagation();
-                onShelve();
+                onEdit();
               }}
             />
           )}

@@ -1,25 +1,37 @@
 import React from 'react';
 import Modal from '../../../components/modal';
-import { Form, Input, Select } from 'antd';
+import { Checkbox, Form, Input, Select } from 'antd';
+import { useEffect } from 'react';
 
-const GrupoDiscussaoModal = (props) => {
+const GrupoDiscussaoModal = ({ open, onClose, title, onFinish, formValue }) => {
   const [form] = Form.useForm();
+
+  useEffect(() => {
+    form.setFieldsValue({
+      titulo: formValue?.nome,
+      descricao: formValue?.descricao,
+      visibilidade: formValue?.visibilidade || 1,
+    });
+  }, [form, formValue]);
+
   return (
     <Modal
-      visible={props.open}
-      onCancel={props.onClose}
+      visible={open}
+      onCancel={onClose}
       onOk={() => {
         form.submit();
       }}
-      title="Criar um novo grupo de discussão"
+      title={title}
+      initialValue={{
+        titulo: formValue?.nome,
+        descricao: formValue?.descricao,
+        visibilidade: formValue?.visibilidade || 1,
+      }}
     >
       <Form
         name="basic"
         form={form}
-        initialValues={{
-          remember: true,
-        }}
-        onFinish={props.onFinish}
+        onFinish={onFinish}
         onFinishFailed={(e) => {}}
         autoComplete="off"
       >
@@ -47,19 +59,18 @@ const GrupoDiscussaoModal = (props) => {
           label="Visibilidade"
           name="visibilidade"
           style={{ margin: '2rem 0' }}
-          initialValue={1}
         >
           <Select
             style={{
               width: 120,
             }}
-            onChange={(e) => {
-              console.log(e);
-            }}
           >
             <Select.Option value={1}>Público</Select.Option>
             <Select.Option value={2}>Privado</Select.Option>
           </Select>
+        </Form.Item>
+        <Form.Item label="Arquivar" name="arquivar" valuePropName="checked">
+          <Checkbox />
         </Form.Item>
       </Form>
     </Modal>

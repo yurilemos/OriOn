@@ -5,10 +5,12 @@ const Modal = ({ children, onOk, visible, onCancel, title, width }) => {
   return (
     <AntdModal
       title={title}
-      visible={visible}
+      open={visible}
       onOk={onOk}
       onCancel={onCancel}
       width={width}
+      destroyOnClose
+      forceRender
     >
       {children}
     </AntdModal>

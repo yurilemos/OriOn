@@ -1,26 +1,42 @@
 import React from 'react';
-import Modal from '../../../components/modal';
 import { Form, Input } from 'antd';
+import { useEffect } from 'react';
+import Modal from '../../../components/modal';
 
-const AssuntoModal = (props) => {
+const AssuntoDiscussionModal = ({
+  open,
+  onClose,
+  title,
+  onFinish,
+  formValue,
+}) => {
   const [form] = Form.useForm();
+
+  useEffect(() => {
+    form.setFieldsValue({
+      titulo: formValue?.titulo,
+      descricao: formValue?.descricao,
+    });
+  }, [form, formValue]);
 
   return (
     <Modal
-      visible={props.open}
-      onCancel={props.onClose}
+      visible={open}
+      onCancel={onClose}
       onOk={() => {
         form.submit();
       }}
-      title="Criar um novo assunto"
+      title={title}
+      initialValue={{
+        titulo: formValue?.nome,
+        descricao: formValue?.descricao,
+        visibilidade: formValue?.visibilidade || 1,
+      }}
     >
       <Form
         name="basic"
         form={form}
-        initialValues={{
-          remember: true,
-        }}
-        onFinish={props.onFinish}
+        onFinish={onFinish}
         onFinishFailed={(e) => {}}
         autoComplete="off"
       >
@@ -49,4 +65,4 @@ const AssuntoModal = (props) => {
   );
 };
 
-export default AssuntoModal;
+export default AssuntoDiscussionModal;

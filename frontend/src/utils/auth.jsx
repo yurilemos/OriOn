@@ -38,9 +38,6 @@ export const AuthProvider = ({ children }) => {
       message.destroy();
       if (error.response) {
         message.destroy();
-        console.log(error.response);
-        console.log(error.response.status);
-        console.log(error.response.headers);
         message.error(error.response);
       }
     }
@@ -55,9 +52,6 @@ export const AuthProvider = ({ children }) => {
       setCurrentUser({});
     } catch (error) {
       if (error.response) {
-        console.log(error.response);
-        console.log(error.response.status);
-        console.log(error.response.headers);
         message.error(error.response.data);
       }
     }

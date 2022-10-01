@@ -11,35 +11,40 @@ const items = [
   {
     key: 1,
     icon: null,
+    label: `Todos os grupos`,
+  },
+  {
+    key: 2,
+    icon: null,
     label: `Grupos públicos`,
     children: [
       {
-        key: 2,
+        key: 3,
         label: `Meus grupos`,
       },
       {
-        key: 3,
+        key: 4,
         label: `Grupos arquivados`,
       },
     ],
   },
   {
-    key: 4,
+    key: 5,
     icon: null,
     label: `Grupos privados`,
     children: [
       {
-        key: 5,
+        key: 6,
         label: `Meus Grupos`,
       },
       {
-        key: 6,
+        key: 7,
         label: `Grupos arquivados`,
       },
     ],
   },
   {
-    key: 7,
+    key: 8,
     icon: null,
     label: `Grupos de usuários`,
   },

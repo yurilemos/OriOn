@@ -4,16 +4,12 @@ import { useNavigate } from 'react-router-dom';
 import Search from '../../components/search';
 import Button from '../../components/button';
 import { useState } from 'react';
-import { message } from 'antd';
-import axios from 'axios';
-import { API_URL } from '../../utils/api';
 import { useContext } from 'react';
 import AuthContext from '../../utils/auth';
-import { useEffect } from 'react';
 import GrupoDiscussaoModal from './modals/grupoDiscussao';
 import DiscussaoModal from './modals/discussao';
 import DeleteModal from '../../components/modals/deleteModal';
-import ShelveModal from '../../components/modals/shelveModal';
+import useGroup from './hooks/groupHooks';
 
 export const Home = () => {
   const navigate = useNavigate();
@@ -22,99 +18,43 @@ export const Home = () => {
   };
   const { currentUser } = useContext(AuthContext);
 
-  const [groups, setGroups] = useState([]);
-  const [groupId, setGroupId] = useState(null);
+  const [group, setGroup] = useState(null);
 
-  const handleGetGroup = async () => {
-    message.loading('Analizando os dados');
+  const {
+    grupos = [],
+    createGroup,
+    editGroup,
+    deleteGroup,
+    createDiscussion,
+  } = useGroup({
+    userId: currentUser.userId,
+  });
 
-    try {
-      const res = await axios.get(
-        `${API_URL}/grupo?userId=${currentUser.userId}`
-      );
-
-      setGroups(res.data);
-      message.destroy();
-    } catch (e) {
-      message.destroy();
-      message.error(e.response.data.message);
-    }
+  const handleCreateGroup = (values) => {
+    createGroup(values);
   };
 
-  const handleCreateGroup = async (values) => {
-    message.loading('Analizando os dados');
-
-    try {
-      await axios.post(`${API_URL}/grupo`, {
-        ...values,
-        usuario_id: currentUser.userId,
-      });
-      message.destroy();
-      handleGetGroup();
-    } catch (e) {
-      message.destroy();
-      message.error(e.response.data.message);
-    }
+  const handleEditGroup = (values) => {
+    editGroup({ ...values, grupo_id: group.id });
   };
 
-  const handleDeleteGroup = async (id) => {
-    message.loading('Analizando os dados');
-
-    try {
-      await axios.delete(
-        `${API_URL}/grupo?userId=${currentUser.userId}&groupId=${id}`
-      );
-
-      handleGetGroup();
-      message.destroy();
-    } catch (e) {
-      message.destroy();
-      message.error(e.response.data.message);
-    }
+  const handleDeleteGroup = () => {
+    deleteGroup({ grupo_id: group.id });
   };
 
-  const handleCreateDiscussion = async (values) => {
-    message.loading('Analizando os dados');
-
-    try {
-      await axios.post(`${API_URL}/discussao`, {
-        ...values,
-        usuario_id: currentUser.userId,
-        grupo_id: groupId,
-      });
-      message.destroy();
-      handleGetGroup();
-    } catch (e) {
-      message.destroy();
-      message.error(e.response.data.message);
-    }
+  const handleCreateDiscussion = (values) => {
+    createDiscussion({
+      ...values,
+      grupo_id: group.id,
+    });
   };
 
-  useEffect(() => {
-    const handleGetGroupEffect = async () => {
-      message.loading('Analizando os dados');
-
-      try {
-        const res = await axios.get(
-          `${API_URL}/grupo?userId=${currentUser.userId}`
-        );
-
-        setGroups(res.data);
-        message.destroy();
-      } catch (e) {
-        console.log(e);
-        message.destroy();
-        message.error(e.response.data.message);
-      }
-    };
-    if (currentUser.userId) {
-      handleGetGroupEffect();
-    }
-  }, [currentUser]);
+  const handleEditDiscussion = (values) => {};
 
   const [addGroupModal, setAddGroupModal] = useState(false);
+  const [editGroupModal, setEditGroupModal] = useState(false);
+  const [editDiscussionModal, setEditDiscussionModal] = useState(false);
   const [deleteGroupModal, setDeleteGroupModal] = useState(false);
-  const [shelveGroupModal, setShelveGroupModal] = useState(false);
   const [addDiscussionModal, setAddDiscussionModal] = useState(false);
 
   return (
@@ -134,14 +74,10 @@ export const Home = () => {
         >
           Adicionar um novo grupo
         </Button>
-        <Search
-          onSearch={(e) => {
-            console.log(e);
-          }}
-        />
+        <Search onSearch={(e) => {}} />
       </div>
       <div style={{ gap: '2rem', display: 'flex', flexWrap: 'wrap' }}>
-        {groups.map((grupo) => (
+        {grupos.map((grupo) => (
           <div
             style={{ minWidth: '300px', width: '100%', maxWidth: '550px' }}
             key={grupo.id}
@@ -153,15 +89,15 @@ export const Home = () => {
               creation={grupo.data_criacao}
               onCreate={() => {
                 setAddDiscussionModal(true);
-                setGroupId(grupo.id);
+                setGroup(grupo);
               }}
               onDelete={() => {
                 setDeleteGroupModal(true);
-                setGroupId(grupo.id);
+                setGroup(grupo);
               }}
-              onShelve={() => {
-                setShelveGroupModal(true);
-                setGroupId(grupo.id);
+              onEdit={() => {
+                setEditGroupModal(true);
+                setGroup(grupo);
               }}
             >
               <div
@@ -194,6 +130,19 @@ export const Home = () => {
           handleCreateGroup(e);
           setAddGroupModal(false);
         }}
+        title="Criar um novo grupo de discussão"
+      />
+      <GrupoDiscussaoModal
+        onClose={() => {
+          setEditGroupModal(false);
+        }}
+        open={editGroupModal}
+        onFinish={(e) => {
+          handleEditGroup(e);
+          setEditGroupModal(false);
+        }}
+        title="Editar um novo grupo de discussão"
+        formValue={group}
       />
       <DiscussaoModal
         onClose={() => {
@@ -204,6 +153,19 @@ export const Home = () => {
           handleCreateDiscussion(e);
           setAddDiscussionModal(false);
         }}
+        title="Criar uma nova discussão"
+        form={group}
+      />
+      <DiscussaoModal
+        onClose={() => {
+          setEditDiscussionModal(false);
+        }}
+        open={editDiscussionModal}
+        onFinish={(e) => {
+          handleEditDiscussion(e);
+          setEditDiscussionModal(false);
+        }}
+        title="Editar uma nova discussão"
       />
       <DeleteModal
         onClose={() => {
@@ -212,24 +174,11 @@ export const Home = () => {
         open={deleteGroupModal}
         onFinish={(e) => {
           setDeleteGroupModal(false);
-          handleDeleteGroup(groupId);
+          handleDeleteGroup(group.id);
         }}
         title="Deletar o grupo de discussão"
         subtitle="Tem certeza que deseja excluir esse grupo de discussão?"
         description="Ao apaga-lo todos os temas relacionados a ele também serão excluidos"
-      />
-      <ShelveModal
-        onClose={() => {
-          setShelveGroupModal(false);
-        }}
-        open={shelveGroupModal}
-        onFinish={(e) => {
-          setShelveGroupModal(false);
-        }}
-        title="Arquivar o grupo de discussão"
-        subtitle="Tem certeza que deseja arquivar esse grupo de discussão?"
-        description="Ao arquivá-lo todos os temas relacionados a ele também serão
-          arquivados, você ainda poderá ter acesso e desarquivá-lo quando quiser"
       />
     </>
   );

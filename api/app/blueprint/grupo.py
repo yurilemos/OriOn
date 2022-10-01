@@ -100,6 +100,41 @@ def get_group(usuario_id):
           })
         
     return jsonify(result)
+
+def edit_group(titulo, descricao, visibilidade, arquivar, usuario_id, group_Id):
+  
+    if(usuario_id is None):
+        return jsonify({"message": "Usuário obrigatório"}), 400
+    if(group_Id is None):
+        return jsonify({"message": "Grupo obrigatório"}), 400
+      
+    user_already_exists = Usuario.query.filter_by(id=usuario_id).all()
+    
+    if (user_already_exists is None):
+        return jsonify({"message": "Usuário inválido"}), 400
+        
+    participacao = Participacao.query.filter_by(usuario_id=usuario_id, grupo_id=group_Id).one()
+    
+    if (participacao is None or participacao.nivel_participacao != 1):
+        return jsonify({"message": "Usuário não tem permissão de excluir esse grupo"}), 400
+    
+    
+    status_grupo = 1
+    if (arquivar == True):
+        status_grupo = 2
+    
+    db.session.query(Grupo).filter(
+        Grupo.id==group_Id
+    ).update({
+        Grupo.nome_grupo: titulo,
+        Grupo.descricao_grupo: descricao,
+        Grupo.visibilidade_grupo: visibilidade,
+        Grupo.status_grupo: status_grupo,
+    })
+    
+    db.session.commit()
+    
+    return jsonify({"message": "grupo atualizado"})
  
 def delete_group(userId, groupId):
   

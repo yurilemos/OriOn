@@ -1,5 +1,4 @@
 import React from 'react';
-import { ToastContainer } from 'react-toastify';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import 'antd/dist/antd.min.css';
 import './styles/global.css';
@@ -18,7 +17,6 @@ const App = () => {
   return (
     <AuthProvider>
       <QueryClientProvider client={queryClient}>
-        <ToastContainer />
         <Router />
       </QueryClientProvider>
     </AuthProvider>

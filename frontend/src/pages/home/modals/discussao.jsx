@@ -12,7 +12,7 @@ const DiscussaoModal = (props) => {
       onOk={() => {
         form.submit();
       }}
-      title="Criar uma nova discussão"
+      title={props.title}
     >
       <Form
         name="basic"

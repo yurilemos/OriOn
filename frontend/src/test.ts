@@ -8,7 +8,6 @@ const getSavedImages = async () => {
       setLoading(false);
       toast.success('Saved images downloaded');
     } catch (error) {
-      console.log(error);
       toast.error(error.message);
     }
   };
@@ -19,7 +18,6 @@ const handleSearchSubmit = async (e) => {
     setImages([{ ...res.data, title: word }, ...images]);
     toast.info(`New image ${word.toUpperCase()} was found`);
   } catch (error) {
-    console.log(error);
     toast.error(error.message);
   }
 
@@ -38,7 +36,6 @@ const handleDeleteImage = async (id) => {
       setImages(images.filter((image) => image.id !== id));
     }
   } catch (error) {
-    console.log(error);
     toast.error(error.message);
   }
 };
@@ -57,7 +54,7 @@ const handleSaveImage = async (id) => {
       toast.info(`Image ${imageToBeSaved.title.toUpperCase()} was saved`);
     }
   } catch (error) {
-    console.log(error);
+    
     toast.error(error.message);
   }
 };

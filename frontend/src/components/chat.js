@@ -1,4 +1,4 @@
-import { Avatar, Comment, List, message } from 'antd';
+import { Avatar, Comment, message } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { useContext } from 'react';
 import AuthContext from '../utils/auth';
@@ -114,7 +114,6 @@ const Chat = ({ assuntoId }) => {
       getFalas();
       message.destroy();
     } catch (e) {
-      console.log(e);
       message.destroy();
       message.error(e.response.data.message);
     }

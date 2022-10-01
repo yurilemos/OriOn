@@ -20,7 +20,7 @@ export const Registro = () => {
       navigate('/home');
     } catch (error) {
       message.destroy();
-      console.log(error);
+
       message.error(error.message.data);
     }
   };

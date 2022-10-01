@@ -22,7 +22,6 @@ export const Assunto = () => {
         setTopic(res.data);
         message.destroy();
       } catch (e) {
-        console.log(e);
         message.destroy();
         message.error(e.response.data.message);
       }
@@ -41,11 +40,7 @@ export const Assunto = () => {
           alignItems: 'center',
         }}
       >
-        <Search
-          onSearch={(e) => {
-            console.log(e);
-          }}
-        />
+        <Search onSearch={(e) => {}} />
       </div>
       <Chat assuntoId={parseInt(assuntoId)} />
     </>

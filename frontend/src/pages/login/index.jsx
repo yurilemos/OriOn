@@ -15,7 +15,6 @@ export const Login = () => {
     message.destroy();
   };
   const onFinishFailed = (error) => {
-    console.log(error);
     message.destroy();
     message.error(error.response.data);
   };
