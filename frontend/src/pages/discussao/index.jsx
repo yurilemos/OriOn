@@ -19,6 +19,7 @@ export const Discussao = () => {
   const [addModal, setAddModal] = useState(false);
   const [editModal, setEditModal] = useState(false);
   const [deleteModal, setDeleteModal] = useState(false);
+  const [editAssuntoModal, setEditAssuntoModal] = useState(false);
   const [deleteAssuntoModal, setDeleteAssuntoModal] = useState(false);
   const [chosenAssunto, setChosenAssunto] = useState(null);
 
@@ -28,6 +29,7 @@ export const Discussao = () => {
     createTopic,
     deleteTopic,
     editDiscussion,
+    editTopic,
   } = useDiscussion({
     userId: currentUser.userId,
     discussionId,
@@ -41,6 +43,14 @@ export const Discussao = () => {
     createTopic(values);
   };
 
+  const handleEditDiscussion = async (values) => {
+    editDiscussion(values);
+  };
+
+  const handleEditAssunto = async (values) => {
+    editTopic({ ...values, assunto_id: chosenAssunto.id });
+  };
+
   const handleEditTopic = async (values) => {
     editDiscussion(values);
   };
@@ -49,8 +59,6 @@ export const Discussao = () => {
     deleteDiscussion();
     navigate(-1);
   };
-
-  const handleEditDiscussion = async (id) => {};
 
   const handleDeleteAssunto = async (id) => {
     deleteTopic({ assuntoId: id });
@@ -117,6 +125,10 @@ export const Discussao = () => {
                 setDeleteAssuntoModal(true);
                 setChosenAssunto(assunto);
               }}
+              onEdit={() => {
+                setEditAssuntoModal(true);
+                setChosenAssunto(assunto);
+              }}
             />
           </div>
         ))}
@@ -138,12 +150,23 @@ export const Discussao = () => {
         }}
         open={editModal}
         onFinish={(e) => {
-          handleEditTopic(e);
           setEditModal(false);
-          handleEditDiscussion(discussionId);
+          handleEditDiscussion(e);
         }}
         title="Editar a discussão"
         formValue={discussao}
+      />
+      <AssuntoDiscussionModal
+        onClose={() => {
+          setEditAssuntoModal(false);
+        }}
+        open={editAssuntoModal}
+        onFinish={(e) => {
+          setEditAssuntoModal(false);
+          handleEditAssunto(e);
+        }}
+        title="Editar o assunto"
+        formValue={chosenAssunto}
       />
       <DeleteModal
         onClose={() => {

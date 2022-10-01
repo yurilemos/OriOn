@@ -6,7 +6,7 @@ from flask import request, jsonify
 from app.blueprint.login import login_user, register_user, logout_user
 from app.blueprint.grupo import get_group, create_group,edit_group, delete_group
 from app.blueprint.discussao import get_discussao, create_discussion, edit_discussion, delete_discussion
-from app.blueprint.assunto import get_assunto, create_assunto, delete_assunto
+from app.blueprint.assunto import get_assunto, create_assunto, edit_assunto, delete_assunto
 from app.blueprint.fala import get_fala, create_fala, delete_fala
 from flask_jwt_extended import create_access_token, get_jwt,get_jwt_identity, jwt_required
 
@@ -192,7 +192,7 @@ def discussao():
             return jsonify({"message": "Erro no servidor ao buscar a discussão"}), 400
 
     
-@app.route("/assunto", methods=["POST", "GET", "DELETE"])
+@app.route("/assunto", methods=["POST", "GET", "DELETE", "PUT"])
 def assunto():
     if request.method == "GET":
         # read images from the database
@@ -217,6 +217,21 @@ def assunto():
         except ValueError as e:
             print(e)     
             return jsonify({"message": "Erro no servidor ao criar o assunto"}), 400
+    if request.method == "PUT":
+        # save image in the database
+        content = request.json
+        print(content)
+        titulo = content.get("titulo", None)
+        descricao = content.get("descricao", None)
+        usuario_id = content.get("usuario_id", None)
+        assuntoId = content.get("assunto_id", None)
+        
+        try:
+            result = edit_assunto(titulo, descricao, usuario_id, assuntoId)
+            return result
+        except ValueError as e:
+            print(e)       
+            return jsonify({"message": "Erro no servidor ao editar o assunto"}), 400
     if request.method == "DELETE":
         # read images from the database
         userId = request.args.get("userId")

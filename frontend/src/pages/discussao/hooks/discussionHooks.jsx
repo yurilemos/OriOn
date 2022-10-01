@@ -91,20 +91,18 @@ export const useDiscussion = ({ discussionId, userId }) => {
   };
 
   const putDadosTopic = useMutation(async (payload) => {
-    message.loading('Analizando os dados');
-
+    console.log(payload);
     const response = await axios.put(`${API_URL}/assunto`, {
       ...payload,
       usuario_id: userId,
-      discussao_id: discussionId,
     });
-    message.destroy();
 
     invalidateQuery();
     return response;
   });
 
   const editTopic = (payload) => {
+    message.loading('Analizando os dados');
     putDadosTopic.mutate(payload, {
       onSuccess: async (res) => {
         if (res?.status === 200 || res?.status === 201) {
@@ -112,6 +110,7 @@ export const useDiscussion = ({ discussionId, userId }) => {
         }
       },
       onError: async (e) => {
+        console.log('messsage:', e.response.data);
         message.destroy();
         message.error(e.response.data.message);
       },

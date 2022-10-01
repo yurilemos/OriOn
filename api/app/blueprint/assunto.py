@@ -82,6 +82,44 @@ def create_assunto(titulo, descricao, discussao_id, usuario_id):
     
     return jsonify({"discussao": assunto.id})
 
+def edit_assunto(titulo, descricao, usuario_id, assuntoId):
+    if(usuario_id is None):
+        return jsonify({"message": "Usuário obrigatório"}), 400
+    if(assuntoId is None):
+        return jsonify({"message": "Assunto obrigatório"}), 400
+    
+    user_already_exists = Usuario.query.filter_by(id=usuario_id).all()
+    
+    if (user_already_exists is None):
+        return jsonify({"message": "Usuário inválido"}), 400
+    
+    
+    assunto = Assunto.query.filter_by(id=assuntoId).one()
+    
+    if (assunto is None):
+        return jsonify({"message": "Assunto inválido"}), 400
+    
+    discussao = Discussao.query.filter_by(id=assunto.discussao_id).one()
+    
+    grupo = Grupo.query.filter_by(id=discussao.grupo_id).one()
+        
+    participacao = Participacao.query.filter_by(usuario_id=usuario_id, grupo_id=grupo.id).one()
+    
+    if (participacao is None or participacao.nivel_participacao != 1):
+        return jsonify({"message": "Usuário não tem permissão de excluir esse assunto"}), 400
+    
+    
+    db.session.query(Assunto).filter(
+        Assunto.id==assuntoId
+    ).update({
+        Assunto.titulo: titulo,
+        Assunto.descricao: descricao,    
+    })
+    
+    db.session.commit()
+    
+    return jsonify({"message": "Assunto atualizado"})
+
 def delete_assunto(userId, assuntoId):
 
     if(userId is None):
@@ -98,7 +136,7 @@ def delete_assunto(userId, assuntoId):
     assunto = Assunto.query.filter_by(id=assuntoId).one()
     
     if (assunto is None):
-        return jsonify({"message": "Assunto inválida"}), 400
+        return jsonify({"message": "Assunto inválido"}), 400
     
     discussao = Discussao.query.filter_by(id=assunto.discussao_id).one()
     

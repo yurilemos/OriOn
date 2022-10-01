@@ -14,7 +14,7 @@ const AssuntoDiscussionModal = ({
 
   useEffect(() => {
     form.setFieldsValue({
-      titulo: formValue?.titulo,
+      titulo: formValue?.titulo || formValue?.nome,
       descricao: formValue?.descricao,
     });
   }, [form, formValue]);
