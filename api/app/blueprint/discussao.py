@@ -69,7 +69,7 @@ def create_discussion(titulo, descricao, grupo_id, usuario_id):
     return jsonify({"discussao": discussao.id})
 
 def edit_discussion(titulo, descricao, usuario_id, discussionId):
-    print(discussionId)
+
     if(usuario_id is None):
         return jsonify({"message": "Usuário obrigatório"}), 400
     if(discussionId is None):

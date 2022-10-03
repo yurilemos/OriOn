@@ -45,10 +45,7 @@ def get_assunto(id):
 
 
 def create_assunto(titulo, descricao, discussao_id, usuario_id):
-    print(titulo)
-    print(descricao)
-    print(discussao_id)
-    print(usuario_id)
+
     if (titulo is None):
         return jsonify({"message": "Título obrigatório"}), 400
     if (discussao_id is None):

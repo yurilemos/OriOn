@@ -51,10 +51,6 @@ export const Discussao = () => {
     editTopic({ ...values, assunto_id: chosenAssunto.id });
   };
 
-  const handleEditTopic = async (values) => {
-    editDiscussion(values);
-  };
-
   const handleDeleteDiscussion = async (id) => {
     deleteDiscussion();
     navigate(-1);

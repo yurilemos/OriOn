@@ -10,6 +10,7 @@ import GrupoDiscussaoModal from './modals/grupoDiscussao';
 import DiscussaoModal from './modals/discussao';
 import DeleteModal from '../../components/modals/deleteModal';
 import useGroup from './hooks/groupHooks';
+import UserModal from './modals/userModal';
 
 export const Home = () => {
   const navigate = useNavigate();
@@ -56,6 +57,7 @@ export const Home = () => {
   const [editDiscussionModal, setEditDiscussionModal] = useState(false);
   const [deleteGroupModal, setDeleteGroupModal] = useState(false);
   const [addDiscussionModal, setAddDiscussionModal] = useState(false);
+  const [userModal, setUserModal] = useState(false);
 
   return (
     <>
@@ -97,6 +99,10 @@ export const Home = () => {
               }}
               onEdit={() => {
                 setEditGroupModal(true);
+                setGroup(grupo);
+              }}
+              onUserEdit={() => {
+                setUserModal(true);
                 setGroup(grupo);
               }}
             >
@@ -179,6 +185,16 @@ export const Home = () => {
         title="Deletar o grupo de discussão"
         subtitle="Tem certeza que deseja excluir esse grupo de discussão?"
         description="Ao apaga-lo todos os temas relacionados a ele também serão excluidos"
+      />
+      <UserModal
+        onClose={() => {
+          setUserModal(false);
+        }}
+        open={userModal}
+        onFinish={(e) => {
+          setUserModal(false);
+        }}
+        groupId={group?.id ?? ''}
       />
     </>
   );

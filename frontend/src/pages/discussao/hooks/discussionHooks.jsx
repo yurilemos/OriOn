@@ -91,7 +91,6 @@ export const useDiscussion = ({ discussionId, userId }) => {
   };
 
   const putDadosTopic = useMutation(async (payload) => {
-    console.log(payload);
     const response = await axios.put(`${API_URL}/assunto`, {
       ...payload,
       usuario_id: userId,
@@ -110,7 +109,6 @@ export const useDiscussion = ({ discussionId, userId }) => {
         }
       },
       onError: async (e) => {
-        console.log('messsage:', e.response.data);
         message.destroy();
         message.error(e.response.data.message);
       },

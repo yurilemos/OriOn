@@ -27,9 +27,6 @@ def create_group(titulo, descricao, visibilidade, usuario_id):
       usuario_id=usuario_id
     )
     
-    print(grupo)
-    print(grupo.id)
-    
     if (grupo is None):
         return jsonify({"message": "Erro no servidor ao criar o grupo"}), 400
     
@@ -54,7 +51,6 @@ def create_group(titulo, descricao, visibilidade, usuario_id):
 def get_group(usuario_id):
   
     if(usuario_id is None):
-        print('ENTROUUUUUU')
         return jsonify({"message": "Usuário obrigatório"}), 400
     
     user = Usuario.query.filter_by(id=usuario_id).one()

@@ -8,6 +8,7 @@ from app.blueprint.grupo import get_group, create_group,edit_group, delete_group
 from app.blueprint.discussao import get_discussao, create_discussion, edit_discussion, delete_discussion
 from app.blueprint.assunto import get_assunto, create_assunto, edit_assunto, delete_assunto
 from app.blueprint.fala import get_fala, create_fala, delete_fala
+from app.blueprint.gerenciaUsuario import get_users
 from flask_jwt_extended import create_access_token, get_jwt,get_jwt_identity, jwt_required
 
 
@@ -278,4 +279,14 @@ def fala():
             print(e)   
             return jsonify({"message": "Erro no servidor ao buscar a discussão"}), 400
 
-    
+@app.route("/gerencia-usuario", methods=["POST", "GET", "PUT", "DELETE"])
+def gerenciaUsuario():
+    if request.method == "GET":            
+        id = request.args.get("groupId")
+        try:
+            result = get_users(id)
+            return result
+        except ValueError as e:
+            print(e)   
+            return jsonify({"message": "Erro no servidor ao buscar os participantes desse grupo"}), 400
+        
