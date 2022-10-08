@@ -8,7 +8,7 @@ from app.blueprint.grupo import get_group, create_group,edit_group, delete_group
 from app.blueprint.discussao import get_discussao, create_discussion, edit_discussion, delete_discussion
 from app.blueprint.assunto import get_assunto, create_assunto, edit_assunto, delete_assunto
 from app.blueprint.fala import get_fala, create_fala, delete_fala
-from app.blueprint.gerenciaUsuario import get_users
+from app.blueprint.gerenciaUsuario import get_users, get_user_search, add_users, delete_user_from_group
 from flask_jwt_extended import create_access_token, get_jwt,get_jwt_identity, jwt_required
 
 
@@ -97,8 +97,7 @@ def grupo():
         
     if request.method == "POST":
         # save image in the database
-        content = request.json
-        print(content)
+        content = request.json        
         titulo = content.get("titulo", None)
         descricao = content.get("descricao", None)
         visibilidade = content.get("visibilidade", None)
@@ -114,7 +113,6 @@ def grupo():
     if request.method == "PUT":
         # save image in the database
         content = request.json
-        print(content)
         titulo = content.get("titulo", None)
         descricao = content.get("descricao", None)
         visibilidade = content.get("visibilidade", None)
@@ -169,7 +167,6 @@ def discussao():
     if request.method == "PUT":
         # save image in the database
         content = request.json
-        print(content)
         titulo = content.get("titulo", None)
         descricao = content.get("descricao", None)
         usuario_id = content.get("usuario_id", None)
@@ -221,7 +218,6 @@ def assunto():
     if request.method == "PUT":
         # save image in the database
         content = request.json
-        print(content)
         titulo = content.get("titulo", None)
         descricao = content.get("descricao", None)
         usuario_id = content.get("usuario_id", None)
@@ -279,14 +275,51 @@ def fala():
             print(e)   
             return jsonify({"message": "Erro no servidor ao buscar a discussão"}), 400
 
-@app.route("/gerencia-usuario", methods=["POST", "GET", "PUT", "DELETE"])
+@app.route("/gerencia-usuario", methods=["POST", "GET", "DELETE"])
 def gerenciaUsuario():
     if request.method == "GET":            
-        id = request.args.get("groupId")
+        id = request.args.get("groupId")        
         try:
             result = get_users(id)
             return result
         except ValueError as e:
             print(e)   
             return jsonify({"message": "Erro no servidor ao buscar os participantes desse grupo"}), 400
+        
+    if request.method == "POST":
+        content = request.json        
+        id = content.get("groupId", None)
+        userList = content.get("userList", None)                   
+        
+        try:
+            result = add_users(id, userList)
+            return result
+        except ValueError as e:
+            print(e)     
+            return jsonify({"message": "Erro no servidor ao criar a discussão"}), 400
+    if request.method == "DELETE":
+        id = request.args.get("groupId", None)
+        userId = request.args.get("userId", None)   
+        try:
+            result = delete_user_from_group(id, userId)
+            return result
+        except ValueError as e:
+            print(e)   
+            return jsonify({"message": "Erro no servidor ao buscar a discussão"}), 400
+        
+@app.route("/gerencia-usuario/pesquisa", methods=["GET"])
+def pesquisaUsuario():
+    if request.method == "GET":            
+        id = request.args.get("groupId")
+        search = request.args.get("search")
+        try:
+            result = get_user_search(id,search)
+            return result
+        except ValueError as e:
+            print(e)   
+            return jsonify({"message": "Erro no servidor ao buscar os usuários"}), 400
+        
+    
+        
+        
         

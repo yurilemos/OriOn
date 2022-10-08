@@ -3,9 +3,6 @@ import json
 from app import db, Usuario, Grupo, Participacao, Discussao
 from flask import jsonify
 
-
-      
-      
 def create_group(titulo, descricao, visibilidade, usuario_id):
     if(titulo is None):
         return jsonify({"message": "Título obrigatório"}), 400
@@ -75,6 +72,7 @@ def get_group(usuario_id):
     result = []
     for grupo in grupos:
         discussoes = Discussao.query.filter_by(grupo_id=grupo.id).all()
+        podeEditar = (int(grupo.usuario_id) == int(usuario_id) or int(user.perfil_usuario) == 3)
         dresult = []
         for d in discussoes:
             dresult.append({
@@ -92,6 +90,7 @@ def get_group(usuario_id):
           'visibilidade': grupo.visibilidade_grupo,
           'status': grupo.visibilidade_grupo,
           'usuario_id': grupo.usuario_id,
+          'podeEditar': podeEditar,
           'discussoes': dresult,
           })
         
@@ -103,7 +102,7 @@ def edit_group(titulo, descricao, visibilidade, arquivar, usuario_id, group_Id):
         return jsonify({"message": "Usuário obrigatório"}), 400
     if(group_Id is None):
         return jsonify({"message": "Grupo obrigatório"}), 400
-      
+    
     user_already_exists = Usuario.query.filter_by(id=usuario_id).all()
     
     if (user_already_exists is None):
