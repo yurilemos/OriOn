@@ -88,7 +88,7 @@ def get_group(usuario_id):
           'descricao': grupo.descricao_grupo,
           'data_criacao': grupo.data_criacao_grupo,
           'visibilidade': grupo.visibilidade_grupo,
-          'status': grupo.visibilidade_grupo,
+          'status': grupo.status_grupo,
           'usuario_id': grupo.usuario_id,
           'podeEditar': podeEditar,
           'discussoes': dresult,
@@ -154,3 +154,99 @@ def delete_group(userId, groupId):
     db.session.commit()
     
     return jsonify({"grupo deletado": grupo.id})
+
+
+def get_user_groups(usuario_id,visibilidade):
+
+    if(usuario_id is None):
+        return jsonify({"message": "Usuário obrigatório"}), 400
+    
+    user = Usuario.query.filter_by(id=usuario_id).one()
+    
+    if(user is None):
+        return jsonify({"message": "Usuário inválido"}), 400
+    
+
+  
+    grupos = db.session.query(
+        Grupo
+    ).filter(
+        (Grupo.usuario_id == usuario_id) & (Grupo.visibilidade_grupo == visibilidade)
+    ).all()
+    
+    result = []
+    for grupo in grupos:
+        discussoes = Discussao.query.filter_by(grupo_id=grupo.id).all()
+        dresult = []
+        for d in discussoes:
+            dresult.append({
+              'id': d.id,
+              'nome': d.titulo,
+              'descricao': d.descricao,
+              'usuario_id': d.usuario_id,
+              'data_criacao': d.data_criacao_descricao,
+              })
+        result.append({
+          'id': grupo.id,
+          'nome': grupo.nome_grupo,
+          'descricao': grupo.descricao_grupo,
+          'data_criacao': grupo.data_criacao_grupo,
+          'visibilidade': grupo.visibilidade_grupo,
+          'status': grupo.status_grupo,
+          'usuario_id': grupo.usuario_id,
+          'podeEditar': True,
+          'discussoes': dresult,
+          })
+        
+    return jsonify(result)
+
+def get_user_shelved_groups(usuario_id, visibilidade):
+  
+    if(usuario_id is None):
+        return jsonify({"message": "Usuário obrigatório"}), 400
+    
+    user = Usuario.query.filter_by(id=usuario_id).one()
+    
+    if(user is None):
+        return jsonify({"message": "Usuário inválido"}), 400
+    
+    if(user.perfil_usuario == 3):
+        grupos = db.session.query(
+            Grupo
+        ).filter(
+            (Grupo.status_grupo == 2) & (Grupo.visibilidade_grupo == visibilidade)
+        ).all()
+    
+
+    else:    
+        grupos = db.session.query(
+            Grupo
+        ).filter(
+            (Grupo.status_grupo == 2) & (Grupo.usuario_id == usuario_id) & (Grupo.visibilidade_grupo == visibilidade)
+        ).all()
+    
+    result = []
+    for grupo in grupos:
+        discussoes = Discussao.query.filter_by(grupo_id=grupo.id).all()
+        dresult = []
+        for d in discussoes:
+            dresult.append({
+              'id': d.id,
+              'nome': d.titulo,
+              'descricao': d.descricao,
+              'usuario_id': d.usuario_id,
+              'data_criacao': d.data_criacao_descricao,
+              })
+        result.append({
+          'id': grupo.id,
+          'nome': grupo.nome_grupo,
+          'descricao': grupo.descricao_grupo,
+          'data_criacao': grupo.data_criacao_grupo,
+          'visibilidade': grupo.visibilidade_grupo,
+          'status': grupo.status_grupo,
+          'usuario_id': grupo.usuario_id,
+          'podeEditar': True,
+          'discussoes': dresult,
+          })
+        
+    return jsonify(result)

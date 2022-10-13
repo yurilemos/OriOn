@@ -4,7 +4,7 @@ from app import app
 import requests
 from flask import request, jsonify
 from app.blueprint.login import login_user, register_user, logout_user
-from app.blueprint.grupo import get_group, create_group,edit_group, delete_group
+from app.blueprint.grupo import get_group, create_group,edit_group, delete_group, get_user_groups, get_user_shelved_groups
 from app.blueprint.discussao import get_discussao, create_discussion, edit_discussion, delete_discussion
 from app.blueprint.assunto import get_assunto, create_assunto, edit_assunto, delete_assunto
 from app.blueprint.fala import get_fala, create_fala, delete_fala
@@ -318,6 +318,32 @@ def pesquisaUsuario():
         except ValueError as e:
             print(e)   
             return jsonify({"message": "Erro no servidor ao buscar os usuários"}), 400
+        
+@app.route("/meus-grupos", methods=["GET"])
+def meusGrupos():
+    if request.method == "GET":            
+        # read images from the database
+        userId = request.args.get("userId")
+        visibilidade = request.args.get("visibilidade")
+        try:
+            result = get_user_groups(userId,visibilidade)
+            return result
+        except ValueError as e:
+            print(e)       
+            return jsonify({"message": "Erro no servidor ao buscar os grupos de discussão"}), 400
+        
+@app.route("/meus-grupos-arquivados", methods=["GET"])
+def meusGruposArquivados():
+    if request.method == "GET":            
+        # read images from the database
+        userId = request.args.get("userId")
+        visibilidade = request.args.get("visibilidade")
+        try:
+            result = get_user_shelved_groups(userId,visibilidade)
+            return result
+        except ValueError as e:
+            print(e)       
+            return jsonify({"message": "Erro no servidor ao buscar os grupos de discussão"}), 400
         
     
         

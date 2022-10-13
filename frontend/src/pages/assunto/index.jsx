@@ -6,7 +6,7 @@ import { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import Chat from '../../components/chat';
 import Search from '../../components/search';
-import { API_URL } from '../../utils/api';
+import { api, API_URL } from '../../utils/api';
 
 export const Assunto = () => {
   const { assuntoId } = useParams();
@@ -17,7 +17,7 @@ export const Assunto = () => {
       message.loading('Analizando os dados');
 
       try {
-        const res = await axios.get(`${API_URL}/assunto?id=${assuntoId}`);
+        const res = await api.main.get(`/assunto?id=${assuntoId}`);
 
         setTopic(res.data);
         message.destroy();

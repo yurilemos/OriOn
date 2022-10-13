@@ -7,6 +7,9 @@ import { Home } from '../pages/home/index';
 import Wrapper from '../components/wrapper.js';
 import { Discussao } from '../pages/discussao';
 import { Assunto } from '../pages/assunto';
+import { MeusGrupos } from '../pages/meusGrupos';
+import GrupoDiscussaoModal from '../pages/home/modals/grupoDiscussao';
+import { GruposArquivados } from '../pages/gruposArquivados';
 
 export const Router = () => {
   return (
@@ -39,6 +42,24 @@ export const Router = () => {
           element={
             <Wrapper>
               <Assunto />
+            </Wrapper>
+          }
+        />
+        <Route
+          path="/meus-grupos/:visibilidade"
+          exact
+          element={
+            <Wrapper>
+              <MeusGrupos />
+            </Wrapper>
+          }
+        />
+        <Route
+          path="/meus-grupos-arquivados/:visibilidade"
+          exact
+          element={
+            <Wrapper>
+              <GruposArquivados />
             </Wrapper>
           }
         />

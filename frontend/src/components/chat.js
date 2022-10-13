@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { useContext } from 'react';
 import AuthContext from '../utils/auth';
 import 'react-quill/dist/quill.snow.css';
-import { API_URL } from '../utils/api';
+import { api, API_URL } from '../utils/api';
 import axios from 'axios';
 import Editor from './editor';
 import DeleteModal from './modals/deleteModal';
@@ -93,7 +93,7 @@ const Chat = ({ assuntoId }) => {
     message.loading('Analizando os dados');
 
     try {
-      const response = await axios.get(`${API_URL}/fala?id=${assuntoId}`);
+      const response = await api.main.get(`/fala?id=${assuntoId}`);
 
       setComments(response.data);
       message.destroy();
@@ -107,9 +107,7 @@ const Chat = ({ assuntoId }) => {
     message.loading('Analizando os dados');
 
     try {
-      await axios.delete(
-        `${API_URL}/fala?userId=${currentUser.userId}&falaId=${id}`
-      );
+      await api.main.delete(`/fala?userId=${currentUser.userId}&falaId=${id}`);
 
       getFalas();
       message.destroy();
@@ -131,7 +129,7 @@ const Chat = ({ assuntoId }) => {
     message.loading('Analizando os dados');
 
     try {
-      await axios.post(`${API_URL}/fala`, {
+      await api.main.post(`/fala`, {
         ...values,
         usuario_id: currentUser.userId,
         assunto_id: assuntoId,

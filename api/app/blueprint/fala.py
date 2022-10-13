@@ -107,10 +107,15 @@ def delete_fala(userId, falaId):
     discussao = Discussao.query.filter_by(id=assunto.discussao_id).one()
     
     grupo = Grupo.query.filter_by(id=discussao.grupo_id).one()
-        
-    participacao = Participacao.query.filter_by(usuario_id=userId, grupo_id=grupo.id).one()
     
-    if (participacao is None or participacao.nivel_participacao != 1):
+    
+    if (grupo.visibilidade_grupo == 2):
+        print('entrou')
+        participacao = Participacao.query.filter_by(usuario_id=userId, grupo_id=grupo.id).one()
+        if(partifipacao is None):
+            return jsonify({"message": "Usuário não tem permissão de excluir esse assunto"}), 400
+    
+    if (int(fala.usuario_id) != int(userId)):
         return jsonify({"message": "Usuário não tem permissão de excluir esse assunto"}), 400
     
     

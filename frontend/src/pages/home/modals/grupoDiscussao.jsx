@@ -11,6 +11,7 @@ const GrupoDiscussaoModal = ({ open, onClose, title, onFinish, formValue }) => {
       titulo: formValue?.nome,
       descricao: formValue?.descricao,
       visibilidade: formValue?.visibilidade || 1,
+      arquivar: formValue?.status === 2 ? true : false,
     });
   }, [form, formValue]);
 

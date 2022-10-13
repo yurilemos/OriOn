@@ -1,16 +1,32 @@
 import { message } from 'antd';
 import axios from 'axios';
-import { API_URL } from '../../../utils/api';
+import { api, API_URL } from '../../../utils/api';
 import { useQuery, useMutation, useQueryClient } from 'react-query';
 
-export const useGroup = ({ userId }) => {
+export const useGroup = ({ userId, myGroup, shelveGroups, visibilidade }) => {
   const queryClient = useQueryClient();
 
   const getAllGroups = async () => {
     message.loading('Analizando os dados');
 
     try {
-      const res = await axios.get(`${API_URL}/grupo?userId=${userId}`);
+      if (myGroup) {
+        const res = await axios.get(
+          `${API_URL}/meus-grupos?userId=${userId}&visibilidade=${visibilidade}`
+        );
+
+        message.destroy();
+        return res.data;
+      }
+      if (shelveGroups) {
+        const res = await axios.get(
+          `${API_URL}/meus-grupos-arquivados?userId=${userId}&visibilidade=${visibilidade}`
+        );
+
+        message.destroy();
+        return res.data;
+      }
+      const res = await api.main.get(`/grupo?userId=${userId}`);
 
       message.destroy();
       return res.data;
@@ -26,9 +42,13 @@ export const useGroup = ({ userId }) => {
     isError,
     isIdle,
     data: grupos,
-  } = useQuery(['group', userId], getAllGroups, {
-    enabled: !!userId,
-  });
+  } = useQuery(
+    ['group', userId, myGroup, shelveGroups, visibilidade],
+    getAllGroups,
+    {
+      enabled: !!userId,
+    }
+  );
 
   const invalidateQuery = async () => {
     await queryClient.invalidateQueries('group');

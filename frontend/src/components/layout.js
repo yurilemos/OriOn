@@ -12,6 +12,7 @@ const items = [
     key: 1,
     icon: null,
     label: `Todos os grupos`,
+    path: '/home',
   },
   {
     key: 2,
@@ -21,10 +22,12 @@ const items = [
       {
         key: 3,
         label: `Meus grupos`,
+        path: '/meus-grupos/1',
       },
       {
         key: 4,
         label: `Grupos arquivados`,
+        path: '/meus-grupos-arquivados/1',
       },
     ],
   },
@@ -36,10 +39,12 @@ const items = [
       {
         key: 6,
         label: `Meus Grupos`,
+        path: '/meus-grupos/2',
       },
       {
         key: 7,
         label: `Grupos arquivados`,
+        path: '/meus-grupos-arquivados/2',
       },
     ],
   },
@@ -52,20 +57,51 @@ const items = [
 
 const Layout = ({ children }) => {
   const { logout, currentUser } = useContext(AuthContext);
-  let navigate = useNavigate();
   const location = useLocation();
 
-  const handlePageName = {
-    '/home': 'Grupo de Discussão',
-    '/discussao': 'Discussão',
-    '/assunto': 'Assunto',
+  let navigate = useNavigate();
+
+  const handlePageName = () => {
+    if (location.pathname.includes('/home')) return 'Grupos de discussão';
+    if (location.pathname.includes('/discussao')) return 'Discussões';
+    if (location.pathname.includes('/assunto')) return 'Assuntos';
+    if (location.pathname.includes('/fala')) return 'Falas';
+    if (location.pathname.includes('/meus-grupos')) return 'Meus grupos';
+    if (location.pathname.includes('/meus-grupos-arquivados'))
+      return 'Meus grupos arquivados';
+    return '';
   };
 
   const onMenuClick = (e) => {
+    if (e.key === '1') {
+      navigate('/home');
+    } else if (e.key === '3') {
+      navigate('/meus-grupos/1');
+    } else if (e.key === '4') {
+      navigate('/meus-grupos-arquivados/1');
+    } else if (e.key === '6') {
+      navigate('/meus-grupos/2');
+    } else if (e.key === '7') {
+      navigate('/meus-grupos-arquivados/2');
+    }
+  };
+
+  const onMiniMenuClick = (e) => {
     if (e.key === '3') {
       logout();
       navigate('/login');
     }
+  };
+
+  const handleSelectedMenu = () => {
+    if (location.pathname.includes('/home')) return ['1'];
+    if (location.pathname.includes('/meus-grupos/1')) return ['3', '2'];
+    if (location.pathname.includes('/meus-grupos/2')) return ['6', '5'];
+    if (location.pathname.includes('/meus-grupos-arquivados/1'))
+      return ['4', '2'];
+    if (location.pathname.includes('/meus-grupos-arquivados/2'))
+      return ['7', '7'];
+    return ['1'];
   };
 
   return (
@@ -94,7 +130,7 @@ const Layout = ({ children }) => {
             placement="bottom"
             overlay={
               <Menu
-                onClick={onMenuClick}
+                onClick={onMiniMenuClick}
                 items={[
                   {
                     key: 1,
@@ -129,12 +165,12 @@ const Layout = ({ children }) => {
         <Sider width={200} className="site-layout-background">
           <Menu
             mode="inline"
-            defaultSelectedKeys={['1']}
-            defaultOpenKeys={['sub1']}
+            defaultSelectedKeys={handleSelectedMenu()}
             style={{
               height: '100%',
             }}
             items={items}
+            onClick={onMenuClick}
           />
         </Sider>
         <LayoutAntd
@@ -156,16 +192,18 @@ const Layout = ({ children }) => {
                   cursor: 'pointer',
                 }}
               >
-                {location.pathname !== '/home' && (
-                  <ArrowLeftOutlined
-                    style={{ fontSize: '30px' }}
-                    onClick={() => {
-                      navigate(-1);
-                    }}
-                  />
-                )}
+                {location.pathname !== '/home' &&
+                  !location.pathname.includes('/meus-grupos') &&
+                  !location.pathname.includes('/meus-grupos-arquivados') && (
+                    <ArrowLeftOutlined
+                      style={{ fontSize: '30px' }}
+                      onClick={() => {
+                        navigate(-1);
+                      }}
+                    />
+                  )}
                 <h1 style={{ fontSize: '20px', marginBottom: '0px' }}>
-                  {handlePageName[location.pathname]}
+                  {handlePageName()}
                 </h1>
               </div>
             </Breadcrumb.Item>

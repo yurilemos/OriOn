@@ -24,7 +24,9 @@ const UserModal = ({ open, onClose, groupId, userId }) => {
       title: 'Nome',
       dataIndex: 'nome',
       key: 'nome',
-      render: (text) => <a>{text}</a>,
+      render: (text) => {
+        return text;
+      },
     },
     {
       title: 'e-mail',
