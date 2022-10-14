@@ -1,6 +1,6 @@
 import datetime
 import json
-from app import app
+from app import app, Usuario
 import requests
 from flask import request, jsonify
 from app.blueprint.login import login_user, register_user, logout_user
@@ -84,10 +84,13 @@ def my_profile():
 
 
 @app.route("/grupo", methods=["GET", "POST", "PUT" ,"DELETE"])
+@jwt_required()
 def grupo():
     if request.method == "GET":
         # read images from the database
-        userId = request.args.get("userId")
+        user = Usuario.query.filter_by(email_usuario=get_jwt_identity()).first()
+        userId = user.id
+        
         try:
             result = get_group(userId)
             return result
@@ -101,10 +104,12 @@ def grupo():
         titulo = content.get("titulo", None)
         descricao = content.get("descricao", None)
         visibilidade = content.get("visibilidade", None)
-        usuario_id = content.get("usuario_id", None)
+        
+        user = Usuario.query.filter_by(email_usuario=get_jwt_identity()).first()
+        userId = user.id
         
         try:
-            result = create_group(titulo, descricao, visibilidade, usuario_id)
+            result = create_group(titulo, descricao, visibilidade, userId)
             return result
         except ValueError as e:
             print(e)       
@@ -117,19 +122,23 @@ def grupo():
         descricao = content.get("descricao", None)
         visibilidade = content.get("visibilidade", None)
         arquivar = content.get("arquivar", None)
-        usuario_id = content.get("usuario_id", None)
         groupId = content.get("grupo_id", None)
         
+        user = Usuario.query.filter_by(email_usuario=get_jwt_identity()).first()
+        userId = user.id
+        
         try:
-            result = edit_group(titulo, descricao, visibilidade, arquivar, usuario_id, groupId)
+            result = edit_group(titulo, descricao, visibilidade, arquivar, userId, groupId)
             return result
         except ValueError as e:
             print(e)       
             return jsonify({"message": "Erro no servidor ao editar o grupo de discussão"}), 400
     
     if request.method == "DELETE":
-        userId = request.args.get("userId")
         groupId = request.args.get("groupId")
+        
+        user = Usuario.query.filter_by(email_usuario=get_jwt_identity()).first()
+        userId = user.id
         
         try:
             result = delete_group(userId, groupId)
@@ -140,12 +149,15 @@ def grupo():
  
         
 @app.route("/discussao", methods=["POST", "GET", "DELETE", "PUT"])
+@jwt_required()
 def discussao():
     if request.method == "GET":
         # read images from the database
         id = request.args.get("id")
+        user = Usuario.query.filter_by(email_usuario=get_jwt_identity()).first()
+        userId = user.id
         try:
-            result = get_discussao(id)
+            result = get_discussao(id,userId)
             return result
         except ValueError as e:
             print(e)   
@@ -156,10 +168,12 @@ def discussao():
         titulo = content.get("titulo", None)
         descricao = content.get("descricao", None)
         grupo_id = content.get("grupo_id", None)
-        usuario_id = content.get("usuario_id", None)
+        
+        user = Usuario.query.filter_by(email_usuario=get_jwt_identity()).first()
+        userId = user.id
         
         try:
-            result = create_discussion(titulo, descricao, grupo_id, usuario_id)
+            result = create_discussion(titulo, descricao, grupo_id, userId)
             return result
         except ValueError as e:
             print(e)     
@@ -169,19 +183,24 @@ def discussao():
         content = request.json
         titulo = content.get("titulo", None)
         descricao = content.get("descricao", None)
-        usuario_id = content.get("usuario_id", None)
         discussionId = content.get("discussao_id", None)
         
+        user = Usuario.query.filter_by(email_usuario=get_jwt_identity()).first()
+        userId = user.id
+        
         try:
-            result = edit_discussion(titulo, descricao, usuario_id, discussionId)
+            result = edit_discussion(titulo, descricao, userId, discussionId)
             return result
         except ValueError as e:
             print(e)       
             return jsonify({"message": "Erro no servidor ao editar a discussão"}), 400
     if request.method == "DELETE":
         # read images from the database
-        userId = request.args.get("userId")
         discussionId = request.args.get("discussionId")
+        
+        user = Usuario.query.filter_by(email_usuario=get_jwt_identity()).first()
+        userId = user.id
+        
         try:
             result = delete_discussion(userId, discussionId)
             return result
@@ -191,12 +210,15 @@ def discussao():
 
     
 @app.route("/assunto", methods=["POST", "GET", "DELETE", "PUT"])
+@jwt_required()
 def assunto():
     if request.method == "GET":
         # read images from the database
         id = request.args.get("id")
+        user = Usuario.query.filter_by(email_usuario=get_jwt_identity()).first()
+        userId = user.id 
         try:
-            result = get_assunto(id)
+            result = get_assunto(id,userId)
             return result
         except ValueError as e:
             print(e)   
@@ -206,11 +228,13 @@ def assunto():
         content = request.json        
         titulo = content.get("titulo", None)
         descricao = content.get("descricao", None)
-        discussao_id = content.get("discussao_id", None)
-        usuario_id = content.get("usuario_id", None)
+        discussao_id = content.get("discussao_id", None)        
+        
+        user = Usuario.query.filter_by(email_usuario=get_jwt_identity()).first()
+        userId = user.id
         
         try:
-            result = create_assunto(titulo, descricao, discussao_id, usuario_id)
+            result = create_assunto(titulo, descricao, discussao_id, userId)
             return result
         except ValueError as e:
             print(e)     
@@ -219,20 +243,23 @@ def assunto():
         # save image in the database
         content = request.json
         titulo = content.get("titulo", None)
-        descricao = content.get("descricao", None)
-        usuario_id = content.get("usuario_id", None)
+        descricao = content.get("descricao", None)        
         assuntoId = content.get("assunto_id", None)
         
+        user = Usuario.query.filter_by(email_usuario=get_jwt_identity()).first()
+        userId = user.id
+        
         try:
-            result = edit_assunto(titulo, descricao, usuario_id, assuntoId)
+            result = edit_assunto(titulo, descricao, userId, assuntoId)
             return result
         except ValueError as e:
             print(e)       
             return jsonify({"message": "Erro no servidor ao editar o assunto"}), 400
     if request.method == "DELETE":
-        # read images from the database
-        userId = request.args.get("userId")
         assuntoId = request.args.get("assuntoId")
+        
+        user = Usuario.query.filter_by(email_usuario=get_jwt_identity()).first()
+        userId = user.id
         try:
             result = delete_assunto(userId, assuntoId)
             return result
@@ -242,12 +269,15 @@ def assunto():
     
     
 @app.route("/fala", methods=["POST", "GET", "DELETE"])
+@jwt_required()
 def fala():
     if request.method == "GET":
         # read images from the database
         id = request.args.get("id")
+        user = Usuario.query.filter_by(email_usuario=get_jwt_identity()).first()
+        userId = user.id
         try:
-            result = get_fala(id)
+            result = get_fala(id,userId)
             return result
         except ValueError as e:
             print(e)   
@@ -256,18 +286,22 @@ def fala():
         content = request.json        
         conteudo = content.get("conteudo", None)
         assunto_id = content.get("assunto_id", None)
-        usuario_id = content.get("usuario_id", None)
-        fala_id = content.get("fala_id", None)        
+        fala_id = content.get("fala_id", None) 
+        
+        user = Usuario.query.filter_by(email_usuario=get_jwt_identity()).first()
+        userId = user.id       
         
         try:
-            result = create_fala(conteudo, assunto_id, usuario_id, fala_id)
+            result = create_fala(conteudo, assunto_id, userId, fala_id)
             return result
         except ValueError as e:
             print(e)     
             return jsonify({"message": "Erro no servidor ao criar a discussão"}), 400
     if request.method == "DELETE":
-        userId = request.args.get("userId")
         falaId = request.args.get("falaId")
+        user = Usuario.query.filter_by(email_usuario=get_jwt_identity()).first()
+        userId = user.id  
+        
         try:
             result = delete_fala(userId, falaId)
             return result
@@ -276,11 +310,14 @@ def fala():
             return jsonify({"message": "Erro no servidor ao buscar a discussão"}), 400
 
 @app.route("/gerencia-usuario", methods=["POST", "GET", "DELETE"])
+@jwt_required()
 def gerenciaUsuario():
     if request.method == "GET":            
-        id = request.args.get("groupId")        
+        id = request.args.get("groupId")
+        user = Usuario.query.filter_by(email_usuario=get_jwt_identity()).first()
+        userId = user.id        
         try:
-            result = get_users(id)
+            result = get_users(id, userId)
             return result
         except ValueError as e:
             print(e)   
@@ -289,42 +326,52 @@ def gerenciaUsuario():
     if request.method == "POST":
         content = request.json        
         id = content.get("groupId", None)
-        userList = content.get("userList", None)                   
+        userList = content.get("userList", None)
+        user = Usuario.query.filter_by(email_usuario=get_jwt_identity()).first()
+        userId = user.id                     
         
         try:
-            result = add_users(id, userList)
+            result = add_users(id, userList, userId)
             return result
         except ValueError as e:
             print(e)     
             return jsonify({"message": "Erro no servidor ao criar a discussão"}), 400
     if request.method == "DELETE":
         id = request.args.get("groupId", None)
-        userId = request.args.get("userId", None)   
+        userId = request.args.get("userId", None)  
+        user = Usuario.query.filter_by(email_usuario=get_jwt_identity()).first()
+        userRequestId = user.id   
         try:
-            result = delete_user_from_group(id, userId)
+            result = delete_user_from_group(id, userId, userRequestId)
             return result
         except ValueError as e:
             print(e)   
             return jsonify({"message": "Erro no servidor ao buscar a discussão"}), 400
         
 @app.route("/gerencia-usuario/pesquisa", methods=["GET"])
+@jwt_required()
 def pesquisaUsuario():
     if request.method == "GET":            
         id = request.args.get("groupId")
         search = request.args.get("search")
+        user = Usuario.query.filter_by(email_usuario=get_jwt_identity()).first()
+        userId = user.id 
         try:
-            result = get_user_search(id,search)
+            result = get_user_search(id,search,userId)
             return result
         except ValueError as e:
             print(e)   
             return jsonify({"message": "Erro no servidor ao buscar os usuários"}), 400
         
 @app.route("/meus-grupos", methods=["GET"])
+@jwt_required()
 def meusGrupos():
     if request.method == "GET":            
         # read images from the database
-        userId = request.args.get("userId")
         visibilidade = request.args.get("visibilidade")
+        user = Usuario.query.filter_by(email_usuario=get_jwt_identity()).first()
+        userId = user.id 
+        
         try:
             result = get_user_groups(userId,visibilidade)
             return result
@@ -333,11 +380,12 @@ def meusGrupos():
             return jsonify({"message": "Erro no servidor ao buscar os grupos de discussão"}), 400
         
 @app.route("/meus-grupos-arquivados", methods=["GET"])
+@jwt_required()
 def meusGruposArquivados():
     if request.method == "GET":            
-        # read images from the database
-        userId = request.args.get("userId")
         visibilidade = request.args.get("visibilidade")
+        user = Usuario.query.filter_by(email_usuario=get_jwt_identity()).first()
+        userId = user.id 
         try:
             result = get_user_shelved_groups(userId,visibilidade)
             return result

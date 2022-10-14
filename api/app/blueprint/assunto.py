@@ -2,7 +2,7 @@ from app import db, Usuario, Assunto, Discussao, Fala, Grupo, Participacao
 from flask import jsonify
 
 
-def get_assunto(id):
+def get_assunto(id,userId):
     if (id is None):
         return jsonify({"message": "Id da discussão obrigatório"}), 400
     

@@ -30,7 +30,6 @@ export const GruposArquivados = () => {
     deleteGroup,
     createDiscussion,
   } = useGroup({
-    userId: currentUser.userId,
     shelveGroups: true,
     visibilidade: visibilidade,
   });

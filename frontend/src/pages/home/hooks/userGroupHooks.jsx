@@ -1,6 +1,5 @@
 import { message } from 'antd';
-import axios from 'axios';
-import { API_URL } from '../../../utils/api';
+import { api } from '../../../utils/api';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 
 export const useUserList = ({ groupId, search }) => {
@@ -10,9 +9,7 @@ export const useUserList = ({ groupId, search }) => {
     message.loading('Analizando os dados');
 
     try {
-      const res = await axios.get(
-        `${API_URL}/gerencia-usuario?groupId=${groupId}`
-      );
+      const res = await api.main.get(`/gerencia-usuario?groupId=${groupId}`);
 
       message.destroy();
       return res.data;
@@ -26,8 +23,8 @@ export const useUserList = ({ groupId, search }) => {
     message.loading('Analizando os dados');
 
     try {
-      const res = await axios.get(
-        `${API_URL}/gerencia-usuario/pesquisa?groupId=${groupId}&search=${search}`
+      const res = await api.main.get(
+        `/gerencia-usuario/pesquisa?groupId=${groupId}&search=${search}`
       );
 
       message.destroy();
@@ -64,7 +61,7 @@ export const useUserList = ({ groupId, search }) => {
   const postDados = useMutation(async (payload) => {
     message.loading('Analizando os dados');
 
-    const response = await axios.post(`${API_URL}/gerencia-usuario`, {
+    const response = await api.main.post(`/gerencia-usuario`, {
       ...payload,
       groupId,
     });
@@ -91,8 +88,8 @@ export const useUserList = ({ groupId, search }) => {
   const deleteDados = useMutation(async (payload) => {
     message.loading('Analizando os dados');
 
-    const response = await axios.delete(
-      `${API_URL}/gerencia-usuario?userId=${payload}&groupId=${groupId}`
+    const response = await api.main.delete(
+      `/gerencia-usuario?userId=${payload}&groupId=${groupId}`
     );
     message.destroy();
 

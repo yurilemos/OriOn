@@ -1,12 +1,11 @@
 import { message } from 'antd';
-import axios from 'axios';
 import React from 'react';
 import { useEffect } from 'react';
 import { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import Chat from '../../components/chat';
 import Search from '../../components/search';
-import { api, API_URL } from '../../utils/api';
+import { api } from '../../utils/api';
 
 export const Assunto = () => {
   const { assuntoId } = useParams();

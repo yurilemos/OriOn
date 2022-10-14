@@ -1,16 +1,15 @@
 import { message } from 'antd';
-import axios from 'axios';
-import { API_URL } from '../../../utils/api';
+import { api } from '../../../utils/api';
 import { useQuery, useMutation, useQueryClient } from 'react-query';
 
-export const useDiscussion = ({ discussionId, userId }) => {
+export const useDiscussion = ({ discussionId }) => {
   const queryClient = useQueryClient();
 
   const getDiscussion = async () => {
     message.loading('Analizando os dados');
 
     try {
-      const res = await axios.get(`${API_URL}/discussao?id=${discussionId}`);
+      const res = await api.main.get(`/discussao?id=${discussionId}`);
 
       message.destroy();
       return res.data;
@@ -26,8 +25,8 @@ export const useDiscussion = ({ discussionId, userId }) => {
     isError,
     isIdle,
     data: discussao,
-  } = useQuery(['discussao', discussionId, userId], getDiscussion, {
-    enabled: !!discussionId && !!userId,
+  } = useQuery(['discussao', discussionId], getDiscussion, {
+    enabled: !!discussionId,
   });
 
   const invalidateQuery = async () => {
@@ -37,9 +36,8 @@ export const useDiscussion = ({ discussionId, userId }) => {
   const putDados = useMutation(async (payload) => {
     message.loading('Analizando os dados');
 
-    const response = await axios.put(`${API_URL}/discussao`, {
+    const response = await api.main.put(`/discussao`, {
       ...payload,
-      usuario_id: userId,
       discussao_id: discussionId,
     });
     message.destroy();
@@ -65,9 +63,8 @@ export const useDiscussion = ({ discussionId, userId }) => {
   const postDadosTopic = useMutation(async (payload) => {
     message.loading('Analizando os dados');
 
-    const response = await axios.post(`${API_URL}/assunto`, {
+    const response = await api.main.post(`/assunto`, {
       ...payload,
-      usuario_id: userId,
       discussao_id: discussionId,
     });
     message.destroy();
@@ -91,9 +88,8 @@ export const useDiscussion = ({ discussionId, userId }) => {
   };
 
   const putDadosTopic = useMutation(async (payload) => {
-    const response = await axios.put(`${API_URL}/assunto`, {
+    const response = await api.main.put(`/assunto`, {
       ...payload,
-      usuario_id: userId,
     });
 
     invalidateQuery();
@@ -118,8 +114,8 @@ export const useDiscussion = ({ discussionId, userId }) => {
   const deleteDados = useMutation(async () => {
     message.loading('Analizando os dados');
 
-    const response = await axios.delete(
-      `${API_URL}/discussao?userId=${userId}&discussionId=${discussionId}`
+    const response = await api.main.delete(
+      `/discussao?discussionId=${discussionId}`
     );
     message.destroy();
 
@@ -144,8 +140,8 @@ export const useDiscussion = ({ discussionId, userId }) => {
   const deleteDadosTopic = useMutation(async (payload) => {
     message.loading('Analizando os dados');
 
-    const response = await axios.delete(
-      `${API_URL}/assunto?userId=${userId}&assuntoId=${payload.assuntoId}`
+    const response = await api.main.delete(
+      `/assunto?assuntoId=${payload.assuntoId}`
     );
     message.destroy();
 

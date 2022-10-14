@@ -19,6 +19,7 @@ const CardContent = ({
   onEdit,
   onUserEdit,
   canEdit,
+  groupDiscussion = true,
 }) => {
   return (
     <div
@@ -46,7 +47,7 @@ const CardContent = ({
         {title}
 
         <div style={{ display: 'flex', gap: '1rem', zIndex: '10' }}>
-          {visibility === 2 && onUserEdit && canEdit && (
+          {visibility === 2 && onUserEdit && canEdit && groupDiscussion && (
             <Button
               variant="primary"
               icon={<UserOutlined />}
@@ -57,7 +58,7 @@ const CardContent = ({
               }}
             />
           )}
-          {onCreate && canEdit && (
+          {onCreate && (canEdit || !groupDiscussion) && (
             <Button
               variant="primary"
               icon={<PlusOutlined />}
@@ -68,7 +69,7 @@ const CardContent = ({
               }}
             />
           )}
-          {onEdit && canEdit && (
+          {onEdit && (canEdit || !groupDiscussion) && (
             <Button
               variant="primary"
               icon={<EditOutlined />}
@@ -79,7 +80,7 @@ const CardContent = ({
               }}
             />
           )}
-          {onDelete && canEdit && (
+          {onDelete && (canEdit || !groupDiscussion) && (
             <Button
               variant="primary"
               icon={<DeleteOutlined />}

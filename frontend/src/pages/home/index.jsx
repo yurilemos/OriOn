@@ -27,9 +27,7 @@ export const Home = () => {
     editGroup,
     deleteGroup,
     createDiscussion,
-  } = useGroup({
-    userId: currentUser.userId,
-  });
+  } = useGroup({});
 
   const handleCreateGroup = (values) => {
     createGroup(values);
@@ -125,6 +123,7 @@ export const Home = () => {
                       creation={discussao.data_criacao}
                       key={discussao.id}
                       onClick={() => handleDiscussaoClick(discussao.id)}
+                      groupDiscussion={false}
                     />
                   ))}
                 </div>

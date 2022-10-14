@@ -6,7 +6,7 @@ from flask import jsonify
 
 
 
-def get_users(id):
+def get_users(id,userId):
   
     if(id is None):        
         return jsonify({"message": "Grupo obrigatório"}), 400
@@ -40,7 +40,7 @@ def get_users(id):
     return jsonify(result)
   
 
-def get_user_search(id, search):
+def get_user_search(id, search, userId):
   
   
     if(id is None):        
@@ -75,7 +75,7 @@ def get_user_search(id, search):
         
     return jsonify(result)
   
-def add_users(id, userList):    
+def add_users(id, userList, userId):    
     if(id is None):        
         return jsonify({"message": "Grupo obrigatório"}), 400
       
@@ -98,7 +98,7 @@ def add_users(id, userList):
         
     return jsonify({'id':id})
   
-def delete_user_from_group(id, userId):
+def delete_user_from_group(id, userId, userResquestId):
   
     if(id is None):        
         return jsonify({"message": "Grupo obrigatório"}), 400

@@ -1,10 +1,7 @@
 import { Avatar, Comment, message } from 'antd';
 import React, { useEffect, useState } from 'react';
-import { useContext } from 'react';
-import AuthContext from '../utils/auth';
 import 'react-quill/dist/quill.snow.css';
-import { api, API_URL } from '../utils/api';
-import axios from 'axios';
+import { api } from '../utils/api';
 import Editor from './editor';
 import DeleteModal from './modals/deleteModal';
 
@@ -14,7 +11,6 @@ const Chat = ({ assuntoId }) => {
   const [value, setValue] = useState('');
   const [falaId, setFalaId] = useState(null);
   const [deleteModal, setDeleteModal] = useState(false);
-  const { currentUser } = useContext(AuthContext);
 
   const RecursiveComponent = ({ comment }) => {
     const hasChildren =
@@ -107,7 +103,7 @@ const Chat = ({ assuntoId }) => {
     message.loading('Analizando os dados');
 
     try {
-      await api.main.delete(`/fala?userId=${currentUser.userId}&falaId=${id}`);
+      await api.main.delete(`/fala?falaId=${id}`);
 
       getFalas();
       message.destroy();
@@ -131,7 +127,6 @@ const Chat = ({ assuntoId }) => {
     try {
       await api.main.post(`/fala`, {
         ...values,
-        usuario_id: currentUser.userId,
         assunto_id: assuntoId,
       });
       message.destroy();

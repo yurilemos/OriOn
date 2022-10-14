@@ -18,7 +18,7 @@ def get_children(id):
     return fc
 
 
-def get_fala(id):
+def get_fala(id, userId):
     if (id is None):
         return jsonify({"message": "Id do assunto obrigatório"}), 400
     

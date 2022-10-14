@@ -1,9 +1,8 @@
 import { message } from 'antd';
-import axios from 'axios';
-import { api, API_URL } from '../../../utils/api';
+import { api } from '../../../utils/api';
 import { useQuery, useMutation, useQueryClient } from 'react-query';
 
-export const useGroup = ({ userId, myGroup, shelveGroups, visibilidade }) => {
+export const useGroup = ({ myGroup, shelveGroups, visibilidade }) => {
   const queryClient = useQueryClient();
 
   const getAllGroups = async () => {
@@ -11,22 +10,22 @@ export const useGroup = ({ userId, myGroup, shelveGroups, visibilidade }) => {
 
     try {
       if (myGroup) {
-        const res = await axios.get(
-          `${API_URL}/meus-grupos?userId=${userId}&visibilidade=${visibilidade}`
+        const res = await api.main.get(
+          `/meus-grupos?visibilidade=${visibilidade}`
         );
 
         message.destroy();
         return res.data;
       }
       if (shelveGroups) {
-        const res = await axios.get(
-          `${API_URL}/meus-grupos-arquivados?userId=${userId}&visibilidade=${visibilidade}`
+        const res = await api.main.get(
+          `/meus-grupos-arquivados?visibilidade=${visibilidade}`
         );
 
         message.destroy();
         return res.data;
       }
-      const res = await api.main.get(`/grupo?userId=${userId}`);
+      const res = await api.main.get(`/grupo`);
 
       message.destroy();
       return res.data;
@@ -43,11 +42,9 @@ export const useGroup = ({ userId, myGroup, shelveGroups, visibilidade }) => {
     isIdle,
     data: grupos,
   } = useQuery(
-    ['group', userId, myGroup, shelveGroups, visibilidade],
+    ['group', myGroup, shelveGroups, visibilidade],
     getAllGroups,
-    {
-      enabled: !!userId,
-    }
+    {}
   );
 
   const invalidateQuery = async () => {
@@ -57,9 +54,8 @@ export const useGroup = ({ userId, myGroup, shelveGroups, visibilidade }) => {
   const postDados = useMutation(async (payload) => {
     message.loading('Analizando os dados');
 
-    const response = await axios.post(`${API_URL}/grupo`, {
+    const response = await api.main.post(`/grupo`, {
       ...payload,
-      usuario_id: userId,
     });
     message.destroy();
 
@@ -84,9 +80,8 @@ export const useGroup = ({ userId, myGroup, shelveGroups, visibilidade }) => {
   const putDados = useMutation(async (payload) => {
     message.loading('Analizando os dados');
 
-    const response = await axios.put(`${API_URL}/grupo`, {
+    const response = await api.main.put(`/grupo`, {
       ...payload,
-      usuario_id: userId,
     });
     message.destroy();
 
@@ -111,8 +106,8 @@ export const useGroup = ({ userId, myGroup, shelveGroups, visibilidade }) => {
   const deleteDados = useMutation(async (payload) => {
     message.loading('Analizando os dados');
 
-    const response = await axios.delete(
-      `${API_URL}/grupo?userId=${userId}&groupId=${payload.grupo_id}`
+    const response = await api.main.delete(
+      `/grupo?groupId=${payload.grupo_id}`
     );
     message.destroy();
 
@@ -137,9 +132,8 @@ export const useGroup = ({ userId, myGroup, shelveGroups, visibilidade }) => {
   const createDadosDiscussion = useMutation(async (payload) => {
     message.loading('Analizando os dados');
 
-    const response = await axios.post(`${API_URL}/discussao`, {
+    const response = await api.main.post(`/discussao`, {
       ...payload,
-      usuario_id: userId,
     });
     message.destroy();
 

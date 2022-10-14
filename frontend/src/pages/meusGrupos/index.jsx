@@ -30,7 +30,6 @@ export const MeusGrupos = () => {
     deleteGroup,
     createDiscussion,
   } = useGroup({
-    userId: currentUser.userId,
     myGroup: true,
     visibilidade: visibilidade,
   });

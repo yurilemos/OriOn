@@ -31,7 +31,6 @@ export const Discussao = () => {
     editDiscussion,
     editTopic,
   } = useDiscussion({
-    userId: currentUser.userId,
     discussionId,
   });
 
@@ -125,6 +124,7 @@ export const Discussao = () => {
                 setEditAssuntoModal(true);
                 setChosenAssunto(assunto);
               }}
+              groupDiscussion={false}
             />
           </div>
         ))}
