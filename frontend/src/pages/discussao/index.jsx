@@ -6,8 +6,6 @@ import CardContent from '../../components/cardContent';
 import AssuntoDiscussionModal from './modals/addEdit';
 import Search from '../../components/search';
 import { useParams } from 'react-router-dom';
-import { useContext } from 'react';
-import AuthContext from '../../utils/auth';
 import DeleteModal from '../../components/modals/deleteModal';
 import { PlusOutlined, DeleteOutlined, EditOutlined } from '@ant-design/icons';
 import useDiscussion from './hooks/discussionHooks';
@@ -15,7 +13,6 @@ import useDiscussion from './hooks/discussionHooks';
 export const Discussao = () => {
   const navigate = useNavigate();
   const { discussionId } = useParams();
-  const { currentUser } = useContext(AuthContext);
   const [addModal, setAddModal] = useState(false);
   const [editModal, setEditModal] = useState(false);
   const [deleteModal, setDeleteModal] = useState(false);
@@ -78,30 +75,34 @@ export const Discussao = () => {
             alignItems: 'center',
           }}
         >
-          <Button
-            variant="primary"
-            icon={<PlusOutlined />}
-            style={{ width: '50px' }}
-            onClick={(event) => {
-              setAddModal(true);
-            }}
-          />
-          <Button
-            variant="primary"
-            icon={<EditOutlined />}
-            style={{ width: '50px' }}
-            onClick={() => {
-              setEditModal(true);
-            }}
-          />
-          <Button
-            variant="primary"
-            icon={<DeleteOutlined />}
-            style={{ width: '50px' }}
-            onClick={() => {
-              setDeleteModal(true);
-            }}
-          />
+          {discussao.podeEditar && (
+            <>
+              <Button
+                variant="primary"
+                icon={<PlusOutlined />}
+                style={{ width: '50px' }}
+                onClick={(event) => {
+                  setAddModal(true);
+                }}
+              />
+              <Button
+                variant="primary"
+                icon={<EditOutlined />}
+                style={{ width: '50px' }}
+                onClick={() => {
+                  setEditModal(true);
+                }}
+              />
+              <Button
+                variant="primary"
+                icon={<DeleteOutlined />}
+                style={{ width: '50px' }}
+                onClick={() => {
+                  setDeleteModal(true);
+                }}
+              />
+            </>
+          )}
         </div>
         <Search onSearch={(e) => {}} />
       </div>
@@ -125,6 +126,7 @@ export const Discussao = () => {
                 setChosenAssunto(assunto);
               }}
               groupDiscussion={false}
+              isDisable={!assunto.podeEditar}
             />
           </div>
         ))}

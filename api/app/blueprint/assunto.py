@@ -13,6 +13,13 @@ def get_assunto(id,userId):
     
     falas = Fala.query.filter_by(assunto_id=id).all()
     fresult = []
+    
+    discussao = db.session.query(Discussao).filter_by(id = assunto.discussao_id).one()
+    
+    podeEditar = False
+    participacao = db.session.query(Participacao).filter_by(usuario_id=userId,grupo_id=discussao.grupo_id).one_or_none()
+    if (participacao and (participacao.nivel_participacao == 1 or participacao.nivel_participacao == 2)):
+        podeEditar = True
 
     for f in falas:
         fresult.append({
@@ -30,6 +37,7 @@ def get_assunto(id,userId):
             'assunto_id': f.assunto_id,
             'usuario_id': f.usuario_id,
             'relacao_id': f.relacao_id,
+            'podeEditar': podeEditar,
         })
     
     return jsonify({
@@ -40,7 +48,8 @@ def get_assunto(id,userId):
         "data_ult_atualizacao": assunto.data_ult_atualizacao,
         "discussao_id": assunto.discussao_id,
         "usuario_id": assunto.usuario_id,
-        "falas":  fresult
+        "falas":  fresult,
+        "podeEditar": podeEditar
     })
 
 

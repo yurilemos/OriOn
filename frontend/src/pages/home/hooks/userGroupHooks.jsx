@@ -85,6 +85,33 @@ export const useUserList = ({ groupId, search }) => {
     });
   };
 
+  const putDados = useMutation(async (payload) => {
+    message.loading('Analizando os dados');
+
+    const response = await api.main.put(`/gerencia-usuario`, {
+      ...payload,
+      groupId,
+    });
+    message.destroy();
+
+    invalidateQuery();
+    return response;
+  });
+
+  const changeUserPermission = (payload) => {
+    putDados.mutate(payload, {
+      onSuccess: async (res) => {
+        if (res?.status === 200 || res?.status === 201) {
+          message.destroy();
+        }
+      },
+      onError: async (e) => {
+        message.destroy();
+        message.error(e.response.data.message);
+      },
+    });
+  };
+
   const deleteDados = useMutation(async (payload) => {
     message.loading('Analizando os dados');
 
@@ -121,6 +148,7 @@ export const useUserList = ({ groupId, search }) => {
     getAllUserList,
     addToUserList,
     deleteUserFromGroup,
+    changeUserPermission,
     queryClient,
     searchList,
   };

@@ -88,7 +88,6 @@ export const Home = () => {
               <CardContent
                 title={grupo.nome}
                 description={grupo.descricao}
-                visibility={grupo.visibilidade}
                 canEdit={grupo.podeEditar}
                 creation={grupo.data_criacao}
                 onCreate={() => {
@@ -107,6 +106,7 @@ export const Home = () => {
                   setUserModal(true);
                   setGroup(grupo);
                 }}
+                isDisable={!grupo.podeEditar}
               >
                 <div
                   style={{
@@ -124,6 +124,7 @@ export const Home = () => {
                       key={discussao.id}
                       onClick={() => handleDiscussaoClick(discussao.id)}
                       groupDiscussion={false}
+                      isDisable={!discussao.podeEditar}
                     />
                   ))}
                 </div>

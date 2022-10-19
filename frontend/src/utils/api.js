@@ -21,8 +21,27 @@ api.main.interceptors.request.use(async (config) => {
   if (!config.headers) {
     return config;
   }
+
   config.headers.Authorization = `Bearer ${await localStorage.getItem(
     'token'
   )}`;
   return config;
 });
+
+api.main.interceptors.response.use(
+  function (response) {
+    // Any status code that lie within the range of 2xx cause this function to trigger
+    // Do something with response data
+    console.log('response:', response);
+    return response;
+  },
+  function (error) {
+    // Any status codes that falls outside the range of 2xx cause this function to trigger
+    // Do something with response error
+    console.log('error:', error.response.data.msg === 'Token has expired');
+    if (error.response.data.msg === 'Token has expired') {
+      localStorage.removeItem('token');
+    }
+    return Promise.reject(error);
+  }
+);

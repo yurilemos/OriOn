@@ -14,6 +14,7 @@ const UserModal = ({ open, onClose, groupId, userId }) => {
     searchLoading,
     addToUserList,
     deleteUserFromGroup,
+    changeUserPermission,
   } = useUserList({
     groupId,
     search,
@@ -35,13 +36,30 @@ const UserModal = ({ open, onClose, groupId, userId }) => {
     },
     {
       title: 'Tipo usuário',
-      dataIndex: 'owner',
-      key: 'owner',
-      render: (value) => {
-        if (value) {
+      dataIndex: 'nivel_participacao',
+      key: 'nivel_participacao',
+      render: (value, record) => {
+        if (value === 1) {
           return 'Administrador';
         }
-        return 'Membro';
+        return (
+          <Select
+            style={{
+              width: 120,
+            }}
+            defaultValue={value}
+            onChange={(e) => {
+              console.log(e);
+              changeUserPermission({
+                nivel_participacao: e,
+                userId: record.id,
+              });
+            }}
+          >
+            <Select.Option value={2}>Editor</Select.Option>
+            <Select.Option value={3}>Leitor</Select.Option>
+          </Select>
+        );
       },
     },
     {
@@ -63,55 +81,57 @@ const UserModal = ({ open, onClose, groupId, userId }) => {
   ];
 
   return (
-    <Modal
-      visible={open}
-      onOk={onClose}
-      onCancel={onClose}
-      width={1000}
-      title="Gerenciar usuários"
-      footer={[
-        <Button key="back" type="primary" onClick={onClose}>
-          Ok
-        </Button>,
-      ]}
-    >
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-        <Table columns={columns} dataSource={userList} />
-        <h3>Adicionar um novo membro para o grupo</h3>
-        <Select
-          mode="multiple"
-          showSearch
-          optionFilterProp="children"
-          value={userAddResquest}
-          onChange={(v) => {
-            setUserAddResquest(v);
-          }}
-          onSearch={(e) => {
-            setSearch(e);
-          }}
-          notFoundContent={searchLoading ? <Spin size="small" /> : null}
-        >
-          {searchList
-            ?.filter((s) => !userList.find((u) => u.id === s.id))
-            ?.map((user) => (
-              <Select.Option key={user.id} value={user.id}>
-                {user.nome}
-              </Select.Option>
-            ))}
-        </Select>
-        {userAddResquest.length > 0 && (
-          <Button
-            style={{ width: 200 }}
-            onClick={() => {
-              addToUserList({ userList: userAddResquest });
-              setUserAddResquest([]);
+    <>
+      <Modal
+        visible={open}
+        onOk={onClose}
+        onCancel={onClose}
+        width={1000}
+        title="Gerenciar usuários"
+        footer={[
+          <Button key="back" type="primary" onClick={onClose}>
+            Ok
+          </Button>,
+        ]}
+      >
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+          <Table columns={columns} dataSource={userList} />
+          <h3>Adicionar um novo membro para o grupo</h3>
+          <Select
+            mode="multiple"
+            showSearch
+            optionFilterProp="children"
+            value={userAddResquest}
+            onChange={(v) => {
+              setUserAddResquest(v);
             }}
+            onSearch={(e) => {
+              setSearch(e);
+            }}
+            notFoundContent={searchLoading ? <Spin size="small" /> : null}
           >
-            Adicionar membro(s)
-          </Button>
-        )}
-      </div>
-    </Modal>
+            {searchList
+              ?.filter((s) => !userList.find((u) => u.id === s.id))
+              ?.map((user) => (
+                <Select.Option key={user.id} value={user.id}>
+                  {user.nome}
+                </Select.Option>
+              ))}
+          </Select>
+          {userAddResquest.length > 0 && (
+            <Button
+              style={{ width: 200 }}
+              onClick={() => {
+                addToUserList({ userList: userAddResquest });
+                setUserAddResquest([]);
+              }}
+            >
+              Adicionar membro(s)
+            </Button>
+          )}
+        </div>
+      </Modal>
+    </>
   );
 };
 

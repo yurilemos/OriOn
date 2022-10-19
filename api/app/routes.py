@@ -8,7 +8,7 @@ from app.blueprint.grupo import get_group, create_group,edit_group, delete_group
 from app.blueprint.discussao import get_discussao, create_discussion, edit_discussion, delete_discussion
 from app.blueprint.assunto import get_assunto, create_assunto, edit_assunto, delete_assunto
 from app.blueprint.fala import get_fala, create_fala, delete_fala
-from app.blueprint.gerenciaUsuario import get_users, get_user_search, add_users, delete_user_from_group
+from app.blueprint.gerenciaUsuario import get_users, get_user_search, add_users, delete_user_from_group, change_user_Permission
 from flask_jwt_extended import create_access_token, get_jwt,get_jwt_identity, jwt_required
 
 
@@ -309,7 +309,7 @@ def fala():
             print(e)   
             return jsonify({"message": "Erro no servidor ao buscar a discussão"}), 400
 
-@app.route("/gerencia-usuario", methods=["POST", "GET", "DELETE"])
+@app.route("/gerencia-usuario", methods=["POST", "GET", "PUT", "DELETE"])
 @jwt_required()
 def gerenciaUsuario():
     if request.method == "GET":            
@@ -336,6 +336,24 @@ def gerenciaUsuario():
         except ValueError as e:
             print(e)     
             return jsonify({"message": "Erro no servidor ao criar a discussão"}), 400
+        
+    if request.method == "PUT":
+        # save image in the database
+        content = request.json
+        groupId = content.get("groupId", None)
+        nivel_participacao = content.get("nivel_participacao", None)
+        userId = content.get("userId", None)        
+        
+        user = Usuario.query.filter_by(email_usuario=get_jwt_identity()).first()
+        userRequestId = user.id
+        
+        try:
+            result = change_user_Permission(groupId, nivel_participacao, userId, userRequestId)
+            return result
+        except ValueError as e:
+            print(e)       
+            return jsonify({"message": "Erro no servidor ao editar o assunto"}), 400
+        
     if request.method == "DELETE":
         id = request.args.get("groupId", None)
         userId = request.args.get("userId", None)  

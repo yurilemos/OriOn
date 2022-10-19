@@ -11,7 +11,7 @@ const CardContent = ({
   title,
   description,
   children,
-  visibility,
+  isDisable,
   creation,
   onClick,
   onCreate,
@@ -47,7 +47,7 @@ const CardContent = ({
         {title}
 
         <div style={{ display: 'flex', gap: '1rem', zIndex: '10' }}>
-          {visibility === 2 && onUserEdit && canEdit && groupDiscussion && (
+          {!isDisable && onUserEdit && canEdit && groupDiscussion && (
             <Button
               variant="primary"
               icon={<UserOutlined />}
@@ -58,7 +58,7 @@ const CardContent = ({
               }}
             />
           )}
-          {onCreate && (canEdit || !groupDiscussion) && (
+          {!isDisable && onCreate && (canEdit || !groupDiscussion) && (
             <Button
               variant="primary"
               icon={<PlusOutlined />}
@@ -69,7 +69,7 @@ const CardContent = ({
               }}
             />
           )}
-          {onEdit && (canEdit || !groupDiscussion) && (
+          {!isDisable && onEdit && (canEdit || !groupDiscussion) && (
             <Button
               variant="primary"
               icon={<EditOutlined />}
@@ -80,7 +80,7 @@ const CardContent = ({
               }}
             />
           )}
-          {onDelete && (canEdit || !groupDiscussion) && (
+          {!isDisable && onDelete && (canEdit || !groupDiscussion) && (
             <Button
               variant="primary"
               icon={<DeleteOutlined />}

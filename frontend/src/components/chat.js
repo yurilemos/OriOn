@@ -7,6 +7,7 @@ import DeleteModal from './modals/deleteModal';
 
 const Chat = ({ assuntoId }) => {
   const [comments, setComments] = useState([]);
+  const [isDisable, setIsDisable] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [value, setValue] = useState('');
   const [falaId, setFalaId] = useState(null);
@@ -24,34 +25,36 @@ const Chat = ({ assuntoId }) => {
         content={
           <div dangerouslySetInnerHTML={{ __html: comment.content }}></div>
         }
-        actions={[
-          <span
-            key={comment.id}
-            onClick={() => {
-              setFalaId(comment.id);
-            }}
-          >
-            Responder
-          </span>,
-          <span
-            key={comment.id}
-            onClick={() => {
-              setFalaId(comment.id);
-              setValue(comment.content);
-            }}
-          >
-            Editar
-          </span>,
-          <span
-            key={comment.id}
-            onClick={() => {
-              setFalaId(comment.id);
-              setDeleteModal(comment.content);
-            }}
-          >
-            Excluir
-          </span>,
-        ]}
+        actions={
+          !isDisable && [
+            <span
+              key={comment.id}
+              onClick={() => {
+                setFalaId(comment.id);
+              }}
+            >
+              Responder
+            </span>,
+            <span
+              key={comment.id}
+              onClick={() => {
+                setFalaId(comment.id);
+                setValue(comment.content);
+              }}
+            >
+              Editar
+            </span>,
+            <span
+              key={comment.id}
+              onClick={() => {
+                setFalaId(comment.id);
+                setDeleteModal(comment.content);
+              }}
+            >
+              Excluir
+            </span>,
+          ]
+        }
       >
         {falaId === comment.id && !deleteModal && (
           <Editor
@@ -62,6 +65,7 @@ const Chat = ({ assuntoId }) => {
               setFalaId(null);
               setValue('');
             }}
+            disable={isDisable}
           />
         )}
         {hasChildren ? (
@@ -91,7 +95,8 @@ const Chat = ({ assuntoId }) => {
     try {
       const response = await api.main.get(`/fala?id=${assuntoId}`);
 
-      setComments(response.data);
+      setComments(response.data.falas);
+      setIsDisable(!response.data.podeEditar);
       message.destroy();
     } catch (e) {
       message.destroy();
@@ -150,13 +155,15 @@ const Chat = ({ assuntoId }) => {
         <Comment
           style={{ padding: '1rem' }}
           avatar={
-            <Avatar src="https://joeschmoe.io/api/v1/random" alt="Han Solo" />
+            !isDisable && (
+              <Avatar src="https://joeschmoe.io/api/v1/random" alt="Han Solo" />
+            )
           }
           content={
             <Editor
               onSubmit={handleSubmit}
               submitting={submitting}
-              disable={falaId}
+              disable={isDisable}
             />
           }
         />

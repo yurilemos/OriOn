@@ -13,10 +13,15 @@ def get_users(id,userId):
     
     grupo = db.session.query(Grupo).filter(Grupo.id == id).one()
     criador = db.session.query(Usuario).filter(Usuario.id == grupo.usuario_id).one()
-    membros = db.session.query(
+    membrosEditores = db.session.query(
       Usuario
       ).filter(
-        (Participacao.grupo_id == id) & (Usuario.id == Participacao.usuario_id) & (Usuario.id != criador.id)
+        (Participacao.grupo_id == id) & (Usuario.id == Participacao.usuario_id) & (Usuario.id != criador.id) & (Participacao.nivel_participacao == 2)
+      ).all()
+    membrosLeitores = db.session.query(
+      Usuario
+      ).filter(
+        (Participacao.grupo_id == id) & (Usuario.id == Participacao.usuario_id) & (Usuario.id != criador.id) & (Participacao.nivel_participacao != 2)
       ).all()
 
     result = [{
@@ -25,19 +30,71 @@ def get_users(id,userId):
           "nome": criador.nome_usuario, 
           "email": criador.email_usuario, 
           "profile": criador.perfil_usuario,
-          "owner": True
+          "owner": True,
+          "nivel_participacao": 1
           }]
-    for usuario in membros:
+    
+    for usuario in membrosEditores:
         result.append({
           "id": usuario.id, 
           "key": usuario.id, 
           "nome": usuario.nome_usuario, 
           "email": usuario.email_usuario, 
           "profile": usuario.perfil_usuario,
-          "owner": False
+          "owner": False,
+          "nivel_participacao": 2         
+          })
+    
+    for usuario in membrosLeitores:
+        result.append({
+          "id": usuario.id, 
+          "key": usuario.id, 
+          "nome": usuario.nome_usuario, 
+          "email": usuario.email_usuario, 
+          "profile": usuario.perfil_usuario,
+          "owner": False,
+          "nivel_participacao": 3
+          
           })
         
+    
+        
     return jsonify(result)
+  
+def change_user_Permission(groupId, nivel_participacao, userId, userRequestId):
+  
+    if(nivel_participacao is None or nivel_participacao == 1):        
+        return jsonify({"message": "Nivel de participação inválido"}), 400
+  
+    if(groupId is None):        
+        return jsonify({"message": "Grupo obrigatório"}), 400
+  
+    if(userId is None):        
+        return jsonify({"message": "Usuário obrigatório"}), 400
+    
+    grupo = db.session.query(Grupo).filter(Grupo.id == groupId).one()
+    
+    usuario = db.session.query(Usuario).filter(Usuario.id == userRequestId).one()
+    
+    if(grupo.usuario_id != userRequestId and usuario.perfil_usuario != 3):
+        return jsonify({"message": "Usuário não tem permissao para editar a permissão de usuários"}), 400
+      
+    participacao = db.session.query(
+      Participacao
+    ).filter_by(
+      usuario_id=userId,grupo_id=groupId
+    ).one()
+    
+    if(participacao is None):
+        return jsonify({"message": "Usuário não participa desse grupo"}), 400
+    
+    db.session.query(Participacao).filter_by(id=participacao.id).update({
+        Participacao.nivel_participacao: int(nivel_participacao),
+    })
+
+    db.session.commit()
+        
+    return jsonify({'id alterado': userId})
   
 
 def get_user_search(id, search, userId):
@@ -91,7 +148,7 @@ def add_users(id, userList, userId):
       newMember = Participacao(
         usuario_id=user,
         grupo_id=id,
-        nivel_participacao=2
+        nivel_participacao=3
       )
       db.session.add(newMember)
       db.session.commit()

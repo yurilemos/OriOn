@@ -8,7 +8,6 @@ import Wrapper from '../components/wrapper.js';
 import { Discussao } from '../pages/discussao';
 import { Assunto } from '../pages/assunto';
 import { MeusGrupos } from '../pages/meusGrupos';
-import GrupoDiscussaoModal from '../pages/home/modals/grupoDiscussao';
 import { GruposArquivados } from '../pages/gruposArquivados';
 
 export const Router = () => {

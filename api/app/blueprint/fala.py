@@ -29,6 +29,13 @@ def get_fala(id, userId):
     
     falas = Fala.query.filter_by(assunto_id=id, fala_mae_id=None).all()
     fresult = []
+    
+    discussao = db.session.query(Discussao).filter_by(id=assunto.discussao_id).one()
+    
+    podeEditar = False
+    participacao = db.session.query(Participacao).filter_by(usuario_id=userId,grupo_id=discussao.grupo_id).one_or_none()
+    if (participacao and (participacao.nivel_participacao == 1 or participacao.nivel_participacao == 2)):
+        podeEditar = True
 
     for f in falas:
         fresult.append({
@@ -40,7 +47,7 @@ def get_fala(id, userId):
             'children': get_children(f.id),
         })
     
-    return jsonify(fresult)
+    return jsonify({'falas':fresult, 'podeEditar': podeEditar})
 
 
 def create_fala(conteudo, assunto_id, usuario_id, fala_id):

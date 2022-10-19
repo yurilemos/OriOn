@@ -63,14 +63,16 @@ def get_group(usuario_id):
         # grupo = participacao.join(Grupo).all()
         grupos = db.session.query(
             Grupo
-        ).join(
-        Participacao
         ).filter(
             (Participacao.usuario_id == usuario_id) | (Grupo.visibilidade_grupo == 1)
         ).all()
     
     result = []
     for grupo in grupos:
+        podeEditar = False
+        participacao = db.session.query(Participacao).filter_by(usuario_id=usuario_id,grupo_id=grupo.id).one_or_none()
+        if (participacao and (participacao.nivel_participacao == 1 or participacao.nivel_participacao == 2) ):
+            podeEditar = True
         discussoes = Discussao.query.filter_by(grupo_id=grupo.id).all()
         podeEditar = (int(grupo.usuario_id) == int(usuario_id) or int(user.perfil_usuario) == 3)
         dresult = []
@@ -81,6 +83,7 @@ def get_group(usuario_id):
               'descricao': d.descricao,
               'usuario_id': d.usuario_id,
               'data_criacao': d.data_criacao_descricao,
+              'podeEditar': podeEditar
               })
         result.append({
           'id': grupo.id,
@@ -92,6 +95,7 @@ def get_group(usuario_id):
           'usuario_id': grupo.usuario_id,
           'podeEditar': podeEditar,
           'discussoes': dresult,
+          'podeEditar': podeEditar
           })
         
     return jsonify(result)

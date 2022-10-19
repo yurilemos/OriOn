@@ -1,4 +1,4 @@
-import { Space, Table as AntTable, Tag } from 'antd';
+import { Table as AntTable } from 'antd';
 import React from 'react';
 
 const Table = ({ columns, dataSource }) => (
