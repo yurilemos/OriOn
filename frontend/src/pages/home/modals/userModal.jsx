@@ -49,7 +49,6 @@ const UserModal = ({ open, onClose, groupId, userId }) => {
             }}
             defaultValue={value}
             onChange={(e) => {
-              console.log(e);
               changeUserPermission({
                 nivel_participacao: e,
                 userId: record.id,

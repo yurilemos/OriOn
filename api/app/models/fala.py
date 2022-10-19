@@ -31,9 +31,9 @@ class Fala(db.Model):
         nullable=True,
     )
     nome_usuario = db.Column(db.String(40), nullable=True) 
-    relacao_id = db.Column(
+    classe_relacao_id = db.Column(
         db.Integer,
-        db.ForeignKey("relacao.id", onupdate="CASCADE", ondelete="CASCADE"),
+        db.ForeignKey("classe_relacao.id", onupdate="CASCADE", ondelete="SET NULL"),
         nullable=True,
     )
     fala_mae_id = db.Column(

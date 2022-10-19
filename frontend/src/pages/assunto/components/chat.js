@@ -1,13 +1,15 @@
-import { Avatar, Comment, message } from 'antd';
+import { Avatar, Comment, message, Tag } from 'antd';
 import React, { useEffect, useState } from 'react';
 import 'react-quill/dist/quill.snow.css';
-import { api } from '../utils/api';
-import { dateHandlingWithMinutes } from '../utils/handleDate';
+import { api } from '../../../utils/api';
+import { dateHandlingWithMinutes } from '../../../utils/handleDate';
 import Editor from './editor';
-import DeleteModal from './modals/deleteModal';
+import DeleteModal from '../../../components/modals/deleteModal';
+import { setColor } from '../../../utils/relationColor';
 
 const Chat = ({ assuntoId }) => {
   const [comments, setComments] = useState([]);
+  const [relations, setRelations] = useState([]);
   const [isDisable, setIsDisable] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [value, setValue] = useState('');
@@ -17,8 +19,6 @@ const Chat = ({ assuntoId }) => {
   const RecursiveComponent = ({ comment }) => {
     const hasChildren =
       comment.children !== undefined && comment.children.length > 0;
-
-    console.log();
 
     return (
       <Comment
@@ -43,20 +43,18 @@ const Chat = ({ assuntoId }) => {
               key={comment.id}
               onClick={() => {
                 setFalaId(comment.id);
-                setValue(comment.content);
-              }}
-            >
-              Editar
-            </span>,
-            <span
-              key={comment.id}
-              onClick={() => {
-                setFalaId(comment.id);
                 setDeleteModal(comment.content);
               }}
             >
               Excluir
             </span>,
+            <>
+              {relations.find((r) => r.id === comment.relacao_id)?.nome && (
+                <Tag color={setColor(comment.relacao_id)}>
+                  {relations.find((r) => r.id === comment.relacao_id)?.nome}
+                </Tag>
+              )}
+            </>,
           ]
         }
       >
@@ -64,12 +62,13 @@ const Chat = ({ assuntoId }) => {
           <Editor
             onSubmit={handleSubmit}
             submitting={submitting}
-            defaultValue={value}
+            value={value}
             onCancel={() => {
               setFalaId(null);
               setValue('');
             }}
             disable={isDisable}
+            relations={relations}
           />
         )}
         {hasChildren ? (
@@ -108,6 +107,19 @@ const Chat = ({ assuntoId }) => {
     }
   };
 
+  const getRelacao = async () => {
+    message.loading('Analizando os dados');
+    try {
+      const response = await api.main.get(`/relacao`);
+
+      setRelations(response.data);
+      message.destroy();
+    } catch (e) {
+      message.destroy();
+      message.error(e.response.data.message);
+    }
+  };
+
   const handleDeleteFala = async (id) => {
     message.loading('Analizando os dados');
 
@@ -125,7 +137,10 @@ const Chat = ({ assuntoId }) => {
   const handleSubmit = async (e) => {
     if (!e) return;
     setSubmitting(true);
-    await handleCreateTopic({ ...e, fala_id: falaId });
+    await handleCreateTopic({
+      ...e,
+      fala_id: falaId,
+    });
     setValue('');
     setSubmitting(false);
   };
@@ -148,6 +163,7 @@ const Chat = ({ assuntoId }) => {
 
   useEffect(() => {
     getFalas();
+    getRelacao();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

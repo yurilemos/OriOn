@@ -9,6 +9,7 @@ from app.blueprint.discussao import get_discussao, create_discussion, edit_discu
 from app.blueprint.assunto import get_assunto, create_assunto, edit_assunto, delete_assunto
 from app.blueprint.fala import get_fala, create_fala, delete_fala
 from app.blueprint.gerenciaUsuario import get_users, get_user_search, add_users, delete_user_from_group, change_user_Permission
+from app.blueprint.relacao import cria_relacao, get_relacao
 from flask_jwt_extended import create_access_token, get_jwt,get_jwt_identity, jwt_required
 
 
@@ -86,11 +87,10 @@ def my_profile():
 @app.route("/grupo", methods=["GET", "POST", "PUT" ,"DELETE"])
 @jwt_required()
 def grupo():
+    user = Usuario.query.filter_by(email_usuario=get_jwt_identity()).first()
+    userId = user.id
     if request.method == "GET":
         # read images from the database
-        user = Usuario.query.filter_by(email_usuario=get_jwt_identity()).first()
-        userId = user.id
-        
         try:
             result = get_group(userId)
             return result
@@ -104,9 +104,6 @@ def grupo():
         titulo = content.get("titulo", None)
         descricao = content.get("descricao", None)
         visibilidade = content.get("visibilidade", None)
-        
-        user = Usuario.query.filter_by(email_usuario=get_jwt_identity()).first()
-        userId = user.id
         
         try:
             result = create_group(titulo, descricao, visibilidade, userId)
@@ -124,9 +121,6 @@ def grupo():
         arquivar = content.get("arquivar", None)
         groupId = content.get("grupo_id", None)
         
-        user = Usuario.query.filter_by(email_usuario=get_jwt_identity()).first()
-        userId = user.id
-        
         try:
             result = edit_group(titulo, descricao, visibilidade, arquivar, userId, groupId)
             return result
@@ -136,9 +130,6 @@ def grupo():
     
     if request.method == "DELETE":
         groupId = request.args.get("groupId")
-        
-        user = Usuario.query.filter_by(email_usuario=get_jwt_identity()).first()
-        userId = user.id
         
         try:
             result = delete_group(userId, groupId)
@@ -151,11 +142,11 @@ def grupo():
 @app.route("/discussao", methods=["POST", "GET", "DELETE", "PUT"])
 @jwt_required()
 def discussao():
+    user = Usuario.query.filter_by(email_usuario=get_jwt_identity()).first()
+    userId = user.id
     if request.method == "GET":
         # read images from the database
         id = request.args.get("id")
-        user = Usuario.query.filter_by(email_usuario=get_jwt_identity()).first()
-        userId = user.id
         try:
             result = get_discussao(id,userId)
             return result
@@ -168,9 +159,6 @@ def discussao():
         titulo = content.get("titulo", None)
         descricao = content.get("descricao", None)
         grupo_id = content.get("grupo_id", None)
-        
-        user = Usuario.query.filter_by(email_usuario=get_jwt_identity()).first()
-        userId = user.id
         
         try:
             result = create_discussion(titulo, descricao, grupo_id, userId)
@@ -185,9 +173,6 @@ def discussao():
         descricao = content.get("descricao", None)
         discussionId = content.get("discussao_id", None)
         
-        user = Usuario.query.filter_by(email_usuario=get_jwt_identity()).first()
-        userId = user.id
-        
         try:
             result = edit_discussion(titulo, descricao, userId, discussionId)
             return result
@@ -197,9 +182,6 @@ def discussao():
     if request.method == "DELETE":
         # read images from the database
         discussionId = request.args.get("discussionId")
-        
-        user = Usuario.query.filter_by(email_usuario=get_jwt_identity()).first()
-        userId = user.id
         
         try:
             result = delete_discussion(userId, discussionId)
@@ -212,11 +194,12 @@ def discussao():
 @app.route("/assunto", methods=["POST", "GET", "DELETE", "PUT"])
 @jwt_required()
 def assunto():
+    user = Usuario.query.filter_by(email_usuario=get_jwt_identity()).first()
+    userId = user.id 
     if request.method == "GET":
         # read images from the database
         id = request.args.get("id")
-        user = Usuario.query.filter_by(email_usuario=get_jwt_identity()).first()
-        userId = user.id 
+        
         try:
             result = get_assunto(id,userId)
             return result
@@ -229,9 +212,6 @@ def assunto():
         titulo = content.get("titulo", None)
         descricao = content.get("descricao", None)
         discussao_id = content.get("discussao_id", None)        
-        
-        user = Usuario.query.filter_by(email_usuario=get_jwt_identity()).first()
-        userId = user.id
         
         try:
             result = create_assunto(titulo, descricao, discussao_id, userId)
@@ -246,9 +226,6 @@ def assunto():
         descricao = content.get("descricao", None)        
         assuntoId = content.get("assunto_id", None)
         
-        user = Usuario.query.filter_by(email_usuario=get_jwt_identity()).first()
-        userId = user.id
-        
         try:
             result = edit_assunto(titulo, descricao, userId, assuntoId)
             return result
@@ -258,8 +235,6 @@ def assunto():
     if request.method == "DELETE":
         assuntoId = request.args.get("assuntoId")
         
-        user = Usuario.query.filter_by(email_usuario=get_jwt_identity()).first()
-        userId = user.id
         try:
             result = delete_assunto(userId, assuntoId)
             return result
@@ -271,11 +246,11 @@ def assunto():
 @app.route("/fala", methods=["POST", "GET", "DELETE"])
 @jwt_required()
 def fala():
+    user = Usuario.query.filter_by(email_usuario=get_jwt_identity()).first()
+    userId = user.id  
     if request.method == "GET":
         # read images from the database
         id = request.args.get("id")
-        user = Usuario.query.filter_by(email_usuario=get_jwt_identity()).first()
-        userId = user.id
         try:
             result = get_fala(id,userId)
             return result
@@ -287,20 +262,17 @@ def fala():
         conteudo = content.get("conteudo", None)
         assunto_id = content.get("assunto_id", None)
         fala_id = content.get("fala_id", None) 
+        relacao_id = content.get("relacao_id", None) 
         
-        user = Usuario.query.filter_by(email_usuario=get_jwt_identity()).first()
-        userId = user.id       
         
         try:
-            result = create_fala(conteudo, assunto_id, userId, fala_id)
+            result = create_fala(conteudo, assunto_id, userId, fala_id, relacao_id)
             return result
         except ValueError as e:
             print(e)     
             return jsonify({"message": "Erro no servidor ao criar a discussão"}), 400
     if request.method == "DELETE":
-        falaId = request.args.get("falaId")
-        user = Usuario.query.filter_by(email_usuario=get_jwt_identity()).first()
-        userId = user.id  
+        falaId = request.args.get("falaId") 
         
         try:
             result = delete_fala(userId, falaId)
@@ -312,10 +284,11 @@ def fala():
 @app.route("/gerencia-usuario", methods=["POST", "GET", "PUT", "DELETE"])
 @jwt_required()
 def gerenciaUsuario():
+    user = Usuario.query.filter_by(email_usuario=get_jwt_identity()).first()
+    userId = user.id 
     if request.method == "GET":            
         id = request.args.get("groupId")
-        user = Usuario.query.filter_by(email_usuario=get_jwt_identity()).first()
-        userId = user.id        
+        
         try:
             result = get_users(id, userId)
             return result
@@ -326,9 +299,7 @@ def gerenciaUsuario():
     if request.method == "POST":
         content = request.json        
         id = content.get("groupId", None)
-        userList = content.get("userList", None)
-        user = Usuario.query.filter_by(email_usuario=get_jwt_identity()).first()
-        userId = user.id                     
+        userList = content.get("userList", None)                    
         
         try:
             result = add_users(id, userList, userId)
@@ -342,13 +313,10 @@ def gerenciaUsuario():
         content = request.json
         groupId = content.get("groupId", None)
         nivel_participacao = content.get("nivel_participacao", None)
-        userId = content.get("userId", None)        
-        
-        user = Usuario.query.filter_by(email_usuario=get_jwt_identity()).first()
-        userRequestId = user.id
+        userRequestId = content.get("userId", None)        
         
         try:
-            result = change_user_Permission(groupId, nivel_participacao, userId, userRequestId)
+            result = change_user_Permission(groupId, nivel_participacao, userRequestId, userId)
             return result
         except ValueError as e:
             print(e)       
@@ -356,11 +324,9 @@ def gerenciaUsuario():
         
     if request.method == "DELETE":
         id = request.args.get("groupId", None)
-        userId = request.args.get("userId", None)  
-        user = Usuario.query.filter_by(email_usuario=get_jwt_identity()).first()
-        userRequestId = user.id   
+        userRequestId = request.args.get("userId", None)    
         try:
-            result = delete_user_from_group(id, userId, userRequestId)
+            result = delete_user_from_group(id, userRequestId, userId)
             return result
         except ValueError as e:
             print(e)   
@@ -369,11 +335,11 @@ def gerenciaUsuario():
 @app.route("/gerencia-usuario/pesquisa", methods=["GET"])
 @jwt_required()
 def pesquisaUsuario():
+    user = Usuario.query.filter_by(email_usuario=get_jwt_identity()).first()
+    userId = user.id 
     if request.method == "GET":            
         id = request.args.get("groupId")
         search = request.args.get("search")
-        user = Usuario.query.filter_by(email_usuario=get_jwt_identity()).first()
-        userId = user.id 
         try:
             result = get_user_search(id,search,userId)
             return result
@@ -384,11 +350,11 @@ def pesquisaUsuario():
 @app.route("/meus-grupos", methods=["GET"])
 @jwt_required()
 def meusGrupos():
+    user = Usuario.query.filter_by(email_usuario=get_jwt_identity()).first()
+    userId = user.id 
     if request.method == "GET":            
         # read images from the database
         visibilidade = request.args.get("visibilidade")
-        user = Usuario.query.filter_by(email_usuario=get_jwt_identity()).first()
-        userId = user.id 
         
         try:
             result = get_user_groups(userId,visibilidade)
@@ -400,16 +366,39 @@ def meusGrupos():
 @app.route("/meus-grupos-arquivados", methods=["GET"])
 @jwt_required()
 def meusGruposArquivados():
+    user = Usuario.query.filter_by(email_usuario=get_jwt_identity()).first()
+    userId = user.id 
     if request.method == "GET":            
         visibilidade = request.args.get("visibilidade")
-        user = Usuario.query.filter_by(email_usuario=get_jwt_identity()).first()
-        userId = user.id 
         try:
             result = get_user_shelved_groups(userId,visibilidade)
             return result
         except ValueError as e:
             print(e)       
             return jsonify({"message": "Erro no servidor ao buscar os grupos de discussão"}), 400
+        
+@app.route("/relacao", methods=["GET","POST"])
+@jwt_required()
+def relacaoFala():
+    user = Usuario.query.filter_by(email_usuario=get_jwt_identity()).first()
+    userId = user.perfil_usuario 
+    if request.method == "GET":            
+        try:
+            result = get_relacao()
+            return result
+        except ValueError as e:
+            print(e)       
+            return jsonify({"message": "Erro no servidor ao buscar as relações da fala"}), 400
+    if request.method == "POST":
+        content = request.json        
+        nome = content.get("nome", None)                               
+        
+        try:
+            result = cria_relacao(nome, perfil_usuario)
+            return result
+        except ValueError as e:
+            print(e)     
+            return jsonify({"message": "Erro no servidor ao criar a relação"}), 400
         
     
         

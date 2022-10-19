@@ -12,7 +12,8 @@ def get_children(id):
             'content': f.conteudo,
             'datetime': f.data_criacao_fala,                        
             'usuario_id': f.usuario_id,
-            'author': f.nome_usuario,            
+            'author': f.nome_usuario,
+            'relacao_id': f.classe_relacao_id,           
             'children': get_children(f.id),
         })
     return fc
@@ -43,24 +44,21 @@ def get_fala(id, userId):
             'content': f.conteudo,
             'datetime': f.data_criacao_fala,                        
             'usuario_id': f.usuario_id,
-            'author': f.nome_usuario,            
+            'author': f.nome_usuario,
+            'relacao_id': f.classe_relacao_id,           
             'children': get_children(f.id),
         })
     
     return jsonify({'falas':fresult, 'podeEditar': podeEditar})
 
 
-def create_fala(conteudo, assunto_id, usuario_id, fala_id):
+def create_fala(conteudo, assunto_id, usuario_id, fala_id, relacao_id):
     if (conteudo is None):
         return jsonify({"message": "Conteúdo obrigatório"}), 400
     if (assunto_id is None):
         return jsonify({"message": "Assunto obrigatório"}), 400
     if (usuario_id is None):
         return jsonify({"message": "Usuário obrigatório"}), 400
-    if (fala_id != None):
-        fala_already_exist = Fala.query.filter_by(id=fala_id).one()
-        if (fala_already_exist is None):
-            return jsonify({"message": "Fala inválida"}), 400
     
     user_already_exists = Usuario.query.filter_by(id=usuario_id).one()
     
@@ -68,18 +66,31 @@ def create_fala(conteudo, assunto_id, usuario_id, fala_id):
         return jsonify({"message": "Usuário inválido"}), 400
     
     assunto_already_exists = Assunto.query.filter_by(id=assunto_id).one()
+    
+    print(relacao_id)
         
     if (assunto_already_exists is None):
         return jsonify({"message": "Assunto inválido"}), 400
-      
-        
-    fala = Fala(
-        conteudo=conteudo,
-        assunto_id=assunto_already_exists.id,
-        usuario_id=user_already_exists.id,
-        nome_usuario=user_already_exists.nome_usuario,
-        fala_mae_id=fala_id
-    )
+    
+    if (fala_id != None):
+        fala_already_exist = Fala.query.filter_by(id=fala_id).one()
+        if (fala_already_exist is None):
+            return jsonify({"message": "Fala inválida"}), 400
+        fala = Fala(
+            conteudo=conteudo,
+            assunto_id=assunto_already_exists.id,
+            usuario_id=user_already_exists.id,
+            nome_usuario=user_already_exists.nome_usuario,
+            fala_mae_id=fala_id,
+            classe_relacao_id=relacao_id
+        )
+    else:
+        fala = Fala(
+            conteudo=conteudo,
+            assunto_id=assunto_already_exists.id,
+            usuario_id=user_already_exists.id,
+            nome_usuario=user_already_exists.nome_usuario,
+        )
     
     if (fala is None):
         return jsonify({"message": "Erro no servidor ao criar a fala"}), 400

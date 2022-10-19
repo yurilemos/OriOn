@@ -36,7 +36,7 @@ def get_assunto(id,userId):
             'url': f.url,
             'assunto_id': f.assunto_id,
             'usuario_id': f.usuario_id,
-            'relacao_id': f.relacao_id,
+            'relacao': f.classe_relacao_id,
             'podeEditar': podeEditar,
         })
     

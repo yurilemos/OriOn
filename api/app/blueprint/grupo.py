@@ -70,8 +70,10 @@ def get_group(usuario_id):
     result = []
     for grupo in grupos:
         podeEditar = False
-        participacao = db.session.query(Participacao).filter_by(usuario_id=usuario_id,grupo_id=grupo.id).one_or_none()
-        if (participacao and (participacao.nivel_participacao == 1 or participacao.nivel_participacao == 2) ):
+        participacao = Participacao.query.filter_by(usuario_id=int(usuario_id),grupo_id=int(grupo.id)).one_or_none()
+    
+        
+        if (participacao and (participacao.nivel_participacao == 1 or participacao.nivel_participacao == 2)):
             podeEditar = True
         discussoes = Discussao.query.filter_by(grupo_id=grupo.id).all()
         podeEditar = (int(grupo.usuario_id) == int(usuario_id) or int(user.perfil_usuario) == 3)
