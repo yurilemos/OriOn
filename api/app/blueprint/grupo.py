@@ -107,14 +107,14 @@ def edit_group(titulo, descricao, visibilidade, arquivar, usuario_id, group_Id):
     if(group_Id is None):
         return jsonify({"message": "Grupo obrigatório"}), 400
     
-    user_already_exists = Usuario.query.filter_by(id=usuario_id).all()
+    user_already_exists = Usuario.query.filter_by(id=usuario_id).one()
     
     if (user_already_exists is None):
         return jsonify({"message": "Usuário inválido"}), 400
         
     participacao = Participacao.query.filter_by(usuario_id=usuario_id, grupo_id=group_Id).one()
     
-    if (participacao is None or participacao.nivel_participacao != 1):
+    if (participacao is None or (participacao.nivel_participacao != 1 and user_already_exists.perfil_usuario != 3)):
         return jsonify({"message": "Usuário não tem permissão de excluir esse grupo"}), 400
     
     

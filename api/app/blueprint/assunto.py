@@ -62,15 +62,23 @@ def create_assunto(titulo, descricao, discussao_id, usuario_id):
     if (usuario_id is None):
         return jsonify({"message": "Usuário obrigatório"}), 400
     
-    user_already_exists = Usuario.query.filter_by(id=usuario_id).one()
+    user_already_exists = Usuario.query.filter_by(id=usuario_id).one_or_none()
     
     if (user_already_exists is None):
         return jsonify({"message": "Usuário inválido"}), 400
     
     discussao = Discussao.query.filter_by(id=discussao_id).one()
+    
         
     if (discussao is None):
         return jsonify({"message": "Discussão inválida"}), 400
+    
+    grupo = Grupo.query.filter_by(id=discussao.grupo_id).one()
+        
+    participacao = Participacao.query.filter_by(usuario_id=usuario_id, grupo_id=grupo.id).one_or_none()
+    
+    if ((participacao is None or participacao.nivel_participacao != 1 or participacao.nivel_participacao != 2) and user_already_exists.perfil_usuario != 3):
+        return jsonify({"message": "Usuário não tem permissão de criar assuntos"}), 400
         
     assunto = Assunto(
         titulo=titulo,
@@ -94,7 +102,7 @@ def edit_assunto(titulo, descricao, usuario_id, assuntoId):
     if(assuntoId is None):
         return jsonify({"message": "Assunto obrigatório"}), 400
     
-    user_already_exists = Usuario.query.filter_by(id=usuario_id).all()
+    user_already_exists = Usuario.query.filter_by(id=usuario_id).one_or_none()
     
     if (user_already_exists is None):
         return jsonify({"message": "Usuário inválido"}), 400
@@ -109,10 +117,11 @@ def edit_assunto(titulo, descricao, usuario_id, assuntoId):
     
     grupo = Grupo.query.filter_by(id=discussao.grupo_id).one()
         
-    participacao = Participacao.query.filter_by(usuario_id=usuario_id, grupo_id=grupo.id).one()
+    participacao = Participacao.query.filter_by(usuario_id=usuario_id, grupo_id=grupo.id).one_or_none()
     
-    if (participacao is None or participacao.nivel_participacao != 1):
-        return jsonify({"message": "Usuário não tem permissão de excluir esse assunto"}), 400
+    if ((participacao is None or participacao.nivel_participacao != 1 or participacao.nivel_participacao != 2) 
+        and user_already_exists.perfil_usuario != 3):
+        return jsonify({"message": "Usuário não tem permissão de editar esse assunto"}), 400
     
     
     db.session.query(Assunto).filter(
@@ -133,7 +142,7 @@ def delete_assunto(userId, assuntoId):
     if(assuntoId is None):
         return jsonify({"message": "Assunto obrigatório"}), 400
     
-    user_already_exists = Usuario.query.filter_by(id=userId).all()
+    user_already_exists = Usuario.query.filter_by(id=userId).one_or_none()
     
     if (user_already_exists is None):
         return jsonify({"message": "Usuário inválido"}), 400
@@ -148,9 +157,11 @@ def delete_assunto(userId, assuntoId):
     
     grupo = Grupo.query.filter_by(id=discussao.grupo_id).one()
         
-    participacao = Participacao.query.filter_by(usuario_id=userId, grupo_id=grupo.id).one()
+    participacao = Participacao.query.filter_by(usuario_id=userId, grupo_id=grupo.id).one_or_none()
     
-    if (participacao is None or participacao.nivel_participacao != 1):
+    if (
+        (participacao is None or participacao.nivel_participacao != 1 or participacao.nivel_participacao != 2) 
+        and user_already_exists.perfil_usuario != 3):
         return jsonify({"message": "Usuário não tem permissão de excluir esse assunto"}), 400
     
     

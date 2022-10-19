@@ -11,6 +11,7 @@ import GrupoDiscussaoModal from '../home/modals/grupoDiscussao';
 import DiscussaoModal from '../home/modals/discussao';
 import UserModal from '../home/modals/userModal';
 import DeleteModal from '../../components/modals/deleteModal';
+import { dateHandlingWithoutMinutes } from '../../utils/handleDate';
 
 export const MeusGrupos = () => {
   const navigate = useNavigate();
@@ -61,6 +62,7 @@ export const MeusGrupos = () => {
   const [deleteGroupModal, setDeleteGroupModal] = useState(false);
   const [addDiscussionModal, setAddDiscussionModal] = useState(false);
   const [userModal, setUserModal] = useState(false);
+  const [searchText, setSearchText] = useState('');
 
   return (
     <>
@@ -79,58 +81,70 @@ export const MeusGrupos = () => {
         >
           Adicionar um novo grupo
         </Button>
-        <Search onSearch={(e) => {}} />
+        <Search
+          onChange={(e) => {
+            setSearchText(e.target.value);
+          }}
+        />
       </div>
       <div style={{ gap: '2rem', display: 'flex', flexWrap: 'wrap' }}>
-        {grupos.map((grupo) => (
-          <div
-            style={{ minWidth: '300px', width: '100%', maxWidth: '550px' }}
-            key={grupo.id}
-          >
-            <CardContent
-              title={grupo.nome}
-              description={grupo.descricao}
-              visibility={grupo.visibilidade}
-              canEdit={grupo.podeEditar}
-              creation={grupo.data_criacao}
-              onCreate={() => {
-                setAddDiscussionModal(true);
-                setGroup(grupo);
-              }}
-              onDelete={() => {
-                setDeleteGroupModal(true);
-                setGroup(grupo);
-              }}
-              onEdit={() => {
-                setEditGroupModal(true);
-                setGroup(grupo);
-              }}
-              onUserEdit={() => {
-                setUserModal(true);
-                setGroup(grupo);
-              }}
+        {grupos
+          .filter(
+            (grupo) =>
+              grupo.nome.toLowerCase().match(searchText.toLowerCase()) ||
+              grupo.descricao?.toLowerCase().match(searchText.toLowerCase())
+          )
+          .map((grupo) => (
+            <div
+              style={{ minWidth: '300px', width: '100%', maxWidth: '550px' }}
+              key={grupo.id}
             >
-              <div
-                style={{
-                  gap: '2rem',
-                  display: 'flex',
-                  flexDirection: 'column',
+              <CardContent
+                title={grupo.nome}
+                description={grupo.descricao}
+                visibility={grupo.visibilidade}
+                canEdit={grupo.podeEditar}
+                creation={dateHandlingWithoutMinutes(grupo.data_criacao)}
+                onCreate={() => {
+                  setAddDiscussionModal(true);
+                  setGroup(grupo);
+                }}
+                onDelete={() => {
+                  setDeleteGroupModal(true);
+                  setGroup(grupo);
+                }}
+                onEdit={() => {
+                  setEditGroupModal(true);
+                  setGroup(grupo);
+                }}
+                onUserEdit={() => {
+                  setUserModal(true);
+                  setGroup(grupo);
                 }}
               >
-                {grupo.discussoes.map((discussao) => (
-                  <CardContent
-                    title={discussao.nome}
-                    canEdit={grupo.podeEditar}
-                    description={discussao.descricao}
-                    creation={discussao.data_criacao}
-                    key={discussao.id}
-                    onClick={() => handleDiscussaoClick(discussao.id)}
-                  />
-                ))}
-              </div>
-            </CardContent>
-          </div>
-        ))}
+                <div
+                  style={{
+                    gap: '2rem',
+                    display: 'flex',
+                    flexDirection: 'column',
+                  }}
+                >
+                  {grupo.discussoes.map((discussao) => (
+                    <CardContent
+                      title={discussao.nome}
+                      canEdit={grupo.podeEditar}
+                      description={discussao.descricao}
+                      creation={dateHandlingWithoutMinutes(
+                        discussao.data_criacao
+                      )}
+                      key={discussao.id}
+                      onClick={() => handleDiscussaoClick(discussao.id)}
+                    />
+                  ))}
+                </div>
+              </CardContent>
+            </div>
+          ))}
       </div>
       <GrupoDiscussaoModal
         onClose={() => {

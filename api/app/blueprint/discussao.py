@@ -6,16 +6,23 @@ def get_discussao(id, userId):
     if (id is None):
         return jsonify({"message": "Id da discussão obrigatório"}), 400
     
-    discussao = Discussao.query.filter_by(id=id).one()
+    discussao = Discussao.query.filter_by(id=id).one_or_none()
     
     if (discussao is None):
         return jsonify({"message": "Id da discussão obrigatório"}), 400
+    
+    usuario = Usuario.query.filter_by(id=userId).one_or_none()
+    
+    if (usuario is None):
+        return jsonify({"message": "Usuário obrigatório"}), 400
     
     assuntos = Assunto.query.filter_by(discussao_id=id).all()
     aresult = []
     podeEditar = False
     participacao = db.session.query(Participacao).filter_by(usuario_id=userId,grupo_id=discussao.grupo_id).one_or_none()
     if (participacao and (participacao.nivel_participacao == 1 or participacao.nivel_participacao == 2)):
+        podeEditar = True
+    if (usuario.perfil_usuario == 3):
         podeEditar = True
     
     
@@ -83,7 +90,7 @@ def edit_discussion(titulo, descricao, usuario_id, discussionId):
     if(discussionId is None):
         return jsonify({"message": "Discussao obrigatória"}), 400
     
-    user_already_exists = Usuario.query.filter_by(id=usuario_id).all()
+    user_already_exists = Usuario.query.filter_by(id=usuario_id).one_or_none()
     
     if (user_already_exists is None):
         return jsonify({"message": "Usuário inválido"}), 400
@@ -96,9 +103,9 @@ def edit_discussion(titulo, descricao, usuario_id, discussionId):
     
     grupo = Grupo.query.filter_by(id=discussao.grupo_id).one()
         
-    participacao = Participacao.query.filter_by(usuario_id=usuario_id, grupo_id=grupo.id).one()
+    participacao = Participacao.query.filter_by(usuario_id=usuario_id, grupo_id=grupo.id).one_or_none()
     
-    if (participacao is None or participacao.nivel_participacao != 1):
+    if ((participacao is None or participacao.nivel_participacao != 1) and user_already_exists.perfil_usuario != 3):
         return jsonify({"message": "Usuário não tem permissão de editar essa discussão"}), 400
     
     

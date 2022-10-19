@@ -11,6 +11,7 @@ import DiscussaoModal from './modals/discussao';
 import DeleteModal from '../../components/modals/deleteModal';
 import useGroup from './hooks/groupHooks';
 import UserModal from './modals/userModal';
+import { dateHandlingWithoutMinutes } from '../../utils/handleDate';
 
 export const Home = () => {
   const navigate = useNavigate();
@@ -56,6 +57,7 @@ export const Home = () => {
   const [deleteGroupModal, setDeleteGroupModal] = useState(false);
   const [addDiscussionModal, setAddDiscussionModal] = useState(false);
   const [userModal, setUserModal] = useState(false);
+  const [searchText, setSearchText] = useState('');
 
   return (
     <>
@@ -74,12 +76,21 @@ export const Home = () => {
         >
           Adicionar um novo grupo
         </Button>
-        <Search onSearch={(e) => {}} />
+        <Search
+          onChange={(e) => {
+            setSearchText(e.target.value);
+          }}
+        />
       </div>
       <h1 style={{ margin: '1rem 0' }}>Grupos públicos:</h1>
       <div style={{ gap: '2rem', display: 'flex', flexWrap: 'wrap' }}>
         {grupos
           .filter((group) => group.visibilidade === 1)
+          .filter(
+            (grupo) =>
+              grupo.nome.toLowerCase().match(searchText.toLowerCase()) ||
+              grupo.descricao?.toLowerCase().match(searchText.toLowerCase())
+          )
           .map((grupo) => (
             <div
               style={{ minWidth: '300px', width: '100%', maxWidth: '550px' }}
@@ -89,7 +100,7 @@ export const Home = () => {
                 title={grupo.nome}
                 description={grupo.descricao}
                 canEdit={grupo.podeEditar}
-                creation={grupo.data_criacao}
+                creation={dateHandlingWithoutMinutes(grupo.data_criacao)}
                 onCreate={() => {
                   setAddDiscussionModal(true);
                   setGroup(grupo);
@@ -120,7 +131,9 @@ export const Home = () => {
                       title={discussao.nome}
                       canEdit={grupo.podeEditar}
                       description={discussao.descricao}
-                      creation={discussao.data_criacao}
+                      creation={dateHandlingWithoutMinutes(
+                        discussao.data_criacao
+                      )}
                       key={discussao.id}
                       onClick={() => handleDiscussaoClick(discussao.id)}
                       groupDiscussion={false}
@@ -136,6 +149,11 @@ export const Home = () => {
       <div style={{ gap: '2rem', display: 'flex', flexWrap: 'wrap' }}>
         {grupos
           .filter((group) => group.visibilidade === 2)
+          .filter(
+            (grupo) =>
+              grupo.nome.toLowerCase().match(searchText.toLowerCase()) ||
+              grupo.descricao?.toLowerCase().match(searchText.toLowerCase())
+          )
           .map((grupo) => (
             <div
               style={{ minWidth: '300px', width: '100%', maxWidth: '550px' }}
@@ -146,7 +164,7 @@ export const Home = () => {
                 description={grupo.descricao}
                 visibility={grupo.visibilidade}
                 canEdit={grupo.podeEditar}
-                creation={grupo.data_criacao}
+                creation={dateHandlingWithoutMinutes(grupo.data_criacao)}
                 onCreate={() => {
                   setAddDiscussionModal(true);
                   setGroup(grupo);
@@ -176,7 +194,9 @@ export const Home = () => {
                       title={discussao.nome}
                       canEdit={grupo.podeEditar}
                       description={discussao.descricao}
-                      creation={discussao.data_criacao}
+                      creation={dateHandlingWithoutMinutes(
+                        discussao.data_criacao
+                      )}
                       key={discussao.id}
                       onClick={() => handleDiscussaoClick(discussao.id)}
                     />

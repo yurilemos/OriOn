@@ -2,6 +2,7 @@ import { Avatar, Comment, message } from 'antd';
 import React, { useEffect, useState } from 'react';
 import 'react-quill/dist/quill.snow.css';
 import { api } from '../utils/api';
+import { dateHandlingWithMinutes } from '../utils/handleDate';
 import Editor from './editor';
 import DeleteModal from './modals/deleteModal';
 
@@ -17,6 +18,8 @@ const Chat = ({ assuntoId }) => {
     const hasChildren =
       comment.children !== undefined && comment.children.length > 0;
 
+    console.log();
+
     return (
       <Comment
         id={comment.id}
@@ -25,6 +28,7 @@ const Chat = ({ assuntoId }) => {
         content={
           <div dangerouslySetInnerHTML={{ __html: comment.content }}></div>
         }
+        datetime={dateHandlingWithMinutes(comment.datetime)}
         actions={
           !isDisable && [
             <span

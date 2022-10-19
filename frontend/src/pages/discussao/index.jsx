@@ -9,6 +9,7 @@ import { useParams } from 'react-router-dom';
 import DeleteModal from '../../components/modals/deleteModal';
 import { PlusOutlined, DeleteOutlined, EditOutlined } from '@ant-design/icons';
 import useDiscussion from './hooks/discussionHooks';
+import { dateHandlingWithoutMinutes } from '../../utils/handleDate';
 
 export const Discussao = () => {
   const navigate = useNavigate();
@@ -19,6 +20,7 @@ export const Discussao = () => {
   const [editAssuntoModal, setEditAssuntoModal] = useState(false);
   const [deleteAssuntoModal, setDeleteAssuntoModal] = useState(false);
   const [chosenAssunto, setChosenAssunto] = useState(null);
+  const [searchText, setSearchText] = useState('');
 
   const {
     discussao = {},
@@ -104,32 +106,42 @@ export const Discussao = () => {
             </>
           )}
         </div>
-        <Search onSearch={(e) => {}} />
+        <Search
+          onChange={(e) => {
+            setSearchText(e.target.value);
+          }}
+        />
       </div>
       <div style={{ gap: '2rem', display: 'flex', flexWrap: 'wrap' }}>
-        {discussao?.assuntos?.map((assunto) => (
-          <div
-            style={{ minWidth: '300px', width: '100%', maxWidth: '550px' }}
-            key={assunto.id}
-          >
-            <CardContent
-              title={assunto.nome}
-              description={assunto.descricao}
-              creation={assunto.data_criacao}
-              onClick={() => handleDiscussaoClick(assunto.id)}
-              onDelete={() => {
-                setDeleteAssuntoModal(true);
-                setChosenAssunto(assunto);
-              }}
-              onEdit={() => {
-                setEditAssuntoModal(true);
-                setChosenAssunto(assunto);
-              }}
-              groupDiscussion={false}
-              isDisable={!assunto.podeEditar}
-            />
-          </div>
-        ))}
+        {discussao?.assuntos
+          ?.filter(
+            (assunto) =>
+              assunto.nome.toLowerCase().match(searchText.toLowerCase()) ||
+              assunto.descricao?.toLowerCase().match(searchText.toLowerCase())
+          )
+          .map((assunto) => (
+            <div
+              style={{ minWidth: '300px', width: '100%', maxWidth: '550px' }}
+              key={assunto.id}
+            >
+              <CardContent
+                title={assunto.nome}
+                description={assunto.descricao}
+                creation={dateHandlingWithoutMinutes(assunto.data_criacao)}
+                onClick={() => handleDiscussaoClick(assunto.id)}
+                onDelete={() => {
+                  setDeleteAssuntoModal(true);
+                  setChosenAssunto(assunto);
+                }}
+                onEdit={() => {
+                  setEditAssuntoModal(true);
+                  setChosenAssunto(assunto);
+                }}
+                groupDiscussion={false}
+                isDisable={!assunto.podeEditar}
+              />
+            </div>
+          ))}
       </div>
       <AssuntoDiscussionModal
         onClose={() => {

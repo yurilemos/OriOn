@@ -4,7 +4,6 @@ import { useEffect } from 'react';
 import { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import Chat from '../../components/chat';
-import Search from '../../components/search';
 import { api } from '../../utils/api';
 
 export const Assunto = () => {
@@ -31,16 +30,7 @@ export const Assunto = () => {
   return (
     <>
       <h1 style={{ fontSize: '20px' }}>{topic.titulo}</h1>
-      <div
-        style={{
-          display: 'flex',
-          gap: '3rem',
-          marginBottom: '1rem',
-          alignItems: 'center',
-        }}
-      >
-        <Search onSearch={(e) => {}} />
-      </div>
+
       <Chat assuntoId={parseInt(assuntoId)} />
     </>
   );
