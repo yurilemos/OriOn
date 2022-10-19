@@ -248,11 +248,12 @@ def assunto():
 def fala():
     user = Usuario.query.filter_by(email_usuario=get_jwt_identity()).first()
     userId = user.id  
+    perfil_usuario = user.perfil_usuario
     if request.method == "GET":
         # read images from the database
         id = request.args.get("id")
         try:
-            result = get_fala(id,userId)
+            result = get_fala(id,userId,perfil_usuario)
             return result
         except ValueError as e:
             print(e)   

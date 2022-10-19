@@ -12,7 +12,7 @@ export const dateHandlingWithoutMinutes = (date) => {
       const minutes = moment(date).format('mm');
       if (hour === moment(date).format('HH')) {
         const diffM =
-          parseInt(moment(nowDate).format('mm')) - parseInt(minutes);
+          parseInt(minutes) - parseInt(moment(nowDate).format('mm'));
 
         if (diffM === 0) {
           return 'agora';
@@ -37,9 +37,9 @@ export const dateHandlingWithMinutes = (date) => {
     if (year && month && day) {
       const hour = moment(date).format('HH');
       const minutes = moment(date).format('mm');
-      if (hour === moment(date).format('HH')) {
+      if (hour === moment(nowDate).format('HH')) {
         const diffM =
-          parseInt(moment(nowDate).format('mm')) - parseInt(minutes);
+          parseInt(minutes) - parseInt(moment(nowDate).format('mm'));
 
         if (diffM === 0) {
           return 'agora';

@@ -1,12 +1,22 @@
 from app import db, Usuario, Assunto, Discussao, Fala, Grupo, Participacao
 from flask import jsonify
+from datetime import datetime
 
 
-def get_children(id):
+def days_between(d1, d2):
+    d1 = datetime.strptime(d1, '%Y-%m-%d %H:%M:%S.%f') 
+    d2 = datetime.strptime(str(d2), "%Y-%m-%d %H:%M:%S.%f")
+    return abs((d2 - d1).days)
+
+
+def get_children(id, userId, perfil_usuario):
     if (id is None): return []
     fc = []
     falasChildren = Fala.query.filter_by(fala_mae_id=id).all()
+    now_date = str(datetime.now())
     for f in falasChildren:
+        dias = days_between(now_date,f.data_criacao_fala)
+        podeExcluir = ((f.usuario_id == userId and dias <= 1) or perfil_usuario == 3)
         fc.append({
             'id': f.id,
             'content': f.conteudo,
@@ -14,12 +24,14 @@ def get_children(id):
             'usuario_id': f.usuario_id,
             'author': f.nome_usuario,
             'relacao_id': f.classe_relacao_id,           
-            'children': get_children(f.id),
+            'children': get_children(f.id, userId, perfil_usuario),
+            'podeExcluir': podeExcluir  
         })
     return fc
 
 
-def get_fala(id, userId):
+def get_fala(id, userId, perfil_usuario):
+    
     if (id is None):
         return jsonify({"message": "Id do assunto obrigatório"}), 400
     
@@ -27,6 +39,8 @@ def get_fala(id, userId):
     
     if (assunto is None):
         return jsonify({"message": "Assunto inválido"}), 400
+    
+    now_date = str(datetime.now())
     
     falas = Fala.query.filter_by(assunto_id=id, fala_mae_id=None).all()
     fresult = []
@@ -39,6 +53,8 @@ def get_fala(id, userId):
         podeEditar = True
 
     for f in falas:
+        dias = days_between(now_date,f.data_criacao_fala)
+        podeExcluir = ((f.usuario_id == userId and dias <= 1) or perfil_usuario == 3)
         fresult.append({
             'id': f.id,
             'content': f.conteudo,
@@ -46,7 +62,8 @@ def get_fala(id, userId):
             'usuario_id': f.usuario_id,
             'author': f.nome_usuario,
             'relacao_id': f.classe_relacao_id,           
-            'children': get_children(f.id),
+            'children': get_children(f.id, userId, perfil_usuario),
+            'podeExcluir': podeExcluir            
         })
     
     return jsonify({'falas':fresult, 'podeEditar': podeEditar})

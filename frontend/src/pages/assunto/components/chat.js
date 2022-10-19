@@ -29,34 +29,40 @@ const Chat = ({ assuntoId }) => {
           <div dangerouslySetInnerHTML={{ __html: comment.content }}></div>
         }
         datetime={dateHandlingWithMinutes(comment.datetime)}
-        actions={
-          !isDisable && [
-            <span
-              key={comment.id}
-              onClick={() => {
-                setFalaId(comment.id);
-              }}
-            >
-              Responder
-            </span>,
-            <span
-              key={comment.id}
-              onClick={() => {
-                setFalaId(comment.id);
-                setDeleteModal(comment.content);
-              }}
-            >
-              Excluir
-            </span>,
-            <>
-              {relations.find((r) => r.id === comment.relacao_id)?.nome && (
-                <Tag color={setColor(comment.relacao_id)}>
-                  {relations.find((r) => r.id === comment.relacao_id)?.nome}
-                </Tag>
-              )}
-            </>,
-          ]
-        }
+        actions={[
+          <>
+            {!isDisable && (
+              <span
+                key={comment.id}
+                onClick={() => {
+                  setFalaId(comment.id);
+                }}
+              >
+                Responder
+              </span>
+            )}
+          </>,
+          <>
+            {!isDisable && comment.podeExcluir && (
+              <span
+                key={comment.id}
+                onClick={() => {
+                  setFalaId(comment.id);
+                  setDeleteModal(comment.content);
+                }}
+              >
+                Excluir
+              </span>
+            )}
+          </>,
+          <>
+            {relations.find((r) => r.id === comment.relacao_id)?.nome && (
+              <Tag color={setColor(comment.relacao_id)}>
+                {relations.find((r) => r.id === comment.relacao_id)?.nome}
+              </Tag>
+            )}
+          </>,
+        ]}
       >
         {falaId === comment.id && !deleteModal && (
           <Editor

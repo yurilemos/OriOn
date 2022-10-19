@@ -141,9 +141,6 @@ def add_users(id, userList, userId):
       
     grupo = db.session.query(Grupo).filter(Grupo.id == id).one()
     
-    if (grupo.visibilidade_grupo == 1):
-      return jsonify({"message": "Grupo público"}), 400
-    
     for user in userList:
       newMember = Participacao(
         usuario_id=user,
