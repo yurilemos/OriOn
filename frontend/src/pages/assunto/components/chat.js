@@ -1,16 +1,12 @@
-import { Avatar, Comment, message, Tag } from 'antd';
-import React, { useEffect, useState } from 'react';
+import { Avatar, Comment, Tag } from 'antd';
+import React, { useState } from 'react';
 import 'react-quill/dist/quill.snow.css';
-import { api } from '../../../utils/api';
 import { dateHandlingWithMinutes } from '../../../utils/handleDate';
 import Editor from './editor';
 import DeleteModal from '../../../components/modals/deleteModal';
 import { setColor } from '../../../utils/relationColor';
 
-const Chat = ({ assuntoId }) => {
-  const [comments, setComments] = useState([]);
-  const [relations, setRelations] = useState([]);
-  const [isDisable, setIsDisable] = useState(true);
+const Chat = ({ comments, isDisable, createFala, deleteFala, relations }) => {
   const [submitting, setSubmitting] = useState(false);
   const [value, setValue] = useState('');
   const [falaId, setFalaId] = useState(null);
@@ -98,80 +94,20 @@ const Chat = ({ assuntoId }) => {
     );
   };
 
-  const getFalas = async () => {
-    message.loading('Analizando os dados');
-
-    try {
-      const response = await api.main.get(`/fala?id=${assuntoId}`);
-
-      setComments(response.data.falas);
-      setIsDisable(!response.data.podeEditar);
-      message.destroy();
-    } catch (e) {
-      message.destroy();
-      message.error(e.response.data.message);
-    }
-  };
-
-  const getRelacao = async () => {
-    message.loading('Analizando os dados');
-    try {
-      const response = await api.main.get(`/relacao`);
-
-      setRelations(response.data);
-      message.destroy();
-    } catch (e) {
-      message.destroy();
-      message.error(e.response.data.message);
-    }
-  };
-
   const handleDeleteFala = async (id) => {
-    message.loading('Analizando os dados');
-
-    try {
-      await api.main.delete(`/fala?falaId=${id}`);
-
-      getFalas();
-      message.destroy();
-    } catch (e) {
-      message.destroy();
-      message.error(e.response.data.message);
-    }
+    deleteFala({ id: id });
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     if (!e) return;
     setSubmitting(true);
-    await handleCreateTopic({
+    createFala({
       ...e,
       fala_id: falaId,
     });
     setValue('');
     setSubmitting(false);
   };
-
-  const handleCreateTopic = async (values) => {
-    message.loading('Analizando os dados');
-
-    try {
-      await api.main.post(`/fala`, {
-        ...values,
-        assunto_id: assuntoId,
-      });
-      message.destroy();
-      getFalas();
-    } catch (e) {
-      message.destroy();
-      message.error(e.response.data.message);
-    }
-  };
-
-  useEffect(() => {
-    getFalas();
-    getRelacao();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   return (
     <>

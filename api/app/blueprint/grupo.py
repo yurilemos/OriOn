@@ -56,7 +56,7 @@ def get_group(usuario_id):
         return jsonify({"message": "Usuário inválido"}), 400
     
     if(user.perfil_usuario == 3):
-        grupos = Grupo.query.all()
+        grupos = Grupo.query.filter_by(status_grupo=1).all()
 
     else:    
         # participacao = Participacao.query.filter_by(usuario_id=usuario_id).all()
@@ -65,7 +65,7 @@ def get_group(usuario_id):
             Grupo
         ).filter(
             (Participacao.usuario_id == usuario_id) | (Grupo.visibilidade_grupo == 1)
-        ).all()
+        ).filter(Grupo.status_grupo == 1).all()
     
     result = []
     for grupo in grupos:

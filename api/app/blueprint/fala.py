@@ -83,8 +83,6 @@ def create_fala(conteudo, assunto_id, usuario_id, fala_id, relacao_id):
         return jsonify({"message": "Usuário inválido"}), 400
     
     assunto_already_exists = Assunto.query.filter_by(id=assunto_id).one()
-    
-    print(relacao_id)
         
     if (assunto_already_exists is None):
         return jsonify({"message": "Assunto inválido"}), 400
@@ -145,7 +143,6 @@ def delete_fala(userId, falaId):
     
     
     if (grupo.visibilidade_grupo == 2):
-        print('entrou')
         participacao = Participacao.query.filter_by(usuario_id=userId, grupo_id=grupo.id).one()
         if(partifipacao is None):
             return jsonify({"message": "Usuário não tem permissão de excluir esse assunto"}), 400

@@ -25,6 +25,21 @@ export const useFala = ({ assuntoId }) => {
     {}
   );
 
+  const getRelacao = async () => {
+    message.loading('Analizando os dados');
+    try {
+      const response = await api.main.get(`/relacao`);
+
+      message.destroy();
+      return response.data;
+    } catch (e) {
+      message.destroy();
+      message.error(e.response.data.message);
+    }
+  };
+
+  const { data: relations } = useQuery(['relacao', assuntoId], getRelacao, {});
+
   const invalidateQuery = async () => {
     await queryClient.invalidateQueries('fala');
   };
@@ -67,7 +82,7 @@ export const useFala = ({ assuntoId }) => {
     return response;
   });
 
-  const deleteTopic = (payload) => {
+  const deleteFala = (payload) => {
     deleteDados.mutate(payload, {
       onSuccess: async (res) => {
         if (res?.status === 200 || res?.status === 201) {
@@ -87,9 +102,10 @@ export const useFala = ({ assuntoId }) => {
     isIdle,
     isSuccess,
     data,
+    relations,
     queryClient,
     createFala,
-    deleteTopic,
+    deleteFala,
   };
 };
 
