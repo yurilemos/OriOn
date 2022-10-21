@@ -10,6 +10,7 @@ from app.blueprint.assunto import get_assunto, create_assunto, edit_assunto, del
 from app.blueprint.fala import get_fala, create_fala, delete_fala
 from app.blueprint.gerenciaUsuario import get_users, get_user_search, add_users, delete_user_from_group, change_user_Permission
 from app.blueprint.relacao import cria_relacao, get_relacao
+from app.blueprint.usuario import get_usuario, edit_usuario
 from flask_jwt_extended import create_access_token, get_jwt,get_jwt_identity, jwt_required
 
 
@@ -396,6 +397,30 @@ def relacaoFala():
         
         try:
             result = cria_relacao(nome, perfil_usuario)
+            return result
+        except ValueError as e:
+            print(e)     
+            return jsonify({"message": "Erro no servidor ao criar a relação"}), 400
+        
+@app.route("/usuario", methods=["GET","PUT"])
+@jwt_required()
+def usuario():
+    user = Usuario.query.filter_by(email_usuario=get_jwt_identity()).first()
+    userId = user.id 
+    if request.method == "GET":            
+        try:
+            result = get_usuario(userId)
+            return result
+        except ValueError as e:
+            print(e)       
+            return jsonify({"message": "Erro no servidor ao buscar dados do usuário"}), 400
+    if request.method == "PUT":
+        content = request.json        
+        nome = content.get("nome", None) 
+        avatar = content.get("avatar", None)                                  
+        
+        try:
+            result = edit_usuario(nome, avatar, userId)
             return result
         except ValueError as e:
             print(e)     

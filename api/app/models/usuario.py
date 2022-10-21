@@ -18,6 +18,7 @@ class Usuario(db.Model):
     )
     data_pen_visita_usuario = db.Column(db.DateTime, nullable=True)
     tags_usuario = db.Column(db.Text(), nullable=True)
+    avatar = db.Column(db.Text(), nullable=True)
     
     def __repr__(self):
         return "<Usuário %r>" % self.id

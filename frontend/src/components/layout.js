@@ -87,6 +87,9 @@ const Layout = ({ children }) => {
   };
 
   const onMiniMenuClick = (e) => {
+    if (e.key === '1') {
+      navigate('/perfil');
+    }
     if (e.key === '3') {
       logout();
       navigate('/login');

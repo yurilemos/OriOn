@@ -37,7 +37,8 @@ def login_user(login, senha):
             "userId": usuario.id, 
             "name": usuario.nome_usuario, 
             "email": usuario.email_usuario, 
-            "profile": usuario.perfil_usuario
+            "profile": usuario.perfil_usuario,
+            "avatar": usuario.avatar
         }
     })
 

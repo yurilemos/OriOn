@@ -3,7 +3,7 @@ import axios from 'axios';
 import React, { createContext } from 'react';
 import { useEffect } from 'react';
 import { useState } from 'react';
-import { API_URL } from './api';
+import { api, API_URL } from './api';
 
 const AuthContext = createContext({});
 
@@ -43,6 +43,27 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const updateUser = async () => {
+    try {
+      const res = await api.main.get(`/usuario`);
+
+      const user = {
+        avatar: res.data.avatar,
+        email: res.data.email,
+        name: res.data.nome,
+        profile: res.data.nome,
+        userId: res.data.id,
+      };
+      if (user) {
+        localStorage.setItem('user', JSON.stringify(user));
+      }
+    } catch (error) {
+      if (error.response) {
+        message.error(error.response);
+      }
+    }
+  };
+
   const logout = async () => {
     try {
       await axios.post(`${API_URL}/sair`);
@@ -75,6 +96,7 @@ export const AuthProvider = ({ children }) => {
         logout,
         token,
         currentUser,
+        updateUser,
       }}
     >
       {children}

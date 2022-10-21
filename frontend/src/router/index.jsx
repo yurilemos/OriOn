@@ -9,6 +9,7 @@ import { Discussao } from '../pages/discussao';
 import { Assunto } from '../pages/assunto';
 import { MeusGrupos } from '../pages/meusGrupos';
 import { GruposArquivados } from '../pages/gruposArquivados';
+import { Perfil } from '../pages/perfil';
 
 export const Router = () => {
   return (
@@ -59,6 +60,15 @@ export const Router = () => {
           element={
             <Wrapper>
               <GruposArquivados />
+            </Wrapper>
+          }
+        />
+        <Route
+          path="/perfil"
+          exact
+          element={
+            <Wrapper>
+              <Perfil />
             </Wrapper>
           }
         />
