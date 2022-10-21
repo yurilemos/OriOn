@@ -3,7 +3,9 @@ import { Breadcrumb, Layout as LayoutAntd, Menu, Button, Dropdown } from 'antd';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useContext } from 'react';
 import AuthContext from '../utils/auth';
+import { ProfilePic } from './profilePic';
 import { ArrowLeftOutlined, UserOutlined } from '@ant-design/icons';
+import { AvatarPic } from './avatarPic';
 
 const { Header, Content, Sider } = LayoutAntd;
 
@@ -47,11 +49,6 @@ const items = [
         path: '/meus-grupos-arquivados/2',
       },
     ],
-  },
-  {
-    key: 8,
-    icon: null,
-    label: `Grupos de usuários`,
   },
 ];
 
@@ -140,10 +137,6 @@ const Layout = ({ children }) => {
                     label: 'Perfil',
                   },
                   {
-                    key: 2,
-                    label: 'Configurações',
-                  },
-                  {
                     key: 3,
                     label: 'Sair',
                   },
@@ -152,7 +145,7 @@ const Layout = ({ children }) => {
             }
           >
             <Button
-              icon={<UserOutlined />}
+              icon={<AvatarPic avatar={currentUser.avatar} />}
               shape="circle"
               style={{ width: '40px', height: '40px' }}
             />

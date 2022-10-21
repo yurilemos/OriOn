@@ -1,26 +1,41 @@
 import { Avatar, Comment, Tag } from 'antd';
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import 'react-quill/dist/quill.snow.css';
 import { dateHandlingWithMinutes } from '../../../utils/handleDate';
 import Editor from './editor';
 import DeleteModal from '../../../components/modals/deleteModal';
 import { setColor } from '../../../utils/relationColor';
+import { AvatarPic } from '../../../components/avatarPic';
+import AuthContext from '../../../utils/auth';
 
-const Chat = ({ comments, isDisable, createFala, deleteFala, relations }) => {
+const Chat = ({
+  comments,
+  isDisable,
+  createFala,
+  deleteFala,
+  relations,
+  participantes,
+}) => {
   const [submitting, setSubmitting] = useState(false);
   const [value, setValue] = useState('');
   const [falaId, setFalaId] = useState(null);
   const [deleteModal, setDeleteModal] = useState(false);
+  const { currentUser } = useContext(AuthContext);
 
   const RecursiveComponent = ({ comment }) => {
     const hasChildren =
       comment.children !== undefined && comment.children.length > 0;
 
+    const getParticipantes = (id) => {
+      const usuario = participantes.filter((p) => p.id === id);
+      return usuario[0]?.avatar ?? '';
+    };
+
     return (
       <Comment
         id={comment.id}
         author={comment.author}
-        avatar="https://joeschmoe.io/api/v1/random"
+        avatar={<AvatarPic avatar={getParticipantes(comment.usuario_id)} />}
         content={
           <div dangerouslySetInnerHTML={{ __html: comment.content }}></div>
         }
@@ -116,11 +131,7 @@ const Chat = ({ comments, isDisable, createFala, deleteFala, relations }) => {
       {!falaId && (
         <Comment
           style={{ padding: '1rem' }}
-          avatar={
-            !isDisable && (
-              <Avatar src="https://joeschmoe.io/api/v1/random" alt="Han Solo" />
-            )
-          }
+          avatar={!isDisable && <AvatarPic avatar={currentUser?.avatar} />}
           content={
             <Editor
               onSubmit={handleSubmit}

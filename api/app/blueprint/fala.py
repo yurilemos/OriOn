@@ -47,6 +47,12 @@ def get_fala(id, userId, perfil_usuario):
     
     discussao = db.session.query(Discussao).filter_by(id=assunto.discussao_id).one()
     
+    participantes = []
+    for p in Fala.query.distinct(Fala.usuario_id):
+        user = db.session.query(Usuario).filter_by(id=p.usuario_id).first()        
+        participantes.append({"id": user.id,"nome": user.nome_usuario, "avatar": user.avatar})
+        
+    
     podeEditar = False
     participacao = db.session.query(Participacao).filter_by(usuario_id=userId,grupo_id=discussao.grupo_id).one_or_none()
     if (participacao and (participacao.nivel_participacao == 1 or participacao.nivel_participacao == 2)):
@@ -66,7 +72,7 @@ def get_fala(id, userId, perfil_usuario):
             'podeExcluir': podeExcluir            
         })
     
-    return jsonify({'falas':fresult, 'podeEditar': podeEditar})
+    return jsonify({'falas':fresult, 'podeEditar': podeEditar, 'participantes': participantes})
 
 
 def create_fala(conteudo, assunto_id, usuario_id, fala_id, relacao_id):

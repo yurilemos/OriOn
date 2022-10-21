@@ -25,6 +25,7 @@ export const Assunto = () => {
         createFala={createFala}
         deleteFala={deleteFala}
         relations={relations}
+        participantes={data.participantes ?? []}
       />
     </>
   );
