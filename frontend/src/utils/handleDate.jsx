@@ -44,7 +44,6 @@ export const dateHandlingWithMinutes = (date) => {
         const diffM =
           parseInt(moment(nowDate).format('mm')) - parseInt(minutes);
 
-        console.log(diffM);
         if (diffM < 1) {
           return 'agora';
         }

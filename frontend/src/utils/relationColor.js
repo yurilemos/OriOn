@@ -1,5 +1,4 @@
 export const setColor = (estilo) => {
-  console.log(estilo);
   if (estilo === 'negativo') {
     return 'volcano';
   }
