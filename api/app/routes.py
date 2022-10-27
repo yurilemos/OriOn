@@ -393,10 +393,11 @@ def relacaoFala():
             return jsonify({"message": "Erro no servidor ao buscar as relações da fala"}), 400
     if request.method == "POST":
         content = request.json        
-        nome = content.get("nome", None)                               
+        nome = content.get("nome", None)
+        estilo = content.get("estilo", None)                               
         
         try:
-            result = cria_relacao(nome, perfil_usuario)
+            result = cria_relacao(nome,estilo,perfil_usuario)
             return result
         except ValueError as e:
             print(e)     

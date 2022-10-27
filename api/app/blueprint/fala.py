@@ -55,7 +55,7 @@ def get_fala(id, userId, perfil_usuario):
     
     podeEditar = False
     participacao = db.session.query(Participacao).filter_by(usuario_id=userId,grupo_id=discussao.grupo_id).one_or_none()
-    if (participacao and (participacao.nivel_participacao == 1 or participacao.nivel_participacao == 2)):
+    if (perfil_usuario == 3 or (participacao and (participacao.nivel_participacao == 1 or participacao.nivel_participacao == 2))):
         podeEditar = True
 
     for f in falas:
@@ -130,7 +130,7 @@ def delete_fala(userId, falaId):
     if(falaId is None):
         return jsonify({"message": "Fala obrigatória"}), 400
     
-    user_already_exists = Usuario.query.filter_by(id=userId).all()
+    user_already_exists = Usuario.query.filter_by(id=userId).one_or_none()
     
     if (user_already_exists is None):
         return jsonify({"message": "Usuário inválido"}), 400
@@ -148,13 +148,13 @@ def delete_fala(userId, falaId):
     grupo = Grupo.query.filter_by(id=discussao.grupo_id).one()
     
     
-    if (grupo.visibilidade_grupo == 2):
-        participacao = Participacao.query.filter_by(usuario_id=userId, grupo_id=grupo.id).one()
-        if(partifipacao is None):
-            return jsonify({"message": "Usuário não tem permissão de excluir esse assunto"}), 400
+    if (user_already_exists.perfil_usuario != 3):
+        participacao = Participacao.query.filter_by(usuario_id=userId, grupo_id=grupo.id).one_or_none()        
+        if(participacao is None or participacao.nivel_participacao != 1):
+            return jsonify({"message": "Usuário não tem permissão de excluir essa fala"}), 400
     
-    if (int(fala.usuario_id) != int(userId)):
-        return jsonify({"message": "Usuário não tem permissão de excluir esse assunto"}), 400
+        if (int(fala.usuario_id) != int(userId)):
+            return jsonify({"message": "Usuário não tem permissão de excluir essa fala"}), 400
     
     
     db.session.delete(fala)

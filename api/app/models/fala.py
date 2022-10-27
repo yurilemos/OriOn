@@ -51,6 +51,7 @@ class ClasseRelacao(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     nome = db.Column(db.String(30), nullable=True)
+    estilo = db.Column(db.String(20), nullable=True)
 
     def __repr__(self):
         return "<Classe relação %r>" % self.name

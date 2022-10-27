@@ -42,15 +42,16 @@ export const dateHandlingWithMinutes = (date) => {
       const minutes = moment(useDate).format('mm');
       if (hour === moment(nowDate).format('HH')) {
         const diffM =
-          parseInt(minutes) - parseInt(moment(nowDate).format('mm'));
+          parseInt(moment(nowDate).format('mm')) - parseInt(minutes);
 
-        if (diffM === 0) {
+        console.log(diffM);
+        if (diffM < 1) {
           return 'agora';
         }
         return `${diffM} min atrás`;
       }
       const diffH = parseInt(moment(nowDate).format('HH')) - parseInt(hour);
-      return `${diffH} hora${diffH > 1 && 's'} atrás`;
+      return `${diffH} hora${diffH > 1 ? 's' : ''} atrás`;
     }
     return formattedDate;
   }

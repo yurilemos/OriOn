@@ -1,4 +1,4 @@
-import { Avatar, Comment, Tag } from 'antd';
+import { Comment, Tag } from 'antd';
 import React, { useContext, useState } from 'react';
 import 'react-quill/dist/quill.snow.css';
 import { dateHandlingWithMinutes } from '../../../utils/handleDate';
@@ -68,7 +68,11 @@ const Chat = ({
           </>,
           <>
             {relations.find((r) => r.id === comment.relacao_id)?.nome && (
-              <Tag color={setColor(comment.relacao_id)}>
+              <Tag
+                color={setColor(
+                  relations.find((r) => r.id === comment.relacao_id)?.estilo
+                )}
+              >
                 {relations.find((r) => r.id === comment.relacao_id)?.nome}
               </Tag>
             )}

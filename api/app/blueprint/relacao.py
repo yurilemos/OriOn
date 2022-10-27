@@ -1,7 +1,7 @@
 from app import db, ClasseRelacao
 from flask import jsonify
 
-def cria_relacao(nome, perfil_usuario):
+def cria_relacao(nome, estilo, perfil_usuario):
   
     if (perfil_usuario != 3):
         return jsonify({"message": "Usuário não tem autorização para criar relação"}), 400
@@ -14,7 +14,7 @@ def cria_relacao(nome, perfil_usuario):
     if (nome is not None):
         return jsonify({"message": "Nome já existe"}), 400
     
-    relacao = ClasseRelacao(nome=nome)
+    relacao = ClasseRelacao(nome=nome, estilo=estilo)
   
     db.session.add(relacao)
     db.session.commit()
@@ -29,6 +29,7 @@ def get_relacao():
         result.append({
             'id': r.id,
             'nome': r.nome,
+            'estilo': r.estilo
         })
 
     return jsonify(result)

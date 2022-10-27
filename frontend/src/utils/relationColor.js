@@ -1,14 +1,15 @@
-export const setColor = (id) => {
-  if (id === 1) {
+export const setColor = (estilo) => {
+  console.log(estilo);
+  if (estilo === 'negativo') {
     return 'volcano';
   }
-  if (id === 2) {
+  if (estilo === 'neutro') {
     return 'cyan';
   }
-  if (id === 3) {
+  if (estilo === 'aviso') {
     return 'purple';
   }
-  if (id === 4) {
+  if (estilo === 'positivo') {
     return 'green';
   }
   return 'blue';
