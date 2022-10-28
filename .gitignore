@@ -16,3 +16,10 @@ postgres-data
 .history
 
 .env
+
+# Cache
+__pycache__
+
+.history/
+
+.history
