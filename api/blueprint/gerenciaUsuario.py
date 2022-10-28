@@ -1,6 +1,6 @@
 
 import json
-from app import db, Usuario, Grupo, Participacao, Discussao
+from api import db, Usuario, Grupo, Participacao, Discussao
 from flask import jsonify
 
 

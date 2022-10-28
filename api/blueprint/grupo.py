@@ -1,6 +1,6 @@
 
 import json
-from app import db, Usuario, Grupo, Participacao, Discussao
+from api import db, Usuario, Grupo, Participacao, Discussao
 from flask import jsonify
 
 def create_group(titulo, descricao, visibilidade, usuario_id):

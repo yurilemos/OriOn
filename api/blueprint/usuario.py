@@ -1,5 +1,5 @@
 
-from app import db, Usuario
+from api import db, Usuario
 from flask import jsonify
 
 def get_usuario(userId):

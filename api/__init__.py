@@ -29,13 +29,13 @@ ma.init_app(app)
 
 # pylint:disable=wrong-import-position
 
-from app.models.usuario import Usuario, ConfiguracaoPadrao, Customizacao
-from app.models.grupo import Grupo
-from app.models.discussao import Discussao
-from app.models.assunto import Assunto
-from app.models.fala import Fala, ClasseRelacao, Relacao, RelacaoFalaFala
-from app.models.participacao import Participacao
-from app import routes  # noqa
+from api.models.usuario import Usuario, ConfiguracaoPadrao, Customizacao
+from api.models.grupo import Grupo
+from api.models.discussao import Discussao
+from api.models.assunto import Assunto
+from api.models.fala import Fala, ClasseRelacao, Relacao, RelacaoFalaFala
+from api.models.participacao import Participacao
+from api import routes  # noqa
 
 # pylint:enable=wrong-import-position
 db.init_app(app)

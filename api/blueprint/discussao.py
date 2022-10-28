@@ -1,4 +1,4 @@
-from app import db, Usuario, Grupo, Discussao, Assunto, Participacao
+from api import db, Usuario, Grupo, Discussao, Assunto, Participacao
 from flask import jsonify
 
 

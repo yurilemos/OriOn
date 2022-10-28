@@ -1,16 +1,16 @@
 import datetime
 import json
-from app import app, Usuario
+from api import app, Usuario
 import requests
 from flask import request, jsonify
-from app.blueprint.login import login_user, register_user, logout_user
-from app.blueprint.grupo import get_group, create_group,edit_group, delete_group, get_user_groups, get_user_shelved_groups
-from app.blueprint.discussao import get_discussao, create_discussion, edit_discussion, delete_discussion
-from app.blueprint.assunto import get_assunto, create_assunto, edit_assunto, delete_assunto
-from app.blueprint.fala import get_fala, create_fala, delete_fala
-from app.blueprint.gerenciaUsuario import get_users, get_user_search, add_users, delete_user_from_group, change_user_Permission
-from app.blueprint.relacao import cria_relacao, get_relacao
-from app.blueprint.usuario import get_usuario, edit_usuario
+from api.blueprint.login import login_user, register_user, logout_user
+from api.blueprint.grupo import get_group, create_group,edit_group, delete_group, get_user_groups, get_user_shelved_groups
+from api.blueprint.discussao import get_discussao, create_discussion, edit_discussion, delete_discussion
+from api.blueprint.assunto import get_assunto, create_assunto, edit_assunto, delete_assunto
+from api.blueprint.fala import get_fala, create_fala, delete_fala
+from api.blueprint.gerenciaUsuario import get_users, get_user_search, add_users, delete_user_from_group, change_user_Permission
+from api.blueprint.relacao import cria_relacao, get_relacao
+from api.blueprint.usuario import get_usuario, edit_usuario
 from flask_jwt_extended import create_access_token, get_jwt,get_jwt_identity, jwt_required
 
 

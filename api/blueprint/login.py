@@ -1,9 +1,9 @@
 from http.client import OK
-from app import app, db, Usuario, jwt
+from api import app, db, Usuario, jwt
 from datetime import datetime
 from flask import jsonify
 from werkzeug.security import generate_password_hash, check_password_hash
-from app.serializers.usuario_serializer import UsuarioSerializer
+from api.serializers.usuario_serializer import UsuarioSerializer
 from flask_jwt_extended import create_access_token, get_jwt,get_jwt_identity, unset_jwt_cookies, jwt_required, JWTManager
 
 

@@ -1,4 +1,4 @@
-from app import db, ClasseRelacao
+from api import db, ClasseRelacao
 from flask import jsonify
 
 def cria_relacao(nome, estilo, perfil_usuario):

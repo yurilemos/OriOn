@@ -1,4 +1,4 @@
-from app import ma, Usuario
+from api import ma, Usuario
 
 
 class UsuarioSerializer(ma.SQLAlchemyAutoSchema):
