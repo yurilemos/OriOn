@@ -13,15 +13,15 @@ def login_user(login, senha):
     if(senha is None):
         return jsonify({"message": "Senha vázia"}), 400
         
-    usuario = Usuario.query.filter_by(login=login).first()   
+    usuario = Usuario.query.filter_by(login=login).first() 
         
     # login inválido
     if (usuario is None):
-        return jsonify({"usuário": None})
+        return jsonify({"message": "Usuário ou senha inválido"}), 400
         
     # senha inválida
     if(check_password_hash(usuario.senha, senha) is False):
-        return jsonify({"usuário": None})
+        return jsonify({"message": "Usuário ou senha inválido"}), 400
     
     usuario.data_pen_visita_usuario = usuario.data_ult_visita_usuario
     usuario.data_ult_visita_usuario = datetime.now()
