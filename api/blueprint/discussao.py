@@ -127,22 +127,22 @@ def delete_discussion(userId, discussionId):
     if(discussionId is None):
         return jsonify({"message": "Discussao obrigatória"}), 400
     
-    user_already_exists = Usuario.query.filter_by(id=userId).all()
+    user_already_exists = Usuario.query.filter_by(id=userId).one_or_none()
     
     if (user_already_exists is None):
         return jsonify({"message": "Usuário inválido"}), 400
     
     
-    discussao = Discussao.query.filter_by(id=discussionId).one()
+    discussao = Discussao.query.filter_by(id=discussionId).one_or_none()
     
     if (discussao is None):
         return jsonify({"message": "Discusão inválida"}), 400
     
-    grupo = Grupo.query.filter_by(id=discussao.grupo_id).one()
+    grupo = Grupo.query.filter_by(id=discussao.grupo_id).one_or_none()
         
-    participacao = Participacao.query.filter_by(usuario_id=userId, grupo_id=grupo.id).one()
+    participacao = Participacao.query.filter_by(usuario_id=userId, grupo_id=grupo.id).one_or_none()
     
-    if (participacao is None or participacao.nivel_participacao != 1):
+    if ((participacao is None or participacao.nivel_participacao != 1) and user_already_exists.perfil_usuario != 3):
         return jsonify({"message": "Usuário não tem permissão de excluir essa discussão"}), 400
     
     
