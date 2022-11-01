@@ -144,12 +144,12 @@ def delete_group(userId, groupId):
     if(groupId is None):
         return jsonify({"message": "Grupo obrigatório"}), 400
       
-    user_already_exists = Usuario.query.filter_by(id=userId).all()
+    user_already_exists = Usuario.query.filter_by(id=userId).one_or_none()
     
     if (user_already_exists is None):
         return jsonify({"message": "Usuário inválido"}), 400
         
-    participacao = Participacao.query.filter_by(usuario_id=userId, grupo_id=groupId).one()
+    participacao = Participacao.query.filter_by(usuario_id=userId, grupo_id=groupId).one_or_none()
     
     if (user_already_exists.perfil_usuario != 3 and (participacao is None or participacao.nivel_participacao != 1)):
         return jsonify({"message": "Usuário não tem permissão de excluir esse grupo"}), 400

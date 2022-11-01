@@ -149,12 +149,13 @@ def delete_fala(userId, falaId):
     
     
     if (user_already_exists.perfil_usuario != 3):
-        participacao = Participacao.query.filter_by(usuario_id=userId, grupo_id=grupo.id).one_or_none()        
-        if(participacao is None or participacao.nivel_participacao != 1):
+        participacao = Participacao.query.filter_by(usuario_id=userId, grupo_id=grupo.id).one_or_none()    
+        if (int(fala.usuario_id) != int(userId)):
+            return jsonify({"message": "Usuário não tem permissão de excluir fala de outro usuário"}), 400    
+        if(participacao is None or (participacao.nivel_participacao != 1 and participacao.nivel_participacao != 2)):
             return jsonify({"message": "Usuário não tem permissão de excluir essa fala"}), 400
     
-        if (int(fala.usuario_id) != int(userId)):
-            return jsonify({"message": "Usuário não tem permissão de excluir essa fala"}), 400
+        
     
     
     db.session.delete(fala)

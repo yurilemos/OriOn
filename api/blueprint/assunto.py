@@ -77,7 +77,7 @@ def create_assunto(titulo, descricao, discussao_id, usuario_id):
         
     participacao = Participacao.query.filter_by(usuario_id=usuario_id, grupo_id=grupo.id).one_or_none()
     
-    if ((participacao is None or participacao.nivel_participacao != 1 or participacao.nivel_participacao != 2) and user_already_exists.perfil_usuario != 3):
+    if ((participacao is None or (participacao.nivel_participacao != 1 and participacao.nivel_participacao != 2)) and user_already_exists.perfil_usuario != 3):
         return jsonify({"message": "Usuário não tem permissão de criar assuntos"}), 400
         
     assunto = Assunto(
