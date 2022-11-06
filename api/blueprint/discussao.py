@@ -21,16 +21,18 @@ def get_discussao(id, userId):
     podeEditar = False
     podeCriar = False
     participacao = db.session.query(Participacao).filter_by(usuario_id=userId,grupo_id=discussao.grupo_id).one_or_none()
-    if (participacao and (participacao.nivel_participacao == 1 or participacao.nivel_participacao == 2)):
+    if (participacao and participacao.nivel_participacao == 2):
         podeCriar = True
-    if (usuario.perfil_usuario == 3 or (participacao and (participacao.nivel_participacao == 1))):
+    if (usuario.perfil_usuario == 3 or discussao.usuario_id == userId):
         podeEditar = True
         podeCriar = True
     
     
     for a in assuntos:
-        if (a.usuario_id == userId):
+        if (a.usuario_id == userId or usuario.perfil_usuario == 3 or discussao.usuario_id == userId):
             podeEditar = True
+        else:
+            podeEditar = False
         aresult.append({
             'id': a.id,
             'nome': a.titulo,
@@ -42,7 +44,7 @@ def get_discussao(id, userId):
             'podeCriar': podeCriar
         })
     
-    if (usuario.perfil_usuario == 3 or (participacao and (participacao.nivel_participacao == 1))):
+    if (participacao and participacao.nivel_participacao == 2):
         podeEditar = True   
     return jsonify({
         "id": discussao.id, 
