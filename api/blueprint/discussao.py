@@ -27,6 +27,7 @@ def get_discussao(id, userId):
             podeEditar = True
         else:
             podeEditar = False
+        criador = Usuario.query.filter_by(id=a.usuario_id).one_or_none()
         aresult.append({
             'id': a.id,
             'nome': a.titulo,
@@ -34,7 +35,8 @@ def get_discussao(id, userId):
             'usuario_id': a.usuario_id,
             'data_criacao': a.data_criacao_descricao,
             'data_ult_atualizacao': a.data_ult_atualizacao,
-            'podeEditar': podeEditar
+            'podeEditar': podeEditar,
+            'criador': criador.nome_usuario
         })
     
     if (participacao and participacao.nivel_participacao == 2):

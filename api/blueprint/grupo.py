@@ -82,13 +82,16 @@ def get_group(usuario_id):
         discussoes = Discussao.query.filter_by(grupo_id=grupo.id).all()        
         dresult = []
         for d in discussoes:
+            criador = Usuario.query.filter_by(id=d.usuario_id).one_or_none()
             dresult.append({
               'id': d.id,
               'nome': d.titulo,
               'descricao': d.descricao,
               'usuario_id': d.usuario_id,
-              'data_criacao': d.data_criacao_descricao,              
+              'data_criacao': d.data_criacao_descricao, 
+              'criador': criador.nome_usuario             
               })
+        criador = Usuario.query.filter_by(id=grupo.usuario_id).one_or_none()
         result.append({
           'id': grupo.id,
           'nome': grupo.nome_grupo,
@@ -100,7 +103,8 @@ def get_group(usuario_id):
           'podeEditar': podeEditar,
           'discussoes': dresult,
           'podeEditar': podeEditar,
-          'podeCriar': podeCriar
+          'podeCriar': podeCriar,
+          'criador': criador.nome_usuario
           })
         
     return jsonify(result)
