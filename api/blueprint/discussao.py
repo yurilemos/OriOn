@@ -72,6 +72,11 @@ def create_discussion(titulo, descricao, grupo_id, usuario_id):
         
     if (group_already_exists is None):
         return jsonify({"message": "Grupo inválido"}), 400
+    
+    participacao = Participacao.query.filter_by(usuario_id=usuario_id, grupo_id=group_already_exists.id).one_or_none()
+    
+    if ((participacao is None or (participacao.nivel_participacao != 1 and participacao.nivel_participacao != 2)) and user_already_exists.perfil_usuario != 3):
+        return jsonify({"message": "Usuário não tem permissão de criar essa discussão"}), 400
         
     discussao = Discussao(
       titulo=titulo,
@@ -109,9 +114,8 @@ def edit_discussion(titulo, descricao, usuario_id, discussionId):
     
     grupo = Grupo.query.filter_by(id=discussao.grupo_id).one()
         
-    participacao = Participacao.query.filter_by(usuario_id=usuario_id, grupo_id=grupo.id).one_or_none()
     
-    if ((participacao is None or participacao.nivel_participacao != 1) and user_already_exists.perfil_usuario != 3):
+    if (grupo.usuario_id != usuario_id and discussao.usuario_id != usuario_id and user_already_exists.perfil_usuario != 3):
         return jsonify({"message": "Usuário não tem permissão de editar essa discussão"}), 400
     
     
@@ -127,7 +131,7 @@ def edit_discussion(titulo, descricao, usuario_id, discussionId):
     return jsonify({"message": "Discussão atualizada"})
 
 def delete_discussion(userId, discussionId):
-  
+
     if(userId is None):
         return jsonify({"message": "Usuário obrigatório"}), 400
     if(discussionId is None):
@@ -145,10 +149,8 @@ def delete_discussion(userId, discussionId):
         return jsonify({"message": "Discusão inválida"}), 400
     
     grupo = Grupo.query.filter_by(id=discussao.grupo_id).one_or_none()
-        
-    participacao = Participacao.query.filter_by(usuario_id=userId, grupo_id=grupo.id).one_or_none()
     
-    if ((participacao is None or participacao.nivel_participacao != 1) and user_already_exists.perfil_usuario != 3):
+    if (grupo.usuario_id != userId and discussao.usuario_id != userId and user_already_exists.perfil_usuario != 3):
         return jsonify({"message": "Usuário não tem permissão de excluir essa discussão"}), 400
     
     

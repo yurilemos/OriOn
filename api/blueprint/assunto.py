@@ -119,7 +119,9 @@ def edit_assunto(titulo, descricao, usuario_id, assuntoId):
         
     participacao = Participacao.query.filter_by(usuario_id=usuario_id, grupo_id=grupo.id).one_or_none()
     
-    if ((participacao is None or participacao.nivel_participacao != 1 or participacao.nivel_participacao != 2) 
+    if (grupo.usuario_id != userId 
+        and discussao.usuario_id != userId 
+        and assunto.usuario_id != userId 
         and user_already_exists.perfil_usuario != 3):
         return jsonify({"message": "Usuário não tem permissão de editar esse assunto"}), 400
     
@@ -160,8 +162,11 @@ def delete_assunto(userId, assuntoId):
     participacao = Participacao.query.filter_by(usuario_id=userId, grupo_id=grupo.id).one_or_none()
     
     if (
-        (participacao is None or participacao.nivel_participacao != 1 or participacao.nivel_participacao != 2) 
-        and user_already_exists.perfil_usuario != 3):
+        grupo.usuario_id != userId 
+        and discussao.usuario_id != userId 
+        and assunto.usuario_id != userId 
+        and user_already_exists.perfil_usuario != 3
+    ):
         return jsonify({"message": "Usuário não tem permissão de excluir esse assunto"}), 400
     
     
