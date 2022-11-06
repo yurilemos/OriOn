@@ -99,7 +99,8 @@ def get_group(usuario_id):
           'usuario_id': grupo.usuario_id,
           'podeEditar': podeEditar,
           'discussoes': dresult,
-          'podeEditar': podeEditar
+          'podeEditar': podeEditar,
+          'podeCriar': podeCriar
           })
         
     return jsonify(result)
