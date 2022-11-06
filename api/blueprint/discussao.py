@@ -40,8 +40,7 @@ def get_discussao(id, userId):
             'usuario_id': a.usuario_id,
             'data_criacao': a.data_criacao_descricao,
             'data_ult_atualizacao': a.data_ult_atualizacao,
-            'podeEditar': podeEditar,
-            'podeCriar': podeCriar
+            'podeEditar': podeEditar
         })
     
     if (participacao and participacao.nivel_participacao == 2):
