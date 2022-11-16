@@ -15,12 +15,12 @@ def get_users(id,userId):
     criador = db.session.query(Usuario).filter(Usuario.id == grupo.usuario_id).one()
     membrosEditores = db.session.query(
       Usuario
-      ).filter(
+      ).join(Participacao).filter(
         (Participacao.grupo_id == id) & (Usuario.id == Participacao.usuario_id) & (Usuario.id != criador.id) & (Participacao.nivel_participacao == 2)
       ).all()
     membrosLeitores = db.session.query(
       Usuario
-      ).filter(
+      ).join(Participacao).filter(
         (Participacao.grupo_id == id) & (Usuario.id == Participacao.usuario_id) & (Usuario.id != criador.id) & (Participacao.nivel_participacao != 2)
       ).all()
 
@@ -106,7 +106,7 @@ def get_user_search(id, search, userId):
       
     membros = db.session.query(
       Usuario
-      ).filter(
+      ).join(Participacao).filter(
         (Participacao.grupo_id == id) & (Usuario.id == Participacao.usuario_id)
       ).all()
       

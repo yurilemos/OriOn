@@ -63,7 +63,7 @@ def get_group(usuario_id):
         # grupo = participacao.join(Grupo).all()
         grupos = db.session.query(
             Grupo
-        ).filter(
+        ).join(Participacao).filter(
             (Participacao.usuario_id == usuario_id) | (Grupo.visibilidade_grupo == 1)
         ).filter(Grupo.status_grupo == 1).all()
     
