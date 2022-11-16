@@ -119,9 +119,9 @@ def edit_assunto(titulo, descricao, usuario_id, assuntoId):
         
     participacao = Participacao.query.filter_by(usuario_id=usuario_id, grupo_id=grupo.id).one_or_none()
     
-    if (grupo.usuario_id != userId 
-        and discussao.usuario_id != userId 
-        and assunto.usuario_id != userId 
+    if (grupo.usuario_id != usuario_id 
+        and discussao.usuario_id != usuario_id 
+        and assunto.usuario_id != usuario_id 
         and user_already_exists.perfil_usuario != 3):
         return jsonify({"message": "Usuário não tem permissão de editar esse assunto"}), 400
     
