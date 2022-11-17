@@ -1,25 +1,18 @@
 pacotes:
-  cd api
   pip install --upgrade pip
   pip install pipenv
+
   pipenv install
-  cd ..
-  cd frontend
-  npm install
-  cd ..
-
-
-Dentro do repositório OriOn:
-
-frontend:
-  cd frontend
-  npm start
+  ou
+  pipenv shell
+  pip install -r requirements.txt
 
 
 backend:
   cd api
   pipenv shell
-  python3 run.py
+  pip install -r requirements.txt
+  python3 app.py
 
 
 
