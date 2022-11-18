@@ -1,6 +1,6 @@
 from api import db
 
-
+# Tabela de participação de usuário com grupo de discussão
 class Participacao(db.Model):
     __tablename__ = "participacao"
 

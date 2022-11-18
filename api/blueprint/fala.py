@@ -2,13 +2,16 @@ from api import db, Usuario, Assunto, Discussao, Fala, Grupo, Participacao
 from flask import jsonify
 from datetime import datetime
 
+# Arquivo referente as funções do sistema para a fala
 
+
+# Função que checa quantos dias atrás a fala foi criada
 def days_between(d1, d2):
     d1 = datetime.strptime(d1, '%Y-%m-%d %H:%M:%S.%f') 
     d2 = datetime.strptime(str(d2), "%Y-%m-%d %H:%M:%S.%f")
     return abs((d2 - d1).days)
 
-
+# Função que retorna as falas filhas
 def get_children(id, userId, perfil_usuario):
     if (id is None): return []
     fc = []
@@ -29,7 +32,7 @@ def get_children(id, userId, perfil_usuario):
         })
     return fc
 
-
+# Lista as falas para o front
 def get_fala(id, userId, perfil_usuario):
     
     if (id is None):
@@ -74,7 +77,7 @@ def get_fala(id, userId, perfil_usuario):
     
     return jsonify({'falas':fresult, 'podeEditar': podeEditar, 'participantes': participantes})
 
-
+# Cria a fala
 def create_fala(conteudo, assunto_id, usuario_id, fala_id, relacao_id):
     if (conteudo is None):
         return jsonify({"message": "Conteúdo obrigatório"}), 400
@@ -116,13 +119,13 @@ def create_fala(conteudo, assunto_id, usuario_id, fala_id, relacao_id):
     if (fala is None):
         return jsonify({"message": "Erro no servidor ao criar a fala"}), 400
     
-    # Add discussion to the database
+    # Add fala to the database
     db.session.add(fala)
     db.session.commit()
     
     return jsonify({"fala": fala.id})
 
-
+# Deleta a fala
 def delete_fala(userId, falaId):
 
     if(userId is None):

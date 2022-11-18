@@ -6,7 +6,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from api.serializers.usuario_serializer import UsuarioSerializer
 from flask_jwt_extended import create_access_token, get_jwt,get_jwt_identity, unset_jwt_cookies, jwt_required, JWTManager
 
-
+# Autentica o usuário
 def login_user(login, senha):
     if(login is None):
         return jsonify({"message": "Usuário vázio"}), 400
@@ -42,13 +42,13 @@ def login_user(login, senha):
         }
     })
 
-
+# Registra a saída do usuário
 def logout_user():
     response = jsonify({"msg": "logout successful"})
     unset_jwt_cookies(response)
     return response
 
-
+# Registra o usuário
 def register_user(login, senha, nome):
     hashsenha = generate_password_hash(senha)
         

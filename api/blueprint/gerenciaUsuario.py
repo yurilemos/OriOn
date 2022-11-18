@@ -3,9 +3,10 @@ import json
 from api import db, Usuario, Grupo, Participacao, Discussao
 from flask import jsonify
 
+# Arquivo referente as funções do sistema para a gerencia de usuário em um grupo de discussão
 
-
-
+# Lista os usuários que participam de um grupo com suas permissões para o front
+# nivel_participacao = 1 => Criador & nivel_participacao = 2 => Editor & visibilidade_grupo = 3 => Leitor
 def get_users(id,userId):
   
     if(id is None):        
@@ -60,7 +61,8 @@ def get_users(id,userId):
     
         
     return jsonify(result)
-  
+
+# Muda a permissão do usuário
 def change_user_Permission(groupId, nivel_participacao, userId, userRequestId):
   
     if(nivel_participacao is None or nivel_participacao == 1):        
@@ -96,7 +98,7 @@ def change_user_Permission(groupId, nivel_participacao, userId, userRequestId):
         
     return jsonify({'id alterado': userId})
   
-
+# Lista os usuários para o front que não estão no grupo e são encontrados pelo search
 def get_user_search(id, search, userId):
   
   
@@ -131,7 +133,8 @@ def get_user_search(id, search, userId):
           })
         
     return jsonify(result)
-  
+
+# Adciona usuários para o grupo 
 def add_users(id, userList, userId):    
     if(id is None):        
         return jsonify({"message": "Grupo obrigatório"}), 400
@@ -151,7 +154,9 @@ def add_users(id, userList, userId):
       db.session.commit()
         
     return jsonify({'id':id})
-  
+
+
+# Deleta o usuário do grupo
 def delete_user_from_group(id, userId, userResquestId):
   
     if(id is None):        

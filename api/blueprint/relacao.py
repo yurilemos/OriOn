@@ -1,6 +1,7 @@
 from api import db, ClasseRelacao
 from flask import jsonify
 
+# Cria uma relação entre falas
 def cria_relacao(nome, estilo, perfil_usuario):
   
     if (perfil_usuario != 3):
@@ -19,7 +20,8 @@ def cria_relacao(nome, estilo, perfil_usuario):
     db.session.add(relacao)
     db.session.commit()
     return nome + ' criado'
-  
+
+# Lista as relações entre falas
 def get_relacao():
     
     relacao = db.session.query(ClasseRelacao).all()

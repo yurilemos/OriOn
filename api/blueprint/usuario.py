@@ -2,6 +2,7 @@
 from api import db, Usuario
 from flask import jsonify
 
+# Retorna o usuário para o front
 def get_usuario(userId):
     
     usuario = Usuario.query.filter_by(id=userId).one_or_none()
@@ -17,6 +18,7 @@ def get_usuario(userId):
             "avatar": usuario.avatar
         })
 
+# Edita o usuário
 def edit_usuario(nome, avatar, userId):
     
     if (nome is None):

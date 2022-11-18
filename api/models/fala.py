@@ -1,7 +1,7 @@
 from api import db
 import datetime
 
-
+# Tabela fala
 class Fala(db.Model):
     __tablename__ = "fala"
 
@@ -45,7 +45,7 @@ class Fala(db.Model):
     def __repr__(self):
         return "<Fala %r>" % self.name
 
- 
+# Tabela do classe entre falas
 class ClasseRelacao(db.Model):
     __tablename__ = "classe_relacao"
 
@@ -56,7 +56,7 @@ class ClasseRelacao(db.Model):
     def __repr__(self):
         return "<Classe relação %r>" % self.name
 
-
+# Tabela da relação entre falas
 class Relacao(db.Model):
     __tablename__ = "relacao"
 
@@ -71,7 +71,7 @@ class Relacao(db.Model):
     def __repr__(self):
         return "<Relação fala %r>" % self.name
 
-
+# TODO: possivelmente tabela será excluída
 class RelacaoFalaFala(db.Model):
     __tablename__ = "relacao_fala"
 

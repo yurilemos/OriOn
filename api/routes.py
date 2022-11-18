@@ -13,7 +13,7 @@ from api.blueprint.relacao import cria_relacao, get_relacao
 from api.blueprint.usuario import get_usuario, edit_usuario
 from flask_jwt_extended import create_access_token, get_jwt,get_jwt_identity, jwt_required
 
-
+# Atualiza token a cada requisiçao
 @app.after_request
 def refresh_expiring_jwts(response):
     try:
@@ -30,16 +30,16 @@ def refresh_expiring_jwts(response):
     except (RuntimeError, KeyError):
         # Case where there is not a valid JWT. Just return the original respone
         return response
-    
-    
+
+
+# Rota teste 
 @app.route("/")
 def index():
     return "teste"
 
-
+# Rota de login
 @app.route("/login", methods=["POST"])
 def login():
-    # save image from the database
     content = request.json
     login = content.get("login", None)
     senha = content.get("senha", None)
@@ -50,7 +50,7 @@ def login():
         print(e)
         return jsonify({"message": "Erro no servidor no login"}), 400
     
-
+# Rota de saída do sistema
 @app.route("/sair", methods=["POST"])
 def logout():
     try:
@@ -59,9 +59,9 @@ def logout():
         print(e)
         return jsonify({"message": "Erro no servidor no login"}), 400   
 
+# Rota de registo
 @app.route("/register", methods=["POST"])
 def register():
-    # save image from the database
     content = request.json
     login = content.get("login", None)
     senha = content.get("senha", None)
@@ -73,25 +73,13 @@ def register():
         print(e)       
         return jsonify({"message": "Erro no servidor no registro"}), 400
 
-
-@app.route('/profile')
-@jwt_required()
-def my_profile():
-    response_body = {
-        "name": "Nagato",
-        "about": "Hello! I'm a full stack developer that loves python and javascript"
-    }
-
-    return response_body
-
-
+# Rota do grupo
 @app.route("/grupo", methods=["GET", "POST", "PUT" ,"DELETE"])
 @jwt_required()
 def grupo():
     user = Usuario.query.filter_by(email_usuario=get_jwt_identity()).first()
     userId = user.id
     if request.method == "GET":
-        # read images from the database
         try:
             result = get_group(userId)
             return result
@@ -100,7 +88,6 @@ def grupo():
             return jsonify({"message": "Erro no servidor ao buscar os grupos de discussão"}), 400
         
     if request.method == "POST":
-        # save image in the database
         content = request.json        
         titulo = content.get("titulo", None)
         descricao = content.get("descricao", None)
@@ -114,7 +101,6 @@ def grupo():
             return jsonify({"message": "Erro no servidor ao criar o grupo de discussão"}), 400
         
     if request.method == "PUT":
-        # save image in the database
         content = request.json
         titulo = content.get("titulo", None)
         descricao = content.get("descricao", None)
@@ -139,14 +125,13 @@ def grupo():
             print(e)       
             return jsonify({"message": "Erro no servidor ao deletar o grupo de discussão"}), 400
  
-        
+# Rota da discussão       
 @app.route("/discussao", methods=["POST", "GET", "DELETE", "PUT"])
 @jwt_required()
 def discussao():
     user = Usuario.query.filter_by(email_usuario=get_jwt_identity()).first()
     userId = user.id
     if request.method == "GET":
-        # read images from the database
         id = request.args.get("id")
         try:
             result = get_discussao(id,userId)
@@ -155,7 +140,6 @@ def discussao():
             print(e)   
             return jsonify({"message": "Erro no servidor ao buscar a discussão"}), 400
     if request.method == "POST":
-        # save image in the database
         content = request.json        
         titulo = content.get("titulo", None)
         descricao = content.get("descricao", None)
@@ -168,7 +152,6 @@ def discussao():
             print(e)     
             return jsonify({"message": "Erro no servidor ao criar a discussão"}), 400
     if request.method == "PUT":
-        # save image in the database
         content = request.json
         titulo = content.get("titulo", None)
         descricao = content.get("descricao", None)
@@ -181,7 +164,6 @@ def discussao():
             print(e)       
             return jsonify({"message": "Erro no servidor ao editar a discussão"}), 400
     if request.method == "DELETE":
-        # read images from the database
         discussionId = request.args.get("discussionId")
         
         try:
@@ -191,14 +173,13 @@ def discussao():
             print(e)   
             return jsonify({"message": "Erro no servidor ao buscar a discussão"}), 400
 
-    
+# Rota do assunto   
 @app.route("/assunto", methods=["POST", "GET", "DELETE", "PUT"])
 @jwt_required()
 def assunto():
     user = Usuario.query.filter_by(email_usuario=get_jwt_identity()).first()
     userId = user.id 
     if request.method == "GET":
-        # read images from the database
         id = request.args.get("id")
         
         try:
@@ -208,7 +189,6 @@ def assunto():
             print(e)   
             return jsonify({"message": "Erro no servidor ao buscar o assunto"}), 400
     if request.method == "POST":
-        # save image in the database
         content = request.json        
         titulo = content.get("titulo", None)
         descricao = content.get("descricao", None)
@@ -221,7 +201,6 @@ def assunto():
             print(e)     
             return jsonify({"message": "Erro no servidor ao criar o assunto"}), 400
     if request.method == "PUT":
-        # save image in the database
         content = request.json
         titulo = content.get("titulo", None)
         descricao = content.get("descricao", None)        
@@ -243,7 +222,7 @@ def assunto():
             print(e)   
             return jsonify({"message": "Erro no servidor ao buscar a discussão"}), 400
     
-    
+# Rota da fala  
 @app.route("/fala", methods=["POST", "GET", "DELETE"])
 @jwt_required()
 def fala():
@@ -251,7 +230,6 @@ def fala():
     userId = user.id  
     perfil_usuario = user.perfil_usuario
     if request.method == "GET":
-        # read images from the database
         id = request.args.get("id")
         try:
             result = get_fala(id,userId,perfil_usuario)
@@ -283,6 +261,7 @@ def fala():
             print(e)   
             return jsonify({"message": "Erro no servidor ao buscar a discussão"}), 400
 
+# Rota da gerência de usuários
 @app.route("/gerencia-usuario", methods=["POST", "GET", "PUT", "DELETE"])
 @jwt_required()
 def gerenciaUsuario():
@@ -311,7 +290,6 @@ def gerenciaUsuario():
             return jsonify({"message": "Erro no servidor ao criar a discussão"}), 400
         
     if request.method == "PUT":
-        # save image in the database
         content = request.json
         groupId = content.get("groupId", None)
         nivel_participacao = content.get("nivel_participacao", None)
@@ -333,7 +311,8 @@ def gerenciaUsuario():
         except ValueError as e:
             print(e)   
             return jsonify({"message": "Erro no servidor ao buscar a discussão"}), 400
-        
+
+# Rota de pesquisade usuários em um grupo      
 @app.route("/gerencia-usuario/pesquisa", methods=["GET"])
 @jwt_required()
 def pesquisaUsuario():
@@ -348,14 +327,14 @@ def pesquisaUsuario():
         except ValueError as e:
             print(e)   
             return jsonify({"message": "Erro no servidor ao buscar os usuários"}), 400
-        
+
+# Rota de listar os grupos do usuário     
 @app.route("/meus-grupos", methods=["GET"])
 @jwt_required()
 def meusGrupos():
     user = Usuario.query.filter_by(email_usuario=get_jwt_identity()).first()
     userId = user.id 
     if request.method == "GET":            
-        # read images from the database
         visibilidade = request.args.get("visibilidade")
         
         try:
@@ -364,7 +343,8 @@ def meusGrupos():
         except ValueError as e:
             print(e)       
             return jsonify({"message": "Erro no servidor ao buscar os grupos de discussão"}), 400
-        
+
+# Rota de listar os grupos arquivados do usuário        
 @app.route("/meus-grupos-arquivados", methods=["GET"])
 @jwt_required()
 def meusGruposArquivados():
@@ -378,7 +358,8 @@ def meusGruposArquivados():
         except ValueError as e:
             print(e)       
             return jsonify({"message": "Erro no servidor ao buscar os grupos de discussão"}), 400
-        
+
+# Rota de relação entre falas
 @app.route("/relacao", methods=["GET","POST"])
 @jwt_required()
 def relacaoFala():
@@ -402,7 +383,8 @@ def relacaoFala():
         except ValueError as e:
             print(e)     
             return jsonify({"message": "Erro no servidor ao criar a relação"}), 400
-        
+
+# Rota de dados do usuário
 @app.route("/usuario", methods=["GET","PUT"])
 @jwt_required()
 def usuario():

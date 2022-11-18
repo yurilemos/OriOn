@@ -1,7 +1,7 @@
 from api import db
 import datetime
 
-
+# Tabela de usuário
 class Usuario(db.Model):
     __tablename__ = "usuario"
 
@@ -23,7 +23,7 @@ class Usuario(db.Model):
     def __repr__(self):
         return "<Usuário %r>" % self.id
 
-
+# TODO: possivelmente tabela será excluída
 class ConfiguracaoPadrao(db.Model):
     __tablename__ = "customização_padrao"
 
@@ -35,7 +35,7 @@ class ConfiguracaoPadrao(db.Model):
     def __repr__(self):
         return "<Customização Padrão %r>" % self.name
 
-
+# TODO: possivelmente tabela será excluída
 class Customizacao(db.Model):
     __tablename__ = "customização"
 

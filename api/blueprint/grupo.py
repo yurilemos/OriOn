@@ -3,6 +3,10 @@ import json
 from api import db, Usuario, Grupo, Participacao, Discussao
 from flask import jsonify
 
+# Arquivo referente as funções do sistema para o grupo
+
+
+# Cria grupo
 def create_group(titulo, descricao, visibilidade, usuario_id):
     if(titulo is None):
         return jsonify({"message": "Título obrigatório"}), 400
@@ -44,7 +48,8 @@ def create_group(titulo, descricao, visibilidade, usuario_id):
     
     return jsonify({"grupo": grupo.id})
 
-
+# Lista os grupos para o front
+# visibilidade_grupo = 1 => publico & visibilidade_grupo = 2 => privado
 def get_group(usuario_id):
   
     if(usuario_id is None):
@@ -109,6 +114,7 @@ def get_group(usuario_id):
         
     return jsonify(result)
 
+# Edita o grupo
 def edit_group(titulo, descricao, visibilidade, arquivar, usuario_id, group_Id):
   
     if(usuario_id is None):
@@ -143,7 +149,8 @@ def edit_group(titulo, descricao, visibilidade, arquivar, usuario_id, group_Id):
     db.session.commit()
     
     return jsonify({"message": "grupo atualizado"})
- 
+
+# Deleta o grupo
 def delete_group(userId, groupId):
   
     if(userId is None):
@@ -168,7 +175,7 @@ def delete_group(userId, groupId):
     
     return jsonify({"grupo deletado": grupo.id})
 
-
+# Lista os grupos de um usuário
 def get_user_groups(usuario_id,visibilidade):
 
     if(usuario_id is None):
@@ -213,6 +220,7 @@ def get_user_groups(usuario_id,visibilidade):
         
     return jsonify(result)
 
+# Lista os grupos arquivados de um usuário
 def get_user_shelved_groups(usuario_id, visibilidade):
   
     if(usuario_id is None):

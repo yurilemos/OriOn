@@ -1,7 +1,10 @@
 from api import db, Usuario, Assunto, Discussao, Fala, Grupo, Participacao
 from flask import jsonify
 
+# Arquivo referente as funções do sistema para o assunto
 
+
+# Lista os assuntos para o front
 def get_assunto(id,userId):
     if (id is None):
         return jsonify({"message": "Id da discussão obrigatório"}), 400
@@ -52,7 +55,7 @@ def get_assunto(id,userId):
         "podeEditar": podeEditar
     })
 
-
+# Cria o assunto
 def create_assunto(titulo, descricao, discussao_id, usuario_id):
 
     if (titulo is None):
@@ -90,12 +93,13 @@ def create_assunto(titulo, descricao, discussao_id, usuario_id):
     if (assunto is None):
         return jsonify({"message": "Erro no servidor ao criar a discussao"}), 400
     
-    # Add discussion to the database
+    # Add assunto to the database
     db.session.add(assunto)
     db.session.commit()
     
     return jsonify({"discussao": assunto.id})
 
+# Edita o assunto
 def edit_assunto(titulo, descricao, usuario_id, assuntoId):
     if(usuario_id is None):
         return jsonify({"message": "Usuário obrigatório"}), 400
@@ -137,6 +141,7 @@ def edit_assunto(titulo, descricao, usuario_id, assuntoId):
     
     return jsonify({"message": "Assunto atualizado"})
 
+# Deleta o assunto
 def delete_assunto(userId, assuntoId):
 
     if(userId is None):

@@ -1,7 +1,7 @@
 from api import db
 import datetime
 
-
+# Tabela discussão
 class Discussao(db.Model):
     __tablename__ = "discussao"
 
